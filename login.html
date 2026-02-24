@@ -489,3 +489,494 @@
   </script>
 </body>
 </html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Notes Sharing - Login</title>
+  <!-- Font Awesome 6 (free) for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('C:/Users/Chella/Downloads/Peer_Christmas_CMYK.jpg');
+      background-size: cover;
+      background-position: center;
+      background-attachment: fixed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-card {
+      max-width: 320px;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 1.5rem;
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.35);
+      padding: 1.5rem 1.5rem 1.3rem 1.5rem;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .login-header {
+      text-align: left;
+      margin-bottom: 1rem;
+    }
+
+    .login-title {
+      font-size: 1.4rem;
+      font-weight: 600;
+      color: #0b2b4a;
+      margin-bottom: 0.2rem;
+      letter-spacing: -0.02em;
+    }
+
+    .login-subtitle {
+      font-size: 0.8rem;
+      color: #5a6f8c;
+      margin-bottom: 0.5rem;
+    }
+
+    .header-underline {
+      width: 40px;
+      height: 3px;
+      background: #b8933c;
+      border-radius: 4px;
+      margin-top: 0.3rem;
+    }
+
+    .input-group {
+      margin-bottom: 1.2rem;
+      position: relative;
+    }
+
+    .input-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: #1e3a5f;
+      margin-bottom: 0.2rem;
+      letter-spacing: 0.02em;
+    }
+
+    .input-field {
+      width: 100%;
+      background-color: #f8fafd;
+      border: 1.5px solid #e1e8f0;
+      border-radius: 60px;
+      padding: 0.6rem 1.2rem;
+      font-size: 0.8rem;
+      color: #0b2b4a;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .input-field:focus {
+      border-color: #b8933c;
+      box-shadow: 0 0 0 4px rgba(184, 147, 60, 0.15);
+      background-color: #ffffff;
+    }
+
+    .input-field::placeholder {
+      color: #9aaec5;
+      font-weight: 400;
+      opacity: 0.7;
+      font-size: 0.8rem;
+    }
+
+    .input-icon-wrapper {
+      position: relative;
+    }
+
+    .input-icon-wrapper i {
+      position: absolute;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #9db4d0;
+      font-size: 0.75rem;
+      z-index: 1;
+    }
+
+    .input-icon-wrapper .input-field {
+      padding-left: 32px;
+    }
+
+    .row-options {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 0.5rem 0 1rem 0;
+      font-size: 0.7rem;
+    }
+
+    .remember-me {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      color: #1e3a5f;
+      cursor: pointer;
+    }
+
+    .remember-me input[type="checkbox"] {
+      width: 14px;
+      height: 14px;
+      accent-color: #b8933c;
+      cursor: pointer;
+    }
+
+    .forgot-link {
+      color: #1e5b9c;
+      font-size: 0.7rem;
+      font-weight: 500;
+      text-decoration: none;
+      border-bottom: 1px dashed #b0c6dd;
+      cursor: pointer;
+    }
+
+    .forgot-link:hover {
+      color: #b8933c;
+      border-bottom-color: #b8933c;
+    }
+
+    .login-btn {
+      display: block;
+      width: 100%;
+      background-color: #0b2b4a;
+      border: none;
+      border-radius: 60px;
+      padding: 0.6rem 1rem;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: white;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      transition: background-color 0.15s, transform 0.1s;
+      box-shadow: 0 5px 12px -5px rgba(11, 43, 74, 0.3);
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .login-btn:hover {
+      background-color: #123a60;
+    }
+
+    .login-btn:active {
+      transform: scale(0.98);
+    }
+
+    .register-section {
+      text-align: center;
+      margin-top: 1rem;
+      padding-top: 0.5rem;
+      border-top: 1.5px solid #eaf0f8;
+    }
+
+    .register-text {
+      color: #2c425c;
+      font-size: 0.75rem;
+      margin-right: 0.25rem;
+    }
+
+    .register-link {
+      color: #b07d2e;
+      font-weight: 700;
+      text-decoration: none;
+      font-size: 0.8rem;
+      border-bottom: 1.5px solid #eedbb5;
+      cursor: pointer;
+      background: none;
+      border: none;
+      border-bottom: 1.5px solid #eedbb5;
+    }
+
+    .register-link:hover {
+      color: #865e1f;
+      border-bottom-color: #b8933c;
+    }
+
+    /* Error message styles */
+    .error-message {
+      color: #d93025;
+      font-size: 0.7rem;
+      margin-top: 0.3rem;
+      margin-left: 0.5rem;
+      display: none;
+      align-items: center;
+      gap: 0.3rem;
+      animation: slideDown 0.2s ease;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .error-message i {
+      font-size: 0.65rem;
+      color: #d93025;
+    }
+
+    /* Success message styles */
+    .success-message {
+      color: #188038;
+      font-size: 0.7rem;
+      margin-top: 0.3rem;
+      margin-left: 0.5rem;
+      display: none;
+      align-items: center;
+      gap: 0.3rem;
+      animation: slideDown 0.2s ease;
+    }
+
+    .success-message.show {
+      display: flex;
+    }
+
+    .success-message i {
+      font-size: 0.65rem;
+      color: #188038;
+    }
+
+    /* Field state styles */
+    .input-field.error {
+      border-color: #d93025;
+      background-color: #fff8f8;
+    }
+
+    .input-field.success {
+      border-color: #188038;
+      background-color: #f0f9f0;
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translateY(-10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 350px) {
+      .login-card {
+        padding: 1.2rem 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="login-card">
+    <div class="login-header">
+      <h2 class="login-title">Welcome Back</h2>
+      <div class="login-subtitle">Login to your account</div>
+      <div class="header-underline"></div>
+    </div>
+
+    <form id="loginForm" onsubmit="return handleLogin(event)">
+      <!-- Username field - Only letters and spaces allowed -->
+      <div class="input-group">
+        <label class="input-label" for="username">Username</label>
+        <div class="input-icon-wrapper">
+          <i class="far fa-user"></i>
+          <input type="text" class="input-field" id="username" placeholder="Enter your username" autocomplete="off" oninput="validateUsername()" onblur="validateUsername()" onkeypress="restrictUsername(event)">
+        </div>
+        <div id="usernameError" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <span></span>
+        </div>
+        <div id="usernameSuccess" class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <span>Valid username!</span>
+        </div>
+      </div>
+
+      <!-- Password field -->
+      <div class="input-group">
+        <label class="input-label" for="password">Password</label>
+        <div class="input-icon-wrapper">
+          <i class="fas fa-lock"></i>
+          <input type="password" class="input-field" id="password" placeholder="Enter your password" oninput="validatePassword()" onblur="validatePassword()">
+        </div>
+        <div id="passwordError" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <span></span>
+        </div>
+        <div id="passwordSuccess" class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <span>Password entered</span>
+        </div>
+      </div>
+
+      <div class="row-options">
+        <label class="remember-me">
+          <input type="checkbox" id="remember"> 
+          <span>Remember me</span>
+        </label>
+        <a href="#" class="forgot-link" onclick="handleForgotPassword(event)">Forgot password?</a>
+      </div>
+
+      <button type="submit" class="login-btn">
+        <span>Login</span>
+      </button>
+    </form>
+
+    <div class="register-section">
+      <span class="register-text">Don't have an account?</span>
+      <button class="register-link" onclick="redirectToRegister()">Register</button>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is already logged in
+    window.onload = function() {
+      const savedUsername = localStorage.getItem('rememberedUser');
+      if (savedUsername) {
+        document.getElementById('username').value = savedUsername;
+        document.getElementById('remember').checked = true;
+      }
+    };
+
+    // Restrict Username to only letters and spaces (no numbers or special characters)
+    function restrictUsername(event) {
+      const char = String.fromCharCode(event.which);
+      // Allow only letters (a-z, A-Z) and space
+      if (!/^[a-zA-Z\s]$/.test(char)) {
+        event.preventDefault();
+        return false;
+      }
+      return true;
+    }
+
+    // Username validation
+    function validateUsername() {
+      const username = document.getElementById('username');
+      const errorDiv = document.getElementById('usernameError');
+      const successDiv = document.getElementById('usernameSuccess');
+      const errorSpan = errorDiv.querySelector('span');
+      
+      username.classList.remove('error', 'success');
+      errorDiv.classList.remove('show');
+      successDiv.classList.remove('show');
+      
+      if (username.value.trim() === '') {
+        errorSpan.textContent = 'Username is required';
+        errorDiv.classList.add('show');
+        username.classList.add('error');
+        return false;
+      } else if (username.value.length < 4) {
+        errorSpan.textContent = 'Username must be at least 4 characters';
+        errorDiv.classList.add('show');
+        username.classList.add('error');
+        return false;
+      } else if (!/^[A-Za-z\s]+$/.test(username.value)) {
+        errorSpan.textContent = 'Username can only contain letters and spaces (no numbers or special characters)';
+        errorDiv.classList.add('show');
+        username.classList.add('error');
+        return false;
+      } else {
+        successDiv.classList.add('show');
+        username.classList.add('success');
+        return true;
+      }
+    }
+
+    // Password validation
+    function validatePassword() {
+      const password = document.getElementById('password');
+      const errorDiv = document.getElementById('passwordError');
+      const successDiv = document.getElementById('passwordSuccess');
+      const errorSpan = errorDiv.querySelector('span');
+      
+      password.classList.remove('error', 'success');
+      errorDiv.classList.remove('show');
+      successDiv.classList.remove('show');
+      
+      if (password.value === '') {
+        errorSpan.textContent = 'Password is required';
+        errorDiv.classList.add('show');
+        password.classList.add('error');
+        return false;
+      } else if (password.value.length < 4) {
+        errorSpan.textContent = 'Password must be at least 4 characters';
+        errorDiv.classList.add('show');
+        password.classList.add('error');
+        return false;
+      } else {
+        successDiv.classList.add('show');
+        password.classList.add('success');
+        return true;
+      }
+    }
+
+    // Login handler
+    function handleLogin(event) {
+      event.preventDefault();
+      
+      const isUsernameValid = validateUsername();
+      const isPasswordValid = validatePassword();
+      
+      if (!isUsernameValid || !isPasswordValid) {
+        alert('Please fix the errors in the form before submitting');
+        return false;
+      }
+      
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      const remember = document.getElementById('remember').checked;
+      
+      // In a real app, you would validate against a database
+      // For demo, we'll use the data from registration
+      
+      // Save username to sessionStorage
+      sessionStorage.setItem('currentUser', username);
+      
+      // For demo, set a default department if not available
+      // In a real app, this would come from the database
+      const savedDept = localStorage.getItem('rememberedDept');
+      if (savedDept) {
+        sessionStorage.setItem('userDepartment', savedDept);
+      } else {
+        sessionStorage.setItem('userDepartment', 'Computer Science'); // Default
+      }
+      
+      // If remember me is checked, save to localStorage
+      if (remember) {
+        localStorage.setItem('rememberedUser', username);
+      } else {
+        localStorage.removeItem('rememberedUser');
+      }
+      
+      alert(`Login successful!\n\nWelcome back, ${username}!\n\nRedirecting to dashboard...`);
+      
+      // Redirect to dashboard after successful login
+      setTimeout(() => {
+        window.location.href = 'dashboard.html';
+      }, 1000);
+      
+      return false;
+    }
+    
+    function redirectToRegister() {
+      window.location.href = 'register.html';
+    }
+    
+    function handleForgotPassword(event) {
+      event.preventDefault();
+      alert('Password reset link will be sent to your email');
+    }
+  </script>
+</body>
+</html>
