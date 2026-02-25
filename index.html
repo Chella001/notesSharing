@@ -3,145 +3,343 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notes Sharing - Login</title>
-
+  <title>NoteShare - Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-                  url('https://images.unsplash.com/photo-1523240795612-9a054b0db644');
-      background-size: cover;
-      background-position: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 1rem;
+    }
+
+    .login-container {
+      width: 100%;
+      max-width: 400px;
     }
 
     .login-card {
-      width: 320px;
-      background: #fff;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 24px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.3);
     }
 
-    .login-title {
+    .logo {
       text-align: center;
-      margin-bottom: 20px;
-      color: #0b2b4a;
+      margin-bottom: 2rem;
+    }
+
+    .logo i {
+      font-size: 3rem;
+      color: #667eea;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .logo h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-top: 0.5rem;
+    }
+
+    .welcome-text {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .welcome-text h2 {
+      font-size: 1.8rem;
+      color: #333;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .welcome-text p {
+      color: #666;
+      font-size: 0.95rem;
     }
 
     .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 1.5rem;
     }
 
-    .input-group label {
-      font-size: 14px;
-      font-weight: bold;
+    .input-label {
       display: block;
-      margin-bottom: 5px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #444;
+      margin-bottom: 0.5rem;
     }
 
-    .input-group input {
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      color: #999;
+      font-size: 1rem;
+      transition: color 0.3s;
+    }
+
+    .input-wrapper input {
       width: 100%;
-      padding: 8px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
+      padding: 14px 16px 14px 48px;
+      border: 2px solid #eef2f6;
+      border-radius: 16px;
+      font-size: 0.95rem;
+      transition: all 0.3s;
+      background: white;
       outline: none;
+    }
+
+    .input-wrapper input:focus {
+      border-color: #667eea;
+      box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+    }
+
+    .input-wrapper input:focus + i {
+      color: #667eea;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #aaa;
+      font-size: 0.9rem;
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin-bottom: 1.5rem;
+    }
+
+    .forgot-password a {
+      color: #667eea;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+
+    .forgot-password a:hover {
+      color: #764ba2;
     }
 
     .login-btn {
       width: 100%;
-      padding: 10px;
-      background: #0b2b4a;
-      color: white;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
       border: none;
-      border-radius: 20px;
+      border-radius: 16px;
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3);
     }
 
     .login-btn:hover {
-      background: #123a60;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 28px rgba(102, 126, 234, 0.4);
+    }
+
+    .login-btn i {
+      font-size: 1rem;
+    }
+
+    .register-section {
+      text-align: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid #eef2f6;
+    }
+
+    .register-section p {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 0.5rem;
     }
 
     .register-link {
-      text-align: center;
-      margin-top: 15px;
-      display: block;
-      color: #b07d2e;
+      color: #667eea;
       text-decoration: none;
+      font-weight: 600;
+      font-size: 1rem;
+      transition: color 0.3s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .register-link:hover {
+      color: #764ba2;
+    }
+
+    .register-link i {
+      font-size: 0.9rem;
+      transition: transform 0.3s;
+    }
+
+    .register-link:hover i {
+      transform: translateX(5px);
+    }
+
+    .error-message {
+      color: #dc3545;
+      font-size: 0.85rem;
+      margin-top: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      display: none;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .error-message i {
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 480px) {
+      .login-card {
+        padding: 2rem 1.5rem;
+      }
     }
   </style>
 </head>
-
 <body>
-
-  <div class="login-card">
-    <h2 class="login-title">Login</h2>
-
-    <form onsubmit="return handleLogin(event)">
-      <div class="input-group">
-        <label>Email</label>
-        <input type="email" id="email" placeholder="Enter your email" required>
+  <div class="login-container">
+    <div class="login-card">
+      <div class="logo">
+        <i class="fas fa-graduation-cap"></i>
+        <h1>NoteShare</h1>
       </div>
 
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" id="password" placeholder="Enter your password" required>
+      <div class="welcome-text">
+        <h2>Welcome Back! 👋</h2>
+        <p>Sign in to continue sharing knowledge</p>
       </div>
 
-      <button type="submit" class="login-btn">Login</button>
-    </form>
+      <form onsubmit="return handleLogin(event)">
+        <div class="input-group">
+          <label class="input-label">Email Address</label>
+          <div class="input-wrapper">
+            <i class="far fa-envelope"></i>
+            <input type="email" id="email" placeholder="Enter your email" required>
+          </div>
+        </div>
 
-    <a href="register.html" class="register-link">Don't have an account? Register</a>
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Enter your password" required>
+          </div>
+        </div>
+
+        <div class="forgot-password">
+          <a href="#"><i class="far fa-question-circle"></i> Forgot password?</a>
+        </div>
+
+        <button type="submit" class="login-btn">
+          <i class="fas fa-sign-in-alt"></i>
+          Sign In
+        </button>
+
+        <div id="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <span></span>
+        </div>
+      </form>
+
+      <div class="register-section">
+        <p>New to NoteShare?</p>
+        <a href="register.html" class="register-link">
+          Create an account <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
+    </div>
   </div>
 
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-<script type="module">
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+      authDomain: "notessharingapp-fc388.firebaseapp.com",
+      projectId: "notessharingapp-fc388",
+      storageBucket: "notessharingapp-fc388.firebasestorage.app",
+      messagingSenderId: "64602136432",
+      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
+    };
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword } 
-from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-  authDomain: "notessharingapp-fc388.firebaseapp.com",
-  projectId: "notessharingapp-fc388",
-  storageBucket: "notessharingapp-fc388.firebasestorage.app",
-  messagingSenderId: "64602136432",
-  appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-};
+    window.handleLogin = function(event) {
+      event.preventDefault();
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("errorMessage");
+      const errorSpan = errorDiv.querySelector('span');
 
-window.handleLogin = function(event) {
-  event.preventDefault();
+      // Reset error message
+      errorDiv.classList.remove('show');
 
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  signInWithEmailAndPassword(auth, email, password)
-    .then(() => {
-      alert("Login Successful!");
-      window.location.href = "dashboard.html";
-    })
-    .catch((error) => {
-      alert(error.message);
-    });
-};
-
-</script>
-
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          // Store user info in sessionStorage
+          const user = userCredential.user;
+          sessionStorage.setItem('currentUser', user.email);
+          sessionStorage.setItem('userEmail', user.email);
+          
+          // Show success and redirect
+          alert("✨ Login Successful! Redirecting to dashboard...");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          // Display user-friendly error message
+          let errorMessage = "Invalid email or password";
+          
+          if (error.code === 'auth/user-not-found') {
+            errorMessage = "No account found with this email";
+          } else if (error.code === 'auth/wrong-password') {
+            errorMessage = "Incorrect password";
+          } else if (error.code === 'auth/too-many-requests') {
+            errorMessage = "Too many failed attempts. Try again later";
+          }
+          
+          errorSpan.textContent = errorMessage;
+          errorDiv.classList.add('show');
+        });
+    };
+  </script>
 </body>
 </html>
