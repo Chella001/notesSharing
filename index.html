@@ -3,283 +3,292 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NoteShare - Login</title>
+  <title>MediCare - Sign up</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-color: #f5f5f5;
       display: flex;
       align-items: center;
       justify-content: center;
       padding: 1rem;
     }
 
-    .login-container {
+    .container {
       width: 100%;
-      max-width: 360px;
+      max-width: 400px;
     }
 
-    .login-card {
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(10px);
-      border-radius: 20px;
-      padding: 2rem 1.8rem;
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
-      border: 1px solid rgba(255, 255, 255, 0.3);
+    .signup-card {
+      background: white;
+      border-radius: 8px;
+      padding: 2.5rem 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     }
 
-    .logo {
-      text-align: center;
-      margin-bottom: 1.2rem;
+    /* Header Section - Exactly as in image */
+    .header {
+      margin-bottom: 2rem;
     }
 
-    .logo i {
-      font-size: 2.2rem;
-      color: #667eea;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
+    .header h1 {
+      font-size: 2rem;
+      font-weight: 600;
+      color: #000;
+      margin-bottom: 0.5rem;
     }
 
-    .logo h1 {
-      font-size: 1.6rem;
-      font-weight: 700;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-top: 0.2rem;
+    .header p {
+      color: #666;
+      font-size: 0.95rem;
+      line-height: 1.5;
     }
 
-    .welcome-text {
-      text-align: center;
+    /* Create Account Title */
+    .create-account-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #000;
       margin-bottom: 1.5rem;
     }
 
-    .welcome-text h2 {
-      font-size: 1.4rem;
-      color: #333;
-      font-weight: 600;
-      margin-bottom: 0.2rem;
-    }
-
-    .welcome-text p {
-      color: #666;
-      font-size: 0.85rem;
-    }
-
-    .input-group {
-      margin-bottom: 1.2rem;
-    }
-
-    .input-label {
-      display: block;
-      font-size: 0.8rem;
-      font-weight: 600;
-      color: #444;
-      margin-bottom: 0.3rem;
-    }
-
-    .input-wrapper {
-      position: relative;
+    /* Social Sign Up Buttons */
+    .social-buttons {
       display: flex;
-      align-items: center;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
     }
 
-    .input-wrapper i {
-      position: absolute;
-      left: 14px;
-      color: #999;
-      font-size: 0.85rem;
-      transition: color 0.3s;
-    }
-
-    .input-wrapper input {
+    .social-btn {
       width: 100%;
-      padding: 10px 14px 10px 40px;
-      border: 2px solid #eef2f6;
-      border-radius: 30px;
-      font-size: 0.85rem;
-      transition: all 0.3s;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
       background: white;
-      outline: none;
-    }
-
-    .input-wrapper input:focus {
-      border-color: #667eea;
-      box-shadow: 0 4px 10px rgba(102, 126, 234, 0.1);
-    }
-
-    .input-wrapper input:focus + i {
-      color: #667eea;
-    }
-
-    .input-wrapper input::placeholder {
-      color: #aaa;
-      font-size: 0.8rem;
-    }
-
-    .forgot-password {
-      text-align: right;
-      margin-bottom: 1.2rem;
-    }
-
-    .forgot-password a {
-      color: #667eea;
-      text-decoration: none;
-      font-size: 0.75rem;
+      font-size: 0.95rem;
       font-weight: 500;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 12px;
-      background: linear-gradient(135deg, #667eea, #764ba2);
-      border: none;
-      border-radius: 30px;
-      color: white;
-      font-size: 0.9rem;
-      font-weight: 600;
       cursor: pointer;
-      transition: all 0.3s;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+      transition: background 0.2s;
     }
 
-    .login-btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+    .social-btn.google {
+      color: #333;
     }
 
-    .login-btn i {
-      font-size: 0.85rem;
+    .social-btn.facebook {
+      color: #333;
     }
 
-    .register-section {
+    .social-btn i {
+      font-size: 1.1rem;
+    }
+
+    .social-btn.google i {
+      color: #DB4437;
+    }
+
+    .social-btn.facebook i {
+      color: #4267B2;
+    }
+
+    .social-btn:hover {
+      background: #f9f9f9;
+    }
+
+    /* OR Separator */
+    .or-divider {
       text-align: center;
-      margin-top: 1.5rem;
-      padding-top: 1.2rem;
-      border-top: 1.5px solid #eef2f6;
+      position: relative;
+      margin: 1.5rem 0;
     }
 
-    .register-section p {
-      color: #666;
-      font-size: 0.8rem;
+    .or-divider span {
+      background: white;
+      padding: 0 0.8rem;
+      color: #999;
+      font-size: 0.9rem;
+      font-weight: 500;
+      position: relative;
+      z-index: 1;
+    }
+
+    .or-divider::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #ddd;
+      z-index: 0;
+    }
+
+    /* Form Fields */
+    .form-group {
+      margin-bottom: 1.2rem;
+    }
+
+    .form-group label {
+      display: block;
+      color: #333;
+      font-size: 0.9rem;
+      font-weight: 500;
       margin-bottom: 0.3rem;
     }
 
-    .register-link {
-      color: #667eea;
-      text-decoration: none;
+    .form-group input {
+      width: 100%;
+      padding: 0.8rem;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .form-group input:focus {
+      border-color: #999;
+    }
+
+    .form-group input::placeholder {
+      color: #999;
+      font-size: 0.9rem;
+    }
+
+    /* Create Account Button */
+    .create-btn {
+      width: 100%;
+      padding: 0.8rem;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 1rem;
+      font-weight: 500;
+      cursor: pointer;
+      margin: 1rem 0 1.5rem;
+      transition: background 0.2s;
+    }
+
+    .create-btn:hover {
+      background: #333;
+    }
+
+    /* Login Link */
+    .login-link {
+      text-align: left;
+      color: #333;
+      font-size: 0.95rem;
+    }
+
+    .login-link a {
+      color: #000;
       font-weight: 600;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.3rem;
+      text-decoration: none;
+      border-bottom: 2px solid #000;
+      padding-bottom: 2px;
     }
 
-    .register-link i {
-      font-size: 0.75rem;
-      transition: transform 0.3s;
+    .login-link a:hover {
+      opacity: 0.8;
     }
 
-    .register-link:hover i {
-      transform: translateX(3px);
-    }
-
+    /* Error Message (for Firebase) */
     .error-message {
-      color: #dc3545;
-      font-size: 0.75rem;
+      color: #d32f2f;
+      font-size: 0.85rem;
       margin-top: 0.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
       display: none;
-      justify-content: center;
+      text-align: center;
     }
 
     .error-message.show {
-      display: flex;
+      display: block;
     }
 
-    .error-message i {
-      font-size: 0.7rem;
-    }
-
-    @media (max-width: 380px) {
-      .login-card {
-        padding: 1.5rem;
-      }
+    /* Footer (if needed) */
+    .footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #999;
+      font-size: 0.8rem;
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="logo">
-        <i class="fas fa-graduation-cap"></i>
-        <h1>NoteShare</h1>
+  <div class="container">
+    <div class="signup-card">
+      <!-- Header exactly as in image -->
+      <div class="header">
+        <h1>Sign up Page</h1>
+        <p>We at MediCare are always fully focused on helping your child.</p>
       </div>
 
-      <div class="welcome-text">
-        <h2>Welcome Back!</h2>
-        <p>Sign in to your account</p>
-      </div>
+      <!-- Create Account title -->
+      <div class="create-account-title">Create Account</div>
 
-      <form onsubmit="return handleLogin(event)">
-        <div class="input-group">
-          <label class="input-label">Email</label>
-          <div class="input-wrapper">
-            <i class="far fa-envelope"></i>
-            <input type="email" id="email" placeholder="Enter your email" required>
-          </div>
-        </div>
-
-        <div class="input-group">
-          <label class="input-label">Password</label>
-          <div class="input-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Enter your password" required>
-          </div>
-        </div>
-
-        <div class="forgot-password">
-          <a href="#">Forgot password?</a>
-        </div>
-
-        <button type="submit" class="login-btn">
-          <i class="fas fa-sign-in-alt"></i>
-          Sign In
+      <!-- Social signup buttons -->
+      <div class="social-buttons">
+        <button class="social-btn google" onclick="googleSignUp()">
+          <i class="fab fa-google"></i> Sign up with Google
         </button>
+        <button class="social-btn facebook" onclick="facebookSignUp()">
+          <i class="fab fa-facebook-f"></i> Sign up with Facebook
+        </button>
+      </div>
+
+      <!-- OR divider -->
+      <div class="or-divider">
+        <span>OR -</span>
+      </div>
+
+      <!-- Signup Form -->
+      <form onsubmit="return handleSignup(event)">
+        <div class="form-group">
+          <label>Full Name:</label>
+          <input type="text" id="fullName" placeholder="Enter your full name" required>
+        </div>
+
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" id="email" placeholder="Enter your email" required>
+        </div>
+
+        <div class="form-group">
+          <label>Password:</label>
+          <input type="password" id="password" placeholder="Enter your password" required>
+        </div>
+
+        <button type="submit" class="create-btn">Create Account</button>
 
         <div id="errorMessage" class="error-message">
-          <i class="fas fa-exclamation-circle"></i>
           <span></span>
         </div>
       </form>
 
-      <div class="register-section">
-        <p>New here?</p>
-        <a href="register.html" class="register-link">
-          Create account <i class="fas fa-arrow-right"></i>
-        </a>
+      <!-- Login link -->
+      <div class="login-link">
+        Already have an Account? <a href="login.html">Log in</a>
       </div>
     </div>
   </div>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
     const firebaseConfig = {
       apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
@@ -292,10 +301,14 @@
 
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+    const facebookProvider = new FacebookAuthProvider();
 
-    window.handleLogin = function(event) {
+    // Email/Password Signup
+    window.handleSignup = function(event) {
       event.preventDefault();
 
+      const fullName = document.getElementById("fullName").value;
       const email = document.getElementById("email").value;
       const password = document.getElementById("password").value;
       const errorDiv = document.getElementById("errorMessage");
@@ -303,26 +316,61 @@
 
       errorDiv.classList.remove('show');
 
-      signInWithEmailAndPassword(auth, email, password)
+      createUserWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
           sessionStorage.setItem('currentUser', user.email);
           sessionStorage.setItem('userEmail', user.email);
+          sessionStorage.setItem('userName', fullName);
           
-          alert("Login Successful!");
+          alert("Account created successfully!");
           window.location.href = "dashboard.html";
         })
         .catch((error) => {
-          let errorMessage = "Invalid email or password";
+          let errorMessage = "Error creating account";
           
-          if (error.code === 'auth/user-not-found') {
-            errorMessage = "No account found";
-          } else if (error.code === 'auth/wrong-password') {
-            errorMessage = "Incorrect password";
+          if (error.code === 'auth/email-already-in-use') {
+            errorMessage = "Email already in use";
+          } else if (error.code === 'auth/weak-password') {
+            errorMessage = "Password should be at least 6 characters";
           }
           
           errorSpan.textContent = errorMessage;
           errorDiv.classList.add('show');
+        });
+    };
+
+    // Google Sign Up
+    window.googleSignUp = function() {
+      signInWithPopup(auth, googleProvider)
+        .then((result) => {
+          const user = result.user;
+          sessionStorage.setItem('currentUser', user.email);
+          sessionStorage.setItem('userEmail', user.email);
+          sessionStorage.setItem('userName', user.displayName || 'Google User');
+          
+          alert("Signed up with Google successfully!");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          alert("Google sign up failed: " + error.message);
+        });
+    };
+
+    // Facebook Sign Up
+    window.facebookSignUp = function() {
+      signInWithPopup(auth, facebookProvider)
+        .then((result) => {
+          const user = result.user;
+          sessionStorage.setItem('currentUser', user.email);
+          sessionStorage.setItem('userEmail', user.email);
+          sessionStorage.setItem('userName', user.displayName || 'Facebook User');
+          
+          alert("Signed up with Facebook successfully!");
+          window.location.href = "dashboard.html";
+        })
+        .catch((error) => {
+          alert("Facebook sign up failed: " + error.message);
         });
     };
   </script>
