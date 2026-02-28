@@ -349,7 +349,8 @@
                 <div class="menu-item active" data-section="dashboard">
                     <i class="fas fa-chart-pie"></i> Dashboard
                 </div>
-                <div class="menu-item"onclick="window.location.href='newPatient.html'">                    <i class="fas fa-user-injured"></i> Patients
+                <div class="menu-item" onclick="window.location.href='newPatient.html'">
+                    <i class="fas fa-user-injured"></i> Patients
                 </div>
                 <div class="menu-item" data-section="doctors">
                     <i class="fas fa-user-md"></i> Doctors
@@ -436,14 +437,13 @@
 
     <script>
         // ==================== FIREBASE CONFIGURATION ====================
-        // Replace with your Firebase project configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyBZ1XxJkXkXkXkXkXkXkXkXkXkXkXkXkXk", // Replace with your API key
-            authDomain: "your-hospital-app.firebaseapp.com", // Replace with your auth domain
-            projectId: "your-hospital-app", // Replace with your project ID
-            storageBucket: "your-hospital-app.appspot.com", // Replace with your storage bucket
-            messagingSenderId: "123456789012", // Replace with your sender ID
-            appId: "1:123456789012:web:abc123def456" // Replace with your app ID
+            apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+            authDomain: "notessharingapp-fc388.firebaseapp.com",
+            projectId: "notessharingapp-fc388",
+            storageBucket: "notessharingapp-fc388.firebasestorage.app",
+            messagingSenderId: "64602136432",
+            appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
         };
 
         // ==================== INITIALIZE FIREBASE ====================
@@ -473,7 +473,7 @@
             if (!date) return 'N/A';
             if (date.toDate) {
                 const d = date.toDate();
-                return d.toLocaleDateString('en-GB'); // DD/MM/YYYY
+                return d.toLocaleDateString('en-GB');
             }
             return date;
         }
@@ -497,7 +497,15 @@
         // ==================== LOAD DASHBOARD DATA ====================
         async function loadDashboardData() {
             try {
-                showNotification("Loading data...", "success");
+                // Check if we came from new patient page
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.get('updated') === 'true') {
+                    showNotification("✅ New patient added successfully!", "success");
+                    // Remove the parameter from URL without reloading
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } else {
+                    showNotification("Loading data...", "success");
+                }
                 
                 // Load Patients Count
                 const patientsSnapshot = await db.collection('patients').get();
@@ -552,7 +560,9 @@
                     appointmentsBody.appendChild(row);
                 });
 
-                showNotification("Data loaded successfully!");
+                if (!urlParams.get('updated')) {
+                    showNotification("Data loaded successfully!");
+                }
 
             } catch (error) {
                 console.error("❌ Error loading data:", error);
@@ -573,15 +583,6 @@
             try {
                 showNotification("Adding sample data...", "success");
                 
-                // Clear existing collections (optional)
-                // Uncomment if you want to clear before adding
-                // await Promise.all([
-                //     db.collection('patients').get().then(snap => snap.forEach(d => d.ref.delete())),
-                //     db.collection('doctors').get().then(snap => snap.forEach(d => d.ref.delete())),
-                //     db.collection('appointments').get().then(snap => snap.forEach(d => d.ref.delete()))
-                // ]);
-
-                // Add Patients
                 const patients = [
                     { name: 'Ravi Kumar', age: 35, gender: 'Male', phone: '+91 98765 43210', email: 'ravi.k@email.com', bloodGroup: 'O+', address: 'Delhi' },
                     { name: 'Meena Sharma', age: 28, gender: 'Female', phone: '+91 98765 43211', email: 'meena.s@email.com', bloodGroup: 'B+', address: 'Mumbai' },
@@ -597,7 +598,6 @@
                     });
                 }
 
-                // Add Doctors
                 const doctors = [
                     { name: 'Dr. Arjun Mehta', specialization: 'Cardiology', experience: 12, phone: '+91 98765 43220', email: 'dr.arjun@hospital.com', qualification: 'MD, DM', fee: 1500 },
                     { name: 'Dr. Priya Kapoor', specialization: 'Pediatrics', experience: 8, phone: '+91 98765 43221', email: 'dr.priya@hospital.com', qualification: 'MD', fee: 1200 },
@@ -613,7 +613,6 @@
                     });
                 }
 
-                // Add Appointments
                 const today = new Date();
                 const yesterday = new Date(today);
                 yesterday.setDate(yesterday.getDate() - 1);
@@ -698,8 +697,9 @@
                 this.classList.add('active');
                 
                 const section = this.getAttribute('data-section');
-                showNotification(`Navigating to ${section} section`, "success");
-                // Add navigation logic here
+                if (section) {
+                    showNotification(`Navigating to ${section} section`, "success");
+                }
             });
         });
 
@@ -708,8 +708,6 @@
             if (confirm('Are you sure you want to logout?')) {
                 auth.signOut().then(() => {
                     showNotification("Logged out successfully");
-                    // Redirect to login page
-                    // window.location.href = '/login.html';
                 }).catch(error => {
                     showNotification("Error logging out: " + error.message, "error");
                 });

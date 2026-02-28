@@ -1060,9 +1060,9 @@
                 // Update stats
                 loadStats();
 
-                // Redirect after 2 seconds
+                // Redirect after 2 seconds with updated parameter
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    window.location.href = 'dashboard.html?updated=true';
                 }, 2000);
 
             } catch (error) {
