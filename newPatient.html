@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hospital Management · Add Patient</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: #eef2f5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .patient-container {
+      width: 100%;
+      max-width: 500px;
+    }
+
+    .patient-card {
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+      border: 1px solid #d9e1ea;
+    }
+
+    .hospital-badge {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .hospital-badge i {
+      font-size: 40px;
+      color: #0b2b4b;
+      background: #f4f7fc;
+      padding: 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .hospital-badge h1 {
+      font-size: 24px;
+      font-weight: 600;
+      color: #0b2b4b;
+      letter-spacing: -0.3px;
+    }
+
+    .hospital-badge p {
+      color: #4f6b8a;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .page-header {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e8f0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .back-btn {
+      background: #f4f7fc;
+      border: 1px solid #d9e1ea;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1e4b6e;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-decoration: none;
+    }
+
+    .back-btn:hover {
+      background: #e2eaf3;
+      transform: translateX(-2px);
+    }
+
+    .page-header h2 {
+      font-size: 20px;
+      font-weight: 600;
+      color: #1b3149;
+    }
+
+    .page-header p {
+      color: #4f6b8a;
+      font-size: 13px;
+      margin-top: 2px;
+    }
+
+    .input-group {
+      margin-bottom: 16px;
+    }
+
+    .input-label {
+      display: block;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c4c6e;
+      margin-bottom: 6px;
+    }
+
+    .input-label i {
+      margin-right: 6px;
+      color: #1e4b6e;
+      font-size: 12px;
+    }
+
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 14px;
+      color: #8fa3bc;
+      font-size: 14px;
+      transition: color 0.2s;
+      z-index: 1;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select,
+    .input-wrapper textarea {
+      width: 100%;
+      padding: 10px 14px 10px 42px;
+      border: 1.5px solid #e2ebf6;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.2s;
+      background: #f8fcff;
+      outline: none;
+      color: #1e3349;
+      height: 42px;
+    }
+
+    .input-wrapper textarea {
+      height: 80px;
+      resize: vertical;
+      padding-top: 12px;
+    }
+
+    .input-wrapper select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234f6b8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+
+    .input-wrapper input:focus,
+    .input-wrapper select:focus,
+    .input-wrapper textarea:focus {
+      border-color: #1e4b6e;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(30, 75, 110, 0.1);
+    }
+
+    .input-wrapper input:focus + i,
+    .input-wrapper select:focus + i,
+    .input-wrapper textarea:focus + i {
+      color: #1e4b6e;
+    }
+
+    .input-wrapper input::placeholder,
+    .input-wrapper textarea::placeholder {
+      color: #a0b8d0;
+      font-size: 13px;
+    }
+
+    .row-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .radio-group {
+      display: flex;
+      gap: 20px;
+      padding: 8px 0;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+    }
+
+    .radio-option input[type="radio"] {
+      width: 16px;
+      height: 16px;
+      accent-color: #1e4b6e;
+    }
+
+    .radio-option span {
+      font-size: 14px;
+      color: #1e3349;
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 12px;
+      margin-top: 20px;
+    }
+
+    .save-btn {
+      flex: 1;
+      padding: 12px;
+      background: #1e4b6e;
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 12px -4px rgba(30, 75, 110, 0.2);
+    }
+
+    .save-btn:hover {
+      background: #0d3250;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px -8px rgba(30, 75, 110, 0.3);
+    }
+
+    .cancel-btn {
+      flex: 1;
+      padding: 12px;
+      background: #f4f7fc;
+      border: 1.5px solid #d9e1ea;
+      border-radius: 12px;
+      color: #4f6b8a;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+    }
+
+    .cancel-btn:hover {
+      background: #e2eaf3;
+      color: #1e3349;
+    }
+
+    .error-message {
+      color: #b34040;
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fee9e9;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #f5c2c2;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .success-message {
+      color: #1d6f2e;
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #e2f3e4;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #b8d9be;
+    }
+
+    .success-message.show {
+      display: flex;
+    }
+
+    @media (max-width: 480px) {
+      .patient-card {
+        padding: 20px 16px;
+      }
+      
+      .input-wrapper input,
+      .input-wrapper select,
+      .input-wrapper textarea {
+        padding: 8px 12px 8px 38px;
+        height: 38px;
+      }
+      
+      .row-2col {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="patient-container">
+    <div class="patient-card">
+      <div class="hospital-badge">
+        <i class="fas fa-hospital-user"></i>
+        <h1>🏥 Hospital Name</h1>
+        <p>Management System</p>
+      </div>
+
+      <div class="page-header">
+        <a href="dashboard.html" class="back-btn">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <div>
+          <h2><i class="fas fa-user-plus" style="margin-right: 8px;"></i>Add New Patient</h2>
+          <p>Enter patient details to register in the system</p>
+        </div>
+      </div>
+
+      <form onsubmit="return handleAddPatient(event)">
+        <!-- Full Name -->
+        <div class="input-group">
+          <label class="input-label"><i class="fas fa-user"></i>Full Name</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" id="patientName" placeholder="Enter patient's full name" required>
+          </div>
+        </div>
+
+        <!-- Age and Gender Row -->
+        <div class="row-2col">
+          <div class="input-group">
+            <label class="input-label"><i class="fas fa-calendar"></i>Age</label>
+            <div class="input-wrapper">
+              <i class="fas fa-calendar-alt"></i>
+              <input type="number" id="age" placeholder="Age" min="0" max="150" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label"><i class="fas fa-venus-mars"></i>Gender</label>
+            <div class="radio-group">
+              <label class="radio-option">
+                <input type="radio" name="gender" value="Male" checked> <span>Male</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="gender" value="Female"> <span>Female</span>
+              </label>
+              <label class="radio-option">
+                <input type="radio" name="gender" value="Other"> <span>Other</span>
+              </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Contact Info Row -->
+        <div class="row-2col">
+          <div class="input-group">
+            <label class="input-label"><i class="fas fa-phone"></i>Phone Number</label>
+            <div class="input-wrapper">
+              <i class="fas fa-phone-alt"></i>
+              <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label"><i class="fas fa-envelope"></i>Email</label>
+            <div class="input-wrapper">
+              <i class="far fa-envelope"></i>
+              <input type="email" id="email" placeholder="patient@email.com">
+            </div>
+          </div>
+        </div>
+
+        <!-- Blood Group and Emergency Contact -->
+        <div class="row-2col">
+          <div class="input-group">
+            <label class="input-label"><i class="fas fa-tint"></i>Blood Group</label>
+            <div class="input-wrapper">
+              <i class="fas fa-droplet"></i>
+              <select id="bloodGroup" required>
+                <option value="">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="input-group">
+            <label class="input-label"><i class="fas fa-phone"></i>Emergency Contact</label>
+            <div class="input-wrapper">
+              <i class="fas fa-phone-volume"></i>
+              <input type="tel" id="emergencyContact" placeholder="Emergency phone" required>
+            </div>
+          </div>
+        </div>
+
+        <!-- Address -->
+        <div class="input-group">
+          <label class="input-label"><i class="fas fa-map-marker-alt"></i>Address</label>
+          <div class="input-wrapper">
+            <i class="fas fa-map-pin"></i>
+            <textarea id="address" placeholder="Enter full address" rows="2" required></textarea>
+          </div>
+        </div>
+
+        <!-- Medical Info -->
+        <div class="input-group">
+          <label class="input-label"><i class="fas fa-notes-medical"></i>Medical Notes (Optional)</label>
+          <div class="input-wrapper">
+            <i class="fas fa-stethoscope"></i>
+            <textarea id="medicalNotes" placeholder="Allergies, current medications, or other notes" rows="2"></textarea>
+          </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button type="submit" class="save-btn">
+            <i class="fas fa-save"></i> Save Patient
+          </button>
+          <a href="dashboard.html" class="cancel-btn">
+            <i class="fas fa-times"></i> Cancel
+          </a>
+        </div>
+
+        <!-- Error/Success Messages -->
+        <div id="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <span></span>
+        </div>
+
+        <div id="successMessage" class="success-message">
+          <i class="fas fa-check-circle"></i>
+          <span></span>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+      authDomain: "notessharingapp-fc388.firebaseapp.com",
+      projectId: "notessharingapp-fc388",
+      storageBucket: "notessharingapp-fc388.firebasestorage.app",
+      messagingSenderId: "64602136432",
+      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.handleAddPatient = async function(event) {
+      event.preventDefault();
+
+      // Get form values
+      const patientName = document.getElementById("patientName").value;
+      const age = document.getElementById("age").value;
+      const gender = document.querySelector('input[name="gender"]:checked').value;
+      const phone = document.getElementById("phone").value;
+      const email = document.getElementById("email").value;
+      const bloodGroup = document.getElementById("bloodGroup").value;
+      const emergencyContact = document.getElementById("emergencyContact").value;
+      const address = document.getElementById("address").value;
+      const medicalNotes = document.getElementById("medicalNotes").value;
+
+      const errorDiv = document.getElementById("errorMessage");
+      const errorSpan = errorDiv.querySelector('span');
+      const successDiv = document.getElementById("successMessage");
+      const successSpan = successDiv.querySelector('span');
+
+      // Hide all messages
+      errorDiv.classList.remove('show');
+      successDiv.classList.remove('show');
+
+      // Validation
+      if (!patientName || !age || !phone || !bloodGroup || !emergencyContact || !address) {
+        errorSpan.textContent = "Please fill all required fields";
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      if (age < 0 || age > 150) {
+        errorSpan.textContent = "Please enter a valid age";
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      if (phone.length < 10) {
+        errorSpan.textContent = "Please enter a valid phone number";
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      try {
+        // Save to Firestore
+        const patientData = {
+          name: patientName,
+          age: parseInt(age),
+          gender: gender,
+          phone: phone,
+          email: email || null,
+          bloodGroup: bloodGroup,
+          emergencyContact: emergencyContact,
+          address: address,
+          medicalNotes: medicalNotes || null,
+          registeredDate: new Date(),
+          status: "Active",
+          createdBy: sessionStorage.getItem('userEmail') || 'Unknown'
+        };
+
+        const docRef = await addDoc(collection(db, "patients"), patientData);
+
+        // Show success message
+        successSpan.textContent = "Patient registered successfully! ID: " + docRef.id.slice(0, 8);
+        successDiv.classList.add('show');
+
+        // Clear form
+        document.getElementById("patientName").value = "";
+        document.getElementById("age").value = "";
+        document.getElementById("phone").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("bloodGroup").value = "";
+        document.getElementById("emergencyContact").value = "";
+        document.getElementById("address").value = "";
+        document.getElementById("medicalNotes").value = "";
+
+        // Redirect after 2 seconds
+        setTimeout(() => {
+          window.location.href = "dashboard.html";
+        }, 2000);
+
+      } catch (error) {
+        console.error("Error adding patient:", error);
+        errorSpan.textContent = "Failed to register patient. Please try again.";
+        errorDiv.classList.add('show');
+      }
+    };
+  </script>
+</body>
+</html>
