@@ -3,178 +3,408 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Notes Sharing - Register</title>
-
+  <title>Hospital Management · Register</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
   <style>
-    /* ====== YOUR ORIGINAL CSS (UNCHANGED) ====== */
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
-      font-family: 'Inter', Arial, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     body {
       min-height: 100vh;
-      background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)),
-                  url('https://images.unsplash.com/photo-1523240795612-9a054b0db644');
-      background-size: cover;
-      background-position: center;
+      background: #eef2f5;
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 1rem;
+      padding: 16px;
+    }
+
+    .register-container {
+      width: 100%;
+      max-width: 380px;
     }
 
     .register-card {
-      max-width: 380px;
-      width: 100%;
-      background-color: rgba(255,255,255,0.95);
-      border-radius: 1.5rem;
-      box-shadow: 0 20px 35px -10px rgba(0,0,0,0.35);
-      padding: 1.5rem;
+      background: #ffffff;
+      border-radius: 24px;
+      padding: 28px 24px;
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
+      border: 1px solid #d9e1ea;
     }
 
-    .register-title {
-      font-size: 1.4rem;
+    .hospital-badge {
+      text-align: center;
+      margin-bottom: 16px;
+    }
+
+    .hospital-badge i {
+      font-size: 40px;
+      color: #0b2b4b;
+      background: #f4f7fc;
+      padding: 12px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .hospital-badge h1 {
+      font-size: 24px;
       font-weight: 600;
-      color: #0b2b4a;
-      margin-bottom: 10px;
+      color: #0b2b4b;
+      letter-spacing: -0.3px;
+    }
+
+    .hospital-badge p {
+      color: #4f6b8a;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    .welcome-text {
+      margin-bottom: 20px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #e0e8f0;
+    }
+
+    .welcome-text h2 {
+      font-size: 18px;
+      font-weight: 600;
+      color: #1b3149;
+      margin-bottom: 4px;
+    }
+
+    .welcome-text p {
+      color: #4f6b8a;
+      font-size: 13px;
     }
 
     .input-group {
-      margin-bottom: 15px;
+      margin-bottom: 16px;
     }
 
     .input-label {
-      font-size: 14px;
-      font-weight: bold;
       display: block;
-      margin-bottom: 5px;
+      font-size: 13px;
+      font-weight: 500;
+      color: #2c4c6e;
+      margin-bottom: 6px;
     }
 
-    .input-field, .input-select {
+    .input-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 14px;
+      color: #8fa3bc;
+      font-size: 14px;
+      transition: color 0.2s;
+      z-index: 1;
+    }
+
+    .input-wrapper input,
+    .input-wrapper select {
       width: 100%;
-      padding: 8px;
-      border-radius: 20px;
-      border: 1px solid #ccc;
+      padding: 10px 14px 10px 42px;
+      border: 1.5px solid #e2ebf6;
+      border-radius: 12px;
+      font-size: 14px;
+      transition: all 0.2s;
+      background: #f8fcff;
       outline: none;
+      color: #1e3349;
+      height: 42px;
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+    }
+
+    .input-wrapper select {
+      cursor: pointer;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%234f6b8a' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 12px center;
+      background-size: 16px;
+    }
+
+    .input-wrapper input:focus,
+    .input-wrapper select:focus {
+      border-color: #1e4b6e;
+      background: #ffffff;
+      box-shadow: 0 2px 8px rgba(30, 75, 110, 0.1);
+    }
+
+    .input-wrapper input:focus + i,
+    .input-wrapper select:focus + i {
+      color: #1e4b6e;
+    }
+
+    .input-wrapper input::placeholder {
+      color: #a0b8d0;
+      font-size: 13px;
     }
 
     .register-btn {
       width: 100%;
-      padding: 10px;
-      background: #0b2b4a;
-      color: white;
+      padding: 12px;
+      background: #1e4b6e;
       border: none;
-      border-radius: 20px;
+      border-radius: 12px;
+      color: white;
+      font-size: 14px;
+      font-weight: 600;
       cursor: pointer;
-      margin-top: 10px;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 6px 12px -4px rgba(30, 75, 110, 0.2);
+      margin-top: 8px;
+      margin-bottom: 16px;
     }
 
     .register-btn:hover {
-      background: #123a60;
+      background: #0d3250;
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px -8px rgba(30, 75, 110, 0.3);
+    }
+
+    .register-btn i {
+      font-size: 14px;
+    }
+
+    .login-section {
+      text-align: center;
+      margin-top: 16px;
+      padding-top: 16px;
+      border-top: 1px solid #e0e8f0;
+    }
+
+    .login-section p {
+      color: #4f6b8a;
+      font-size: 13px;
+      margin-bottom: 6px;
     }
 
     .login-link {
-      text-align: center;
-      display: block;
-      margin-top: 15px;
-      color: #b07d2e;
+      color: #1e4b6e;
       text-decoration: none;
+      font-weight: 600;
+      font-size: 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      background: #f4f7fc;
+      border-radius: 30px;
+      transition: all 0.2s;
+    }
+
+    .login-link i {
+      font-size: 11px;
+      transition: transform 0.2s;
+    }
+
+    .login-link:hover {
+      background: #e2eaf3;
+    }
+
+    .login-link:hover i {
+      transform: translateX(4px);
+    }
+
+    .error-message {
+      color: #b34040;
+      font-size: 12px;
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #fee9e9;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #f5c2c2;
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .error-message i {
+      font-size: 12px;
+      color: #b34040;
+    }
+
+    @media (max-width: 480px) {
+      .register-card {
+        padding: 20px 16px;
+      }
+      
+      .input-wrapper input,
+      .input-wrapper select {
+        padding: 8px 12px 8px 38px;
+        height: 38px;
+      }
     }
   </style>
 </head>
-
 <body>
+  <div class="register-container">
+    <div class="register-card">
+      <div class="hospital-badge">
+        <i class="fas fa-hospital-user"></i>
+        <h1>🏥 Hospital Name</h1>
+        <p>Management System</p>
+      </div>
 
-<div class="register-card">
+      <div class="welcome-text">
+        <h2>Create Account</h2>
+        <p>Register as a new staff member</p>
+      </div>
 
-  <h2 class="register-title">Register</h2>
+      <form onsubmit="return handleRegister(event)">
+        <div class="input-group">
+          <label class="input-label">Full Name</label>
+          <div class="input-wrapper">
+            <i class="fas fa-user"></i>
+            <input type="text" id="fullname" placeholder="Enter your full name" required>
+          </div>
+        </div>
 
-  <form onsubmit="return handleRegister(event)">
+        <div class="input-group">
+          <label class="input-label">Department</label>
+          <div class="input-wrapper">
+            <i class="fas fa-building"></i>
+            <select id="department" required>
+              <option value="">Select Department</option>
+              <option>Cardiology</option>
+              <option>Pediatrics</option>
+              <option>Orthopedics</option>
+              <option>Neurology</option>
+              <option>Gynecology</option>
+              <option>General Medicine</option>
+            </select>
+          </div>
+        </div>
 
-    <div class="input-group">
-      <label class="input-label">Full Name</label>
-      <input type="text" id="fullname" class="input-field" required>
+        <div class="input-group">
+          <label class="input-label">Email Address</label>
+          <div class="input-wrapper">
+            <i class="far fa-envelope"></i>
+            <input type="email" id="email" placeholder="doctor@hospital.com" required>
+          </div>
+        </div>
+
+        <div class="input-group">
+          <label class="input-label">Password</label>
+          <div class="input-wrapper">
+            <i class="fas fa-lock"></i>
+            <input type="password" id="password" placeholder="Create a password" required>
+          </div>
+        </div>
+
+        <button type="submit" class="register-btn">
+          <i class="fas fa-user-plus"></i>
+          Register
+        </button>
+
+        <div id="errorMessage" class="error-message">
+          <i class="fas fa-exclamation-circle"></i>
+          <span></span>
+        </div>
+      </form>
+
+      <div class="login-section">
+        <p>Already have an account?</p>
+        <a href="index.html" class="login-link">
+          Sign In <i class="fas fa-arrow-right"></i>
+        </a>
+      </div>
     </div>
+  </div>
 
-    <div class="input-group">
-      <label class="input-label">Department</label>
-      <select id="department" class="input-select" required>
-        <option value="">Select Department</option>
-        <option>Computer Science</option>
-        <option>Electrical Engineering</option>
-        <option>Mechanical Engineering</option>
-        <option>Civil Engineering</option>
-      </select>
-    </div>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { 
+      getAuth, 
+      createUserWithEmailAndPassword,
+      updateProfile 
+    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-    <div class="input-group">
-      <label class="input-label">Email</label>
-      <input type="email" id="email" class="input-field" required>
-    </div>
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+      authDomain: "notessharingapp-fc388.firebaseapp.com",
+      projectId: "notessharingapp-fc388",
+      storageBucket: "notessharingapp-fc388.firebasestorage.app",
+      messagingSenderId: "64602136432",
+      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
+    };
 
-    <div class="input-group">
-      <label class="input-label">Password</label>
-      <input type="password" id="password" class="input-field" required>
-    </div>
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
 
-    <button type="submit" class="register-btn">Register</button>
-  </form>
+    window.handleRegister = async function(event) {
+      event.preventDefault();
 
-  <a href="index.html" class="login-link">Already have an account? Login</a>
+      const fullname = document.getElementById("fullname").value;
+      const department = document.getElementById("department").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("errorMessage");
+      const errorSpan = errorDiv.querySelector('span');
 
-</div>
+      errorDiv.classList.remove('show');
 
+      // Basic validation
+      if (!department) {
+        errorSpan.textContent = "Please select a department";
+        errorDiv.classList.add('show');
+        return;
+      }
 
-<!-- ===== FIREBASE AUTHENTICATION SCRIPT ===== -->
-<script type="module">
+      if (password.length < 6) {
+        errorSpan.textContent = "Password must be at least 6 characters";
+        errorDiv.classList.add('show');
+        return;
+      }
 
-import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-import { 
-  getAuth, 
-  createUserWithEmailAndPassword,
-  updateProfile 
-} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+      try {
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
 
-const firebaseConfig = {
-  apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-  authDomain: "notessharingapp-fc388.firebaseapp.com",
-  projectId: "notessharingapp-fc388",
-  storageBucket: "notessharingapp-fc388.firebasestorage.app",
-  messagingSenderId: "64602136432",
-  appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-};
+        await updateProfile(userCredential.user, {
+          displayName: fullname
+        });
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+        // Store additional user data (you can save department to Firestore later)
+        sessionStorage.setItem('userName', fullname);
+        sessionStorage.setItem('userEmail', email);
+        sessionStorage.setItem('userDepartment', department);
 
-window.handleRegister = async function(event) {
-  event.preventDefault();
+        alert("✓ Registration Successful! Please login.");
+        window.location.href = "index.html";
 
-  const fullname = document.getElementById("fullname").value;
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-
-  try {
-    const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-    await updateProfile(userCredential.user, {
-      displayName: fullname
-    });
-
-    alert("Registration Successful!");
-    window.location.href = "index.html";
-
-  } catch (error) {
-    alert(error.message);
-  }
-};
-
-</script>
-
+      } catch (error) {
+        let errorMessage = "Registration failed";
+        
+        if (error.code === 'auth/email-already-in-use') {
+          errorMessage = "Email already in use";
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = "Invalid email format";
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = "Password too weak";
+        }
+        
+        errorSpan.textContent = errorMessage;
+        errorDiv.classList.add('show');
+      }
+    };
+  </script>
 </body>
 </html>
