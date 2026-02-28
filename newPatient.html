@@ -532,12 +532,12 @@
 
                 <form id="patientForm">
                     <div class="form-grid">
-                        <!-- Full Name -->
+                        <!-- Full Name - Only Alphabets -->
                         <div class="input-group full-width">
                             <label class="input-label"><i class="fas fa-user"></i>Full Name *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="patientName" placeholder="Enter patient's full name" required>
+                                <input type="text" id="patientName" placeholder="Enter patient's full name (letters only)" required>
                             </div>
                             <div id="nameError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -573,12 +573,12 @@
                             </div>
                         </div>
 
-                        <!-- Contact Info -->
+                        <!-- Contact Info - Phone exactly 10 digits -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-phone-alt"></i>Phone Number *</label>
+                            <label class="input-label"><i class="fas fa-phone-alt"></i>Phone Number * (10 digits)</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-alt"></i>
-                                <input type="tel" id="phone" placeholder="+91 98765 43210" required>
+                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" required>
                             </div>
                             <div id="phoneError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -598,7 +598,7 @@
                             </div>
                         </div>
 
-                        <!-- Blood Group and Emergency Contact -->
+                        <!-- Blood Group and Emergency Contact - Exactly 10 digits -->
                         <div class="input-group">
                             <label class="input-label"><i class="fas fa-tint"></i>Blood Group *</label>
                             <div class="input-wrapper">
@@ -622,10 +622,10 @@
                         </div>
 
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-phone-volume"></i>Emergency Contact *</label>
+                            <label class="input-label"><i class="fas fa-phone-volume"></i>Emergency Contact * (10 digits)</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-volume"></i>
-                                <input type="tel" id="emergencyContact" placeholder="Emergency phone number" required>
+                                <input type="text" id="emergencyContact" placeholder="9876543210" maxlength="10" required>
                             </div>
                             <div id="emergencyError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -730,6 +730,47 @@
             }
         }
 
+        // Restrict input to only alphabets for name field
+        document.getElementById('patientName').addEventListener('keypress', function(e) {
+            const char = String.fromCharCode(e.which);
+            // Allow only letters and space
+            if (!/[a-zA-Z\s]/.test(char)) {
+                e.preventDefault();
+            }
+        });
+
+        // Restrict input to only numbers for phone and emergency contact
+        document.getElementById('phone').addEventListener('keypress', function(e) {
+            const char = String.fromCharCode(e.which);
+            // Allow only numbers
+            if (!/[0-9]/.test(char)) {
+                e.preventDefault();
+            }
+        });
+
+        document.getElementById('emergencyContact').addEventListener('keypress', function(e) {
+            const char = String.fromCharCode(e.which);
+            // Allow only numbers
+            if (!/[0-9]/.test(char)) {
+                e.preventDefault();
+            }
+        });
+
+        // Prevent paste of non-numeric in phone fields
+        document.getElementById('phone').addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const numbersOnly = pastedText.replace(/\D/g, '');
+            this.value = numbersOnly.slice(0, 10);
+        });
+
+        document.getElementById('emergencyContact').addEventListener('paste', function(e) {
+            e.preventDefault();
+            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
+            const numbersOnly = pastedText.replace(/\D/g, '');
+            this.value = numbersOnly.slice(0, 10);
+        });
+
         // Validation Functions
         function validateName(name) {
             const nameError = document.getElementById('nameError');
@@ -757,8 +798,9 @@
                 return false;
             }
             
-            if (!/^[a-zA-Z\s\.]+$/.test(name)) {
-                errorSpan.textContent = "Name can only contain letters, spaces, and dots";
+            // Only letters and spaces allowed
+            if (!/^[a-zA-Z\s]+$/.test(name)) {
+                errorSpan.textContent = "Name can only contain letters and spaces";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
@@ -806,10 +848,9 @@
                 return false;
             }
             
-            // Remove all non-digits
-            const digits = phone.replace(/\D/g, '');
-            if (digits.length < 10 || digits.length > 10) {
-                errorSpan.textContent = "Please enter a valid phone number (10 digits)";
+            // Must be exactly 10 digits
+            if (!/^\d{10}$/.test(phone)) {
+                errorSpan.textContent = "Please enter exactly 10 digits";
                 phoneError.classList.add('show');
                 phoneInput.classList.add('error');
                 return false;
@@ -875,10 +916,9 @@
                 return false;
             }
             
-            // Remove all non-digits
-            const digits = contact.replace(/\D/g, '');
-            if (digits.length < 10 || digits.length > 10) {
-                errorSpan.textContent = "Please enter a valid emergency contact number (10)";
+            // Must be exactly 10 digits
+            if (!/^\d{10}$/.test(contact)) {
+                errorSpan.textContent = "Please enter exactly 10 digits";
                 emergencyError.classList.add('show');
                 emergencyInput.classList.add('error');
                 return false;
