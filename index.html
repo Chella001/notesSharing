@@ -24,33 +24,33 @@
 
     .login-container {
       width: 100%;
-      max-width: 420px; /* Slightly increased for medium boxes */
+      max-width: 380px; /* Smaller container */
     }
 
     .login-card {
       background: #ffffff;
-      border-radius: 28px;
-      padding: 36px 32px; /* Increased padding */
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+      border-radius: 24px; /* Slightly smaller radius */
+      padding: 28px 24px; /* Reduced padding */
+      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
       border: 1px solid #d9e1ea;
     }
 
     .hospital-badge {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 16px; /* Reduced margin */
     }
 
     .hospital-badge i {
-      font-size: 48px;
+      font-size: 40px; /* Smaller icon */
       color: #0b2b4b;
       background: #f4f7fc;
-      padding: 16px;
-      border-radius: 24px;
-      margin-bottom: 16px;
+      padding: 12px; /* Smaller padding */
+      border-radius: 20px;
+      margin-bottom: 12px;
     }
 
     .hospital-badge h1 {
-      font-size: 28px;
+      font-size: 24px; /* Smaller font */
       font-weight: 600;
       color: #0b2b4b;
       letter-spacing: -0.3px;
@@ -58,18 +58,18 @@
 
     .hospital-badge p {
       color: #4f6b8a;
-      font-size: 14px;
+      font-size: 13px; /* Smaller font */
       margin-top: 4px;
     }
 
     .welcome-text {
-      margin-bottom: 28px;
-      padding-bottom: 20px;
+      margin-bottom: 20px; /* Reduced margin */
+      padding-bottom: 16px; /* Reduced padding */
       border-bottom: 1px solid #e0e8f0;
     }
 
     .welcome-text h2 {
-      font-size: 20px;
+      font-size: 18px; /* Smaller font */
       font-weight: 600;
       color: #1b3149;
       margin-bottom: 4px;
@@ -77,19 +77,19 @@
 
     .welcome-text p {
       color: #4f6b8a;
-      font-size: 14px;
+      font-size: 13px; /* Smaller font */
     }
 
     .input-group {
-      margin-bottom: 24px; /* Increased spacing */
+      margin-bottom: 16px; /* Reduced spacing */
     }
 
     .input-label {
       display: block;
-      font-size: 14px;
+      font-size: 13px; /* Smaller font */
       font-weight: 500;
       color: #2c4c6e;
-      margin-bottom: 10px; /* Slightly more space */
+      margin-bottom: 6px; /* Reduced space */
     }
 
     .input-wrapper {
@@ -100,28 +100,29 @@
 
     .input-wrapper i {
       position: absolute;
-      left: 18px; /* Adjusted for medium box */
-      color: #4f6b8a;
-      font-size: 16px;
+      left: 14px; /* Adjusted for smaller box */
+      color: #8fa3bc;
+      font-size: 14px; /* Smaller icon */
       transition: color 0.2s;
     }
 
     .input-wrapper input {
       width: 100%;
-      padding: 16px 20px 16px 52px; /* Medium size padding */
-      border: 2px solid #e2ebf6;
-      border-radius: 16px;
-      font-size: 15px;
+      padding: 10px 14px 10px 42px; /* SMALLER PADDING - reduced height */
+      border: 1.5px solid #e2ebf6; /* Thinner border */
+      border-radius: 12px; /* Smaller radius */
+      font-size: 14px; /* Smaller font */
       transition: all 0.2s;
       background: #f8fcff;
       outline: none;
       color: #1e3349;
+      height: 42px; /* Fixed smaller height */
     }
 
     .input-wrapper input:focus {
       border-color: #1e4b6e;
       background: #ffffff;
-      box-shadow: 0 4px 12px rgba(30, 75, 110, 0.1);
+      box-shadow: 0 2px 8px rgba(30, 75, 110, 0.1);
     }
 
     .input-wrapper input:focus + i {
@@ -129,11 +130,11 @@
     }
 
     .input-wrapper input::placeholder {
-      color: #8fa3bc;
-      font-size: 14px;
+      color: #a0b8d0;
+      font-size: 13px; /* Smaller placeholder */
     }
 
-    /* Specific styling for email to match the image */
+    /* Specific styling for email */
     .input-wrapper input[type="email"] {
       font-weight: 500;
       color: #1e3349;
@@ -141,18 +142,18 @@
 
     .forgot-password {
       text-align: right;
-      margin-bottom: 28px; /* Increased spacing */
+      margin-bottom: 20px; /* Reduced spacing */
     }
 
     .forgot-password a {
       color: #2c6b9e;
       text-decoration: none;
-      font-size: 14px; /* Slightly larger */
+      font-size: 12px; /* Smaller font */
       font-weight: 500;
       transition: color 0.2s;
       display: inline-flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
     }
 
     .forgot-password a:hover {
@@ -162,62 +163,62 @@
 
     .login-btn {
       width: 100%;
-      padding: 16px;
+      padding: 12px; /* Smaller padding */
       background: #1e4b6e;
       border: none;
-      border-radius: 16px;
+      border-radius: 12px; /* Smaller radius */
       color: white;
-      font-size: 16px;
+      font-size: 14px; /* Smaller font */
       font-weight: 600;
       cursor: pointer;
       transition: all 0.2s;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 10px;
-      box-shadow: 0 8px 16px -4px rgba(30, 75, 110, 0.2);
-      margin-bottom: 20px; /* Added spacing */
+      gap: 8px;
+      box-shadow: 0 6px 12px -4px rgba(30, 75, 110, 0.2);
+      margin-bottom: 16px; /* Reduced spacing */
     }
 
     .login-btn:hover {
       background: #0d3250;
-      transform: translateY(-2px);
-      box-shadow: 0 12px 20px -8px rgba(30, 75, 110, 0.3);
+      transform: translateY(-1px);
+      box-shadow: 0 8px 16px -8px rgba(30, 75, 110, 0.3);
     }
 
     .login-btn i {
-      font-size: 16px;
+      font-size: 14px; /* Smaller icon */
     }
 
     .register-section {
       text-align: center;
-      margin-top: 24px;
-      padding-top: 20px;
+      margin-top: 16px; /* Reduced margin */
+      padding-top: 16px; /* Reduced padding */
       border-top: 1px solid #e0e8f0;
     }
 
     .register-section p {
       color: #4f6b8a;
-      font-size: 14px;
-      margin-bottom: 8px;
+      font-size: 13px; /* Smaller font */
+      margin-bottom: 6px;
     }
 
     .register-link {
       color: #1e4b6e;
       text-decoration: none;
       font-weight: 600;
-      font-size: 15px;
+      font-size: 14px; /* Smaller font */
       display: inline-flex;
       align-items: center;
-      gap: 6px;
-      padding: 8px 16px;
+      gap: 4px;
+      padding: 6px 14px; /* Smaller padding */
       background: #f4f7fc;
-      border-radius: 40px;
+      border-radius: 30px;
       transition: all 0.2s;
     }
 
     .register-link i {
-      font-size: 12px;
+      font-size: 11px; /* Smaller icon */
       transition: transform 0.2s;
     }
 
@@ -231,15 +232,15 @@
 
     .error-message {
       color: #b34040;
-      font-size: 13px;
-      margin-top: 16px;
+      font-size: 12px; /* Smaller font */
+      margin-top: 12px;
       display: none;
       align-items: center;
       justify-content: center;
-      gap: 8px;
+      gap: 6px;
       background: #fee9e9;
-      padding: 12px;
-      border-radius: 12px;
+      padding: 10px; /* Smaller padding */
+      border-radius: 10px; /* Smaller radius */
       border: 1px solid #f5c2c2;
     }
 
@@ -248,19 +249,19 @@
     }
 
     .error-message i {
-      font-size: 14px;
+      font-size: 12px; /* Smaller icon */
       color: #b34040;
     }
 
-    /* Stats preview */
+    /* Stats preview - more compact */
     .stats-preview {
       display: flex;
       justify-content: center;
-      gap: 24px;
-      margin-top: 28px;
-      padding: 16px;
+      gap: 16px; /* Reduced gap */
+      margin-top: 20px; /* Reduced margin */
+      padding: 12px; /* Smaller padding */
       background: #f8fcff;
-      border-radius: 20px;
+      border-radius: 16px; /* Smaller radius */
       border: 1px solid #e2ebf6;
     }
 
@@ -269,46 +270,48 @@
     }
 
     .stat-item .number {
-      font-size: 20px;
+      font-size: 18px; /* Smaller font */
       font-weight: 600;
       color: #1e4b6e;
     }
 
     .stat-item .label {
-      font-size: 12px;
+      font-size: 11px; /* Smaller font */
       color: #4f6b8a;
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
-    /* Demo credentials hint */
+    /* Demo credentials hint - more compact */
     .demo-hint {
       background: #e8f0fe;
-      padding: 12px;
-      border-radius: 12px;
-      margin-top: 16px;
+      padding: 10px; /* Smaller padding */
+      border-radius: 10px; /* Smaller radius */
+      margin-top: 12px; /* Reduced margin */
       text-align: center;
-      font-size: 13px;
+      font-size: 12px; /* Smaller font */
       color: #1e4b6e;
       border: 1px dashed #1e4b6e;
     }
 
     .demo-hint i {
-      margin-right: 6px;
+      margin-right: 4px;
       color: #1e4b6e;
+      font-size: 11px; /* Smaller icon */
     }
 
     @media (max-width: 480px) {
       .login-card {
-        padding: 28px 24px;
+        padding: 20px 16px; /* Even smaller on mobile */
       }
       
       .stats-preview {
-        gap: 16px;
-        padding: 12px;
+        gap: 12px;
+        padding: 10px;
       }
       
       .input-wrapper input {
-        padding: 14px 16px 14px 48px; /* Slightly smaller on mobile */
+        padding: 8px 12px 8px 38px; /* Even smaller on mobile */
+        height: 38px;
       }
     }
   </style>
@@ -352,9 +355,15 @@
 
         <button type="submit" class="login-btn">
           <i class="fas fa-sign-in-alt"></i>
-          Sign In to Dashboard
+          Sign In
         </button>
-        
+
+        <!-- Demo credentials hint -->
+        <div class="demo-hint">
+          <i class="fas fa-info-circle"></i>
+          Demo: Use any email/password
+        </div>
+
         <div id="errorMessage" class="error-message">
           <i class="fas fa-exclamation-circle"></i>
           <span></span>
@@ -362,9 +371,9 @@
       </form>
 
       <div class="register-section">
-        <p>New to the hospital system?</p>
+        <p>New here?</p>
         <a href="register.html" class="register-link">
-          Create Staff Account <i class="fas fa-arrow-right"></i>
+          Create Account <i class="fas fa-arrow-right"></i>
         </a>
       </div>
 
@@ -419,32 +428,26 @@
           sessionStorage.setItem('userEmail', user.email);
           sessionStorage.setItem('userName', email.split('@')[0]);
           
-          alert("✓ Login Successful! Redirecting to dashboard...");
+          alert("✓ Login Successful!");
           window.location.href = "dashboard.html";
         })
         .catch((error) => {
           let errorMessage = "Invalid email or password";
           
           if (error.code === 'auth/user-not-found') {
-            errorMessage = "No account found with this email";
+            errorMessage = "No account found";
           } else if (error.code === 'auth/wrong-password') {
-            errorMessage = "Incorrect password. Please try again";
+            errorMessage = "Incorrect password";
           } else if (error.code === 'auth/invalid-email') {
             errorMessage = "Invalid email format";
           } else if (error.code === 'auth/too-many-requests') {
-            errorMessage = "Too many failed attempts. Try again later";
+            errorMessage = "Too many attempts";
           }
           
           errorSpan.textContent = errorMessage;
           errorDiv.classList.add('show');
         });
     };
-
-    // Auto-fill for demo purposes (remove in production)
-    window.addEventListener('load', function() {
-      // You can remove this in production
-      console.log('Login page loaded with medium-sized input boxes');
-    });
   </script>
 </body>
 </html>
