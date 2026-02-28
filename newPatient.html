@@ -537,7 +537,11 @@
                             <label class="input-label"><i class="fas fa-user"></i>Full Name *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-user"></i>
-                                <input type="text" id="patientName" placeholder="Enter patient's full name (letters only)" required>
+                                <input type="text" id="patientName" placeholder="Enter patient's full name (letters only)" 
+                                       onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode == 32" 
+                                       onpaste="return false" 
+                                       ondrop="return false" 
+                                       required>
                             </div>
                             <div id="nameError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -578,7 +582,11 @@
                             <label class="input-label"><i class="fas fa-phone-alt"></i>Phone Number * (10 digits)</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-alt"></i>
-                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" required>
+                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" 
+                                       onkeypress="return event.charCode >= 48 && event.charCode <= 57" 
+                                       onpaste="return false" 
+                                       ondrop="return false" 
+                                       required>
                             </div>
                             <div id="phoneError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -625,7 +633,11 @@
                             <label class="input-label"><i class="fas fa-phone-volume"></i>Emergency Contact * (10 digits)</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-volume"></i>
-                                <input type="text" id="emergencyContact" placeholder="9876543210" maxlength="10" required>
+                                <input type="text" id="emergencyContact" placeholder="9876543210" maxlength="10" 
+                                       onkeypress="return event.charCode >= 48 && event.charCode <= 57" 
+                                       onpaste="return false" 
+                                       ondrop="return false" 
+                                       required>
                             </div>
                             <div id="emergencyError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -730,45 +742,29 @@
             }
         }
 
-        // Restrict input to only alphabets for name field
-        document.getElementById('patientName').addEventListener('keypress', function(e) {
-            const char = String.fromCharCode(e.which);
-            // Allow only letters and space
-            if (!/[a-zA-Z\s]/.test(char)) {
+        // Additional JavaScript validation to prevent pasting/dropping
+        document.getElementById('patientName').addEventListener('keydown', function(e) {
+            // Prevent any key that's not a letter or space
+            const key = e.key;
+            if (!/^[a-zA-Z\s]$/.test(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
                 e.preventDefault();
             }
         });
 
-        // Restrict input to only numbers for phone and emergency contact
-        document.getElementById('phone').addEventListener('keypress', function(e) {
-            const char = String.fromCharCode(e.which);
-            // Allow only numbers
-            if (!/[0-9]/.test(char)) {
+        document.getElementById('phone').addEventListener('keydown', function(e) {
+            // Prevent any key that's not a number
+            const key = e.key;
+            if (!/^[0-9]$/.test(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
                 e.preventDefault();
             }
         });
 
-        document.getElementById('emergencyContact').addEventListener('keypress', function(e) {
-            const char = String.fromCharCode(e.which);
-            // Allow only numbers
-            if (!/[0-9]/.test(char)) {
+        document.getElementById('emergencyContact').addEventListener('keydown', function(e) {
+            // Prevent any key that's not a number
+            const key = e.key;
+            if (!/^[0-9]$/.test(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
                 e.preventDefault();
             }
-        });
-
-        // Prevent paste of non-numeric in phone fields
-        document.getElementById('phone').addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            const numbersOnly = pastedText.replace(/\D/g, '');
-            this.value = numbersOnly.slice(0, 10);
-        });
-
-        document.getElementById('emergencyContact').addEventListener('paste', function(e) {
-            e.preventDefault();
-            const pastedText = (e.clipboardData || window.clipboardData).getData('text');
-            const numbersOnly = pastedText.replace(/\D/g, '');
-            this.value = numbersOnly.slice(0, 10);
         });
 
         // Validation Functions
