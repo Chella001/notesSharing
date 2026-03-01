@@ -516,9 +516,6 @@
                 const patientsSnapshot = await db.collection('patients').get();
                 const totalPatients = patientsSnapshot.size;
                 document.getElementById('totalPatients').textContent = totalPatients;
-                document.addEventListener('DOMContentLoaded', () => {
-    loadDashboardData();
-});
 
                 // Load Doctors Count
                 const doctorsSnapshot = await db.collection('doctors').get();
@@ -740,10 +737,6 @@
             console.log("Anonymous auth not needed or error:", error);
         });
 
-        // ==================== INITIAL LOAD ====================
-        document.addEventListener('DOMContentLoaded', () => {
-            loadDashboardData();
-        });
     </script>
 </body>
 </html>
