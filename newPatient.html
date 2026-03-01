@@ -737,7 +737,6 @@
         }
         
         const db = firebase.firestore();
-        
 
         // Helper Functions
         function showNotification(message, type = "success") {
@@ -760,17 +759,7 @@
         // Load Dashboard Stats with timeout
         async function loadStats() {
             try {
-                // Create a timeout promise
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error("Stats loading timeout")), 5000);
-                });
-                
-                // Race between actual fetch and timeout
-                const patientsSnapshot = await Promise.race([
-                    db.collection('patients').get(),
-                    timeoutPromise
-                ]);
-                
+                const patientsSnapshot = await db.collection('patients').get();
                 document.getElementById('totalPatients').textContent = patientsSnapshot.size;
 
                 const doctorsSnapshot = await db.collection('doctors').get();
@@ -780,10 +769,7 @@
                 document.getElementById('totalAppointments').textContent = appointmentsSnapshot.size;
             } catch (error) {
                 console.error("Error loading stats:", error);
-                document.getElementById('totalPatients').textContent = '?';
-                document.getElementById('totalDoctors').textContent = '?';
-                document.getElementById('totalAppointments').textContent = '?';
-                // Don't show error for stats, just continue
+                // Don't show error for stats, just use defaults
             }
         }
 
@@ -1070,9 +1056,13 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
+            // Set timeout warning after 5 seconds
+            const timeoutId = setTimeout(() => {
+                timeoutWarning.classList.add('show');
+            }, 5000);
 
             try {
-                // Save to Firestore with timeout
+                // Save to Firestore
                 const patientData = {
                     name: patientName.trim(),
                     age: parseInt(age),
@@ -1085,18 +1075,9 @@
                     medicalNotes: medicalNotes && medicalNotes.trim() ? medicalNotes.trim() : null,
                     registeredDate: new Date(),
                     status: "Active"
-                    // Removed serverTimestamp to avoid potential issues
                 };
 
-                // Create a save promise
-                const savePromise = db.collection('patients').add(patientData);
-                
-                // Create a timeout promise (10 seconds)
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error("Save operation timed out")), 10000);
-                });
-
-                // Race between save and timeout
+                // Save to Firestore
                 await db.collection('patients').add(patientData);
 
                 // Clear timeout warning
@@ -1118,8 +1099,8 @@
                 document.getElementById("address").value = "";
                 document.getElementById("medicalNotes").value = "";
 
-                // Update stats on current page (don't await)
-                loadStats().catch(e => console.log("Stats update skipped"));
+                // Update stats on current page
+                await loadStats();
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(() => {
@@ -1134,9 +1115,7 @@
                 console.error("Error adding patient:", error);
                 
                 // Show specific error message
-                if (error.message === "Save operation timed out") {
-                    errorSpan.textContent = "Save operation timed out. Please check your internet connection and try again.";
-                } else if (error.code === 'permission-denied') {
+                if (error.code === 'permission-denied') {
                     errorSpan.textContent = "Permission denied. You don't have access to save data.";
                 } else if (error.code === 'unavailable') {
                     errorSpan.textContent = "Network error. Please check your internet connection.";
@@ -1166,12 +1145,7 @@
         // Test Firebase connection on load
         async function testConnection() {
             try {
-                const testPromise = db.collection('patients').limit(1).get();
-                const timeoutPromise = new Promise((_, reject) => {
-                    setTimeout(() => reject(new Error("Connection test timeout")), 3000);
-                });
-                
-                await Promise.race([testPromise, timeoutPromise]);
+                await db.collection('patients').limit(1).get();
                 console.log("Firebase connection successful");
             } catch (error) {
                 console.error("Firebase connection failed:", error);
