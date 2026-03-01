@@ -11,7 +11,6 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <style>
-        /* Keep all existing styles exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -289,6 +288,21 @@
             color: #b34040;
         }
 
+        .status.scheduled {
+            background: #e1f0fa;
+            color: #1e4b6e;
+        }
+
+        .status.confirmed {
+            background: #d1e7dd;
+            color: #0a5e3c;
+        }
+
+        .status.in-progress {
+            background: #fff3cd;
+            color: #856404;
+        }
+
         .loading, .error, .no-data {
             text-align: center;
             padding: 40px;
@@ -343,7 +357,7 @@
     <div id="notification" class="notification">Data loaded successfully</div>
 
     <div class="dashboard">
-        <!-- Sidebar - UPDATED with working links -->
+        <!-- Sidebar - with working links -->
         <div class="sidebar">
             <div class="hospital-name">🏥 Hospital Name</div>
             <div class="sidebar-menu">
@@ -517,16 +531,18 @@
         // ==================== LOAD DASHBOARD DATA ====================
         async function loadDashboardData() {
             try {
-                // Check if we came from new patient or doctor page
+                // Check if we came from any of the add pages
                 const urlParams = new URLSearchParams(window.location.search);
                 
                 // Show appropriate notification
                 if (urlParams.get('newPatient') === 'success') {
                     showNotification("✅ New patient added successfully! Count updated.", "success");
-                    // Remove the parameter from URL without reloading
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else if (urlParams.get('newDoctor') === 'success') {
                     showNotification("✅ New doctor added successfully! Count updated.", "success");
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } else if (urlParams.get('newAppointment') === 'success') {
+                    showNotification("✅ New appointment scheduled successfully! Count updated.", "success");
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else {
                     showNotification("Loading dashboard data...", "success");
@@ -589,12 +605,18 @@
                             }
                         }
                         
+                        // Determine status class
+                        let statusClass = 'pending';
+                        if (apt.status) {
+                            statusClass = apt.status.toLowerCase().replace(' ', '-');
+                        }
+                        
                         row.innerHTML = `
                             <td><strong>${apt.patientName || 'Unknown'}</strong></td>
                             <td>${apt.doctorName || 'Unknown'}</td>
                             <td>${dateStr}</td>
                             <td>${apt.time || '10:00 AM'}</td>
-                            <td><span class="status ${(apt.status || 'pending').toLowerCase()}">${apt.status || 'Pending'}</span></td>
+                            <td><span class="status ${statusClass}">${apt.status || 'Pending'}</span></td>
                             <td><strong>₹${apt.fee?.toLocaleString() || '0'}</strong></td>
                         `;
                         appointmentsBody.appendChild(row);
@@ -627,6 +649,7 @@
             try {
                 showNotification("Adding sample data...", "success");
                 
+                // Add sample patients
                 const patients = [
                     { name: 'Ravi Kumar', age: 35, gender: 'Male', phone: '9876543210', email: 'ravi.k@email.com', bloodGroup: 'O+', address: 'Delhi', status: 'Active', registeredDate: new Date().toISOString() },
                     { name: 'Meena Sharma', age: 28, gender: 'Female', phone: '9876543211', email: 'meena.s@email.com', bloodGroup: 'B+', address: 'Mumbai', status: 'Active', registeredDate: new Date().toISOString() },
@@ -637,42 +660,76 @@
                     await db.collection('patients').add(patient);
                 }
 
+                // Add sample doctors
                 const doctors = [
-                    { name: 'Dr. Arjun Mehta', specialization: 'Cardiology', experience: 12, phone: '9876543220', email: 'dr.arjun@hospital.com', qualification: 'MD, DM', fee: 1500 },
-                    { name: 'Dr. Priya Kapoor', specialization: 'Pediatrics', experience: 8, phone: '9876543221', email: 'dr.priya@hospital.com', qualification: 'MD', fee: 1200 },
-                    { name: 'Dr. Raj Verma', specialization: 'Orthopedics', experience: 15, phone: '9876543222', email: 'dr.raj@hospital.com', qualification: 'MS, MCh', fee: 1800 }
+                    { name: 'Dr. Arjun Mehta', specialization: 'Cardiology', experience: 12, phone: '9876543220', email: 'dr.arjun@hospital.com', qualification: 'MD, DM', fee: 1500, availableDays: ['Monday', 'Wednesday', 'Friday'] },
+                    { name: 'Dr. Priya Kapoor', specialization: 'Pediatrics', experience: 8, phone: '9876543221', email: 'dr.priya@hospital.com', qualification: 'MD', fee: 1200, availableDays: ['Tuesday', 'Thursday', 'Saturday'] },
+                    { name: 'Dr. Raj Verma', specialization: 'Orthopedics', experience: 15, phone: '9876543222', email: 'dr.raj@hospital.com', qualification: 'MS, MCh', fee: 1800, availableDays: ['Monday', 'Tuesday', 'Thursday'] }
                 ];
 
                 for (const doctor of doctors) {
                     await db.collection('doctors').add(doctor);
                 }
 
+                // Add sample appointments
                 const today = new Date();
+                const tomorrow = new Date(today);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                const yesterday = new Date(today);
+                yesterday.setDate(yesterday.getDate() - 1);
                 
                 const appointments = [
                     {
                         patientName: 'Ravi Kumar',
                         doctorName: 'Dr. Arjun Mehta',
+                        patientId: 'sample1',
+                        doctorId: 'sample1',
                         date: today,
                         time: '10:30 AM',
+                        type: 'Consultation',
                         status: 'Completed',
-                        fee: 1500
+                        fee: 1500,
+                        paymentStatus: 'Paid',
+                        symptoms: 'Chest pain and shortness of breath'
                     },
                     {
                         patientName: 'Meena Sharma',
                         doctorName: 'Dr. Priya Kapoor',
+                        patientId: 'sample2',
+                        doctorId: 'sample2',
                         date: today,
                         time: '11:45 AM',
+                        type: 'Follow-up',
                         status: 'Pending',
-                        fee: 1200
+                        fee: 1200,
+                        paymentStatus: 'Pending',
+                        symptoms: 'Fever and cough for 3 days'
                     },
                     {
                         patientName: 'Suresh Patel',
                         doctorName: 'Dr. Raj Verma',
-                        date: today,
+                        patientId: 'sample3',
+                        doctorId: 'sample3',
+                        date: tomorrow,
                         time: '02:00 PM',
+                        type: 'Checkup',
                         status: 'Scheduled',
-                        fee: 1800
+                        fee: 1800,
+                        paymentStatus: 'Pending',
+                        symptoms: 'Knee pain after running'
+                    },
+                    {
+                        patientName: 'Ravi Kumar',
+                        doctorName: 'Dr. Raj Verma',
+                        patientId: 'sample1',
+                        doctorId: 'sample3',
+                        date: yesterday,
+                        time: '09:15 AM',
+                        type: 'Emergency',
+                        status: 'Cancelled',
+                        fee: 0,
+                        paymentStatus: 'Waived',
+                        symptoms: 'Emergency consultation - cancelled'
                     }
                 ];
 
@@ -748,8 +805,9 @@
             // Load dashboard data
             loadDashboardData();
             
-            // Set up real-time listener for patients collection to auto-update
+            // Set up real-time listeners for auto-update
             if (db) {
+                // Listen for patients changes
                 db.collection('patients').onSnapshot((snapshot) => {
                     console.log("Patients collection changed, updating count...");
                     document.getElementById('totalPatients').textContent = snapshot.size;
@@ -757,12 +815,33 @@
                     console.log("Patient listener error (ignored):", error);
                 });
                 
-                // Add real-time listener for doctors collection
+                // Listen for doctors changes
                 db.collection('doctors').onSnapshot((snapshot) => {
                     console.log("Doctors collection changed, updating count...");
                     document.getElementById('totalDoctors').textContent = snapshot.size;
                 }, (error) => {
                     console.log("Doctor listener error (ignored):", error);
+                });
+                
+                // Listen for appointments changes
+                db.collection('appointments').onSnapshot((snapshot) => {
+                    console.log("Appointments collection changed, updating count...");
+                    document.getElementById('totalAppointments').textContent = snapshot.size;
+                    
+                    // Also update revenue when appointments change
+                    let totalRevenue = 0;
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        if (data.status === 'Completed' && data.fee) {
+                            totalRevenue += data.fee;
+                        }
+                    });
+                    document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+                    
+                    // Refresh the recent appointments table
+                    loadDashboardData();
+                }, (error) => {
+                    console.log("Appointment listener error (ignored):", error);
                 });
             }
         });
