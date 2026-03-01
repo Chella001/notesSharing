@@ -1079,10 +1079,6 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
-            // Set timeout warning after 5 seconds
-            const timeoutId = setTimeout(() => {
-                timeoutWarning.classList.add('show');
-            }, 5000);
 
             try {
                 // Save to Firestore with timeout
@@ -1110,7 +1106,7 @@
                 });
 
                 // Race between save and timeout
-                await Promise.race([savePromise, timeoutPromise]);
+                await db.collection('patients').add(patientData);
 
                 // Clear timeout warning
                 clearTimeout(timeoutId);
