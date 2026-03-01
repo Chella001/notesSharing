@@ -1057,13 +1057,13 @@
                 document.getElementById("address").value = "";
                 document.getElementById("medicalNotes").value = "";
 
-                // Update stats
-                loadStats();
+                // Update stats on current page
+                await loadStats();
 
-                // Redirect after 2 seconds with updated parameter
+                // Redirect to dashboard with success flag after 1.5 seconds
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html?updated=true';
-                }, 2000);
+                    window.location.href = 'dashboard.html?newPatient=success&timestamp=' + Date.now();
+                }, 1500);
 
             } catch (error) {
                 console.error("Error adding patient:", error);
