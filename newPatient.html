@@ -458,6 +458,23 @@
         .notification.show {
             transform: translateX(0);
         }
+        
+        /* Timeout warning */
+        .timeout-warning {
+            background: #fff3cd;
+            border: 1px solid #ffe69c;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .timeout-warning.show {
+            display: flex;
+        }
     </style>
 </head>
 <body>
@@ -668,6 +685,12 @@
                         </div>
                     </div>
 
+                    <!-- Timeout warning -->
+                    <div id="timeoutWarning" class="timeout-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>Saving is taking longer than expected. Please wait...</span>
+                    </div>
+
                     <!-- Action Buttons -->
                     <div class="action-buttons">
                         <a href="dashboard.html" class="cancel-btn">
@@ -705,8 +728,25 @@
         };
 
         // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
+        try {
+            firebase.initializeApp(firebaseConfig);
+            console.log("Firebase initialized");
+        } catch (error) {
+            console.error("Firebase init error:", error);
+            showNotification("Firebase configuration error", "error");
+        }
+        
         const db = firebase.firestore();
+        
+        // Enable offline persistence for better performance
+        db.enablePersistence()
+            .catch((err) => {
+                if (err.code === 'failed-precondition') {
+                    console.log("Persistence failed - multiple tabs open");
+                } else if (err.code === 'unimplemented') {
+                    console.log("Persistence not supported");
+                }
+            });
 
         // Helper Functions
         function showNotification(message, type = "success") {
@@ -726,10 +766,20 @@
             year: 'numeric'
         });
 
-        // Load Dashboard Stats
+        // Load Dashboard Stats with timeout
         async function loadStats() {
             try {
-                const patientsSnapshot = await db.collection('patients').get();
+                // Create a timeout promise
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error("Stats loading timeout")), 5000);
+                });
+                
+                // Race between actual fetch and timeout
+                const patientsSnapshot = await Promise.race([
+                    db.collection('patients').get(),
+                    timeoutPromise
+                ]);
+                
                 document.getElementById('totalPatients').textContent = patientsSnapshot.size;
 
                 const doctorsSnapshot = await db.collection('doctors').get();
@@ -739,6 +789,10 @@
                 document.getElementById('totalAppointments').textContent = appointmentsSnapshot.size;
             } catch (error) {
                 console.error("Error loading stats:", error);
+                document.getElementById('totalPatients').textContent = '?';
+                document.getElementById('totalDoctors').textContent = '?';
+                document.getElementById('totalAppointments').textContent = '?';
+                // Don't show error for stats, just continue
             }
         }
 
@@ -997,10 +1051,12 @@
             const errorSpan = errorDiv.querySelector('span');
             const successDiv = document.getElementById("successMessage");
             const submitBtn = document.getElementById("submitBtn");
+            const timeoutWarning = document.getElementById("timeoutWarning");
 
             // Hide all messages
             errorDiv.classList.remove('show');
             successDiv.classList.remove('show');
+            timeoutWarning.classList.remove('show');
 
             // Run all validations
             const isNameValid = validateName(patientName);
@@ -1023,8 +1079,13 @@
             submitBtn.disabled = true;
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Saving...';
 
+            // Set timeout warning after 5 seconds
+            const timeoutId = setTimeout(() => {
+                timeoutWarning.classList.add('show');
+            }, 5000);
+
             try {
-                // Save to Firestore
+                // Save to Firestore with timeout
                 const patientData = {
                     name: patientName.trim(),
                     age: parseInt(age),
@@ -1036,11 +1097,24 @@
                     address: address.trim(),
                     medicalNotes: medicalNotes && medicalNotes.trim() ? medicalNotes.trim() : null,
                     registeredDate: new Date(),
-                    status: "Active",
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    status: "Active"
+                    // Removed serverTimestamp to avoid potential issues
                 };
 
-                await db.collection('patients').add(patientData);
+                // Create a save promise
+                const savePromise = db.collection('patients').add(patientData);
+                
+                // Create a timeout promise (10 seconds)
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error("Save operation timed out")), 10000);
+                });
+
+                // Race between save and timeout
+                await Promise.race([savePromise, timeoutPromise]);
+
+                // Clear timeout warning
+                clearTimeout(timeoutId);
+                timeoutWarning.classList.remove('show');
 
                 // Show success message
                 successDiv.querySelector('span').textContent = "Patient registered successfully!";
@@ -1057,17 +1131,32 @@
                 document.getElementById("address").value = "";
                 document.getElementById("medicalNotes").value = "";
 
-                // Update stats on current page
-                await loadStats();
+                // Update stats on current page (don't await)
+                loadStats().catch(e => console.log("Stats update skipped"));
 
-                // Redirect to dashboard with success flag after 1.5 seconds
+                // Redirect to dashboard after 1.5 seconds
                 setTimeout(() => {
                     window.location.href = 'dashboard.html?newPatient=success&timestamp=' + Date.now();
                 }, 1500);
 
             } catch (error) {
+                // Clear timeout warning
+                clearTimeout(timeoutId);
+                timeoutWarning.classList.remove('show');
+                
                 console.error("Error adding patient:", error);
-                errorSpan.textContent = "Failed to register patient. Please try again.";
+                
+                // Show specific error message
+                if (error.message === "Save operation timed out") {
+                    errorSpan.textContent = "Save operation timed out. Please check your internet connection and try again.";
+                } else if (error.code === 'permission-denied') {
+                    errorSpan.textContent = "Permission denied. You don't have access to save data.";
+                } else if (error.code === 'unavailable') {
+                    errorSpan.textContent = "Network error. Please check your internet connection.";
+                } else {
+                    errorSpan.textContent = "Failed to register patient. Please try again.";
+                }
+                
                 errorDiv.classList.add('show');
                 showNotification("Error adding patient", "error");
                 
@@ -1087,8 +1176,25 @@
             }
         });
 
+        // Test Firebase connection on load
+        async function testConnection() {
+            try {
+                const testPromise = db.collection('patients').limit(1).get();
+                const timeoutPromise = new Promise((_, reject) => {
+                    setTimeout(() => reject(new Error("Connection test timeout")), 3000);
+                });
+                
+                await Promise.race([testPromise, timeoutPromise]);
+                console.log("Firebase connection successful");
+            } catch (error) {
+                console.error("Firebase connection failed:", error);
+                showNotification("Cannot connect to database. Check your connection.", "error");
+            }
+        }
+
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
+            testConnection();
             loadStats();
         });
     </script>
