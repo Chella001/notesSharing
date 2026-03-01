@@ -11,6 +11,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <style>
+        /* Keep all existing styles exactly the same */
         * {
             margin: 0;
             padding: 0;
@@ -342,7 +343,7 @@
     <div id="notification" class="notification">Data loaded successfully</div>
 
     <div class="dashboard">
-        <!-- Sidebar -->
+        <!-- Sidebar - UPDATED with working links -->
         <div class="sidebar">
             <div class="hospital-name">🏥 Hospital Name</div>
             <div class="sidebar-menu">
@@ -352,10 +353,10 @@
                 <div class="menu-item" onclick="window.location.href='newPatient.html'">
                     <i class="fas fa-user-injured"></i> Patients
                 </div>
-                <div class="menu-item" data-section="doctors">
+                <div class="menu-item" onclick="window.location.href='newDoctor.html'">
                     <i class="fas fa-user-md"></i> Doctors
                 </div>
-                <div class="menu-item" data-section="appointments">
+                <div class="menu-item" onclick="window.location.href='newAppointment.html'">
                     <i class="fas fa-calendar-check"></i> Appointments
                 </div>
                 <div class="menu-item" data-section="reports">
@@ -516,13 +517,16 @@
         // ==================== LOAD DASHBOARD DATA ====================
         async function loadDashboardData() {
             try {
-                // Check if we came from new patient page
+                // Check if we came from new patient or doctor page
                 const urlParams = new URLSearchParams(window.location.search);
                 
                 // Show appropriate notification
                 if (urlParams.get('newPatient') === 'success') {
-                    showNotification("✅ New patient added successfully! Count updated to 1.", "success");
+                    showNotification("✅ New patient added successfully! Count updated.", "success");
                     // Remove the parameter from URL without reloading
+                    window.history.replaceState({}, document.title, window.location.pathname);
+                } else if (urlParams.get('newDoctor') === 'success') {
+                    showNotification("✅ New doctor added successfully! Count updated.", "success");
                     window.history.replaceState({}, document.title, window.location.pathname);
                 } else {
                     showNotification("Loading dashboard data...", "success");
@@ -705,9 +709,12 @@
                 });
                 this.classList.add('active');
                 
-                const section = this.getAttribute('data-section');
-                if (section) {
-                    showNotification(`Navigating to ${section} section`, "success");
+                // Don't show navigation notification for items with direct links
+                if (!this.hasAttribute('onclick')) {
+                    const section = this.getAttribute('data-section');
+                    if (section) {
+                        showNotification(`Navigating to ${section} section`, "success");
+                    }
                 }
             });
         });
@@ -747,7 +754,15 @@
                     console.log("Patients collection changed, updating count...");
                     document.getElementById('totalPatients').textContent = snapshot.size;
                 }, (error) => {
-                    console.log("Listener error (ignored):", error);
+                    console.log("Patient listener error (ignored):", error);
+                });
+                
+                // Add real-time listener for doctors collection
+                db.collection('doctors').onSnapshot((snapshot) => {
+                    console.log("Doctors collection changed, updating count...");
+                    document.getElementById('totalDoctors').textContent = snapshot.size;
+                }, (error) => {
+                    console.log("Doctor listener error (ignored):", error);
                 });
             }
         });
