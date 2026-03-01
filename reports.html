@@ -433,6 +433,30 @@
             background: #daeafc;
             color: #1e4b6e;
         }
+
+        /* Live Update Badge */
+        .live-badge {
+            background: #0a5e3c;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 30px;
+            font-size: 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: 12px;
+        }
+
+        .live-badge i {
+            font-size: 8px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.3; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
@@ -442,7 +466,7 @@
     <div class="dashboard">
         <!-- Sidebar -->
         <div class="sidebar">
-            <div class="hospital-name">🏥 Hospital Name</div>
+            <div class="hospital-name">🏥Akshaya Clinic</div>
             <div class="sidebar-menu">
                 <div class="menu-item" onclick="window.location.href='dashboard.html'">
                     <i class="fas fa-chart-pie"></i> Dashboard
@@ -453,7 +477,7 @@
                 <div class="menu-item" onclick="window.location.href='newDoctor.html'">
                     <i class="fas fa-user-md"></i> Doctors
                 </div>
-                <div class="menu-item" onclick="window.location.href='appointments.html'">
+                <div class="menu-item" onclick="window.location.href='newAppointment.html'">
                     <i class="fas fa-calendar-check"></i> Appointments
                 </div>
                 <div class="menu-item active" onclick="window.location.href='reports.html'">
@@ -471,7 +495,12 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="main-header">
-                <h1>Reports & Analytics</h1>
+                <h1>
+                    Reports & Analytics 
+                    <span class="live-badge">
+                        <i class="fas fa-circle"></i> LIVE
+                    </span>
+                </h1>
                 <div class="date-badge" id="currentDate"></div>
             </div>
 
@@ -645,6 +674,7 @@
         let db;
         let auth;
         let revenueChart, statusChart, doctorRevenueChart, typeChart;
+        let currentStartDate, currentEndDate;
         
         try {
             if (!firebase.apps.length) {
@@ -686,6 +716,9 @@
             
             document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
             document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+            
+            currentStartDate = startDate;
+            currentEndDate = endDate;
         }
 
         // Reset date range
@@ -695,6 +728,7 @@
             
             // Update active tab
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
+            document.querySelector('.filter-tab').classList.add('active');
         }
 
         // Set date range based on filter
@@ -722,6 +756,9 @@
             
             document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
             document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
+            
+            currentStartDate = startDate;
+            currentEndDate = endDate;
             
             // Update active tab
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
@@ -799,6 +836,9 @@
                 const completionRate = appointments.length > 0 ? Math.round((completedCount / appointments.length) * 100) : 0;
                 document.getElementById('completionRate').textContent = `${completionRate}%`;
 
+                // Update trends (compare with previous period)
+                updateTrends(appointments.length, totalRevenue, avgFee, completionRate);
+
                 // Update charts
                 updateRevenueChart(revenueByDay);
                 updateStatusChart(statusCount);
@@ -815,6 +855,73 @@
                 console.error("❌ Error loading reports:", error);
                 showNotification("Error loading reports: " + error.message, "error");
             }
+        }
+
+        // ==================== UPDATE TRENDS ====================
+        async function updateTrends(currentAppointments, currentRevenue, currentAvgFee, currentCompletionRate) {
+            try {
+                // Calculate previous period
+                const startDate = new Date(document.getElementById('startDate').value);
+                const endDate = new Date(document.getElementById('endDate').value);
+                const periodLength = endDate - startDate;
+                
+                const prevStart = new Date(startDate.getTime() - periodLength);
+                const prevEnd = new Date(startDate.getTime() - 1);
+                
+                const appointmentsSnapshot = await db.collection('appointments').get();
+                
+                let prevAppointments = 0;
+                let prevRevenue = 0;
+                let prevCompleted = 0;
+                
+                appointmentsSnapshot.forEach(doc => {
+                    const apt = doc.data();
+                    let aptDate = apt.date;
+                    
+                    if (aptDate && aptDate.toDate) {
+                        aptDate = aptDate.toDate();
+                    }
+                    
+                    if (aptDate && aptDate >= prevStart && aptDate <= prevEnd) {
+                        prevAppointments++;
+                        if (apt.status === 'Completed' && apt.fee) {
+                            prevRevenue += apt.fee;
+                            prevCompleted++;
+                        }
+                    }
+                });
+                
+                const prevAvgFee = prevAppointments > 0 ? prevRevenue / prevAppointments : 0;
+                const prevCompletionRate = prevAppointments > 0 ? (prevCompleted / prevAppointments) * 100 : 0;
+                
+                // Calculate and display trends
+                displayTrend('revenueTrend', currentRevenue, prevRevenue);
+                displayTrend('appointmentsTrend', currentAppointments, prevAppointments);
+                displayTrend('avgFeeTrend', currentAvgFee, prevAvgFee);
+                displayTrend('completionTrend', currentCompletionRate, prevCompletionRate, '%');
+                
+            } catch (error) {
+                console.error("Error calculating trends:", error);
+            }
+        }
+
+        function displayTrend(elementId, current, previous, suffix = '') {
+            const element = document.getElementById(elementId);
+            if (previous === 0) {
+                element.innerHTML = '';
+                return;
+            }
+            
+            const change = ((current - previous) / previous) * 100;
+            const isPositive = change > 0;
+            
+            element.innerHTML = `
+                <span class="${isPositive ? 'trend-up' : 'trend-down'}">
+                    <i class="fas fa-${isPositive ? 'arrow-up' : 'arrow-down'}"></i>
+                    ${Math.abs(change).toFixed(1)}% ${suffix}
+                </span>
+                vs previous period
+            `;
         }
 
         // ==================== UPDATE CHARTS ====================
@@ -1108,11 +1215,31 @@
             setDefaultDateRange();
             loadReports();
             
-            // Set up real-time listener
+            // Set up real-time listeners for live updates
             if (db) {
+                // Listen for appointments changes
                 db.collection('appointments').onSnapshot(() => {
                     console.log("Appointments changed, reloading reports...");
                     loadReports();
+                    showNotification("📊 Reports updated with latest data", "success");
+                }, (error) => {
+                    console.log("Appointment listener error:", error);
+                });
+                
+                // Listen for patients changes (affects patient names)
+                db.collection('patients').onSnapshot(() => {
+                    console.log("Patients changed, reloading reports...");
+                    loadReports();
+                }, (error) => {
+                    console.log("Patient listener error:", error);
+                });
+                
+                // Listen for doctors changes (affects doctor names)
+                db.collection('doctors').onSnapshot(() => {
+                    console.log("Doctors changed, reloading reports...");
+                    loadReports();
+                }, (error) => {
+                    console.log("Doctor listener error:", error);
                 });
             }
         });
