@@ -314,24 +314,6 @@
             color: #b34040;
         }
 
-        /* Add Data Button */
-        .add-data-btn {
-            background: #1e4b6e;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 30px;
-            font-size: 13px;
-            font-weight: 500;
-            cursor: pointer;
-            margin-left: 12px;
-            transition: background 0.2s;
-        }
-
-        .add-data-btn:hover {
-            background: #0d3250;
-        }
-
         /* Notification */
         .notification {
             position: fixed;
@@ -416,9 +398,6 @@
             <div class="section-header">
                 <div class="recent-title">📋 Recent Appointments</div>
                 <div>
-                    <button class="add-data-btn" id="addSampleDataBtn">
-                        <i class="fas fa-plus"></i> Add Sample Data
-                    </button>
                     <span class="view-all" onclick="loadDashboardData()">
                         <i class="fas fa-sync-alt"></i> Refresh
                     </span>
@@ -587,7 +566,7 @@
                 appointmentsBody.innerHTML = '';
 
                 if (recentAppointmentsQuery.empty) {
-                    appointmentsBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 No appointments found. Click "Add Sample Data" to get started.</td></tr>';
+                    appointmentsBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 No appointments found.</td></tr>';
                 } else {
                     recentAppointmentsQuery.forEach(doc => {
                         const apt = doc.data();
@@ -644,108 +623,6 @@
             }
         }
 
-        // ==================== ADD SAMPLE DATA ====================
-        async function addSampleData() {
-            try {
-                showNotification("Adding sample data...", "success");
-                
-                // Add sample patients
-                const patients = [
-                    { name: 'Ravi Kumar', age: 35, gender: 'Male', phone: '9876543210', email: 'ravi.k@email.com', bloodGroup: 'O+', address: 'Delhi', status: 'Active', registeredDate: new Date().toISOString() },
-                    { name: 'Meena Sharma', age: 28, gender: 'Female', phone: '9876543211', email: 'meena.s@email.com', bloodGroup: 'B+', address: 'Mumbai', status: 'Active', registeredDate: new Date().toISOString() },
-                    { name: 'Suresh Patel', age: 42, gender: 'Male', phone: '9876543212', email: 'suresh.p@email.com', bloodGroup: 'A+', address: 'Bangalore', status: 'Active', registeredDate: new Date().toISOString() }
-                ];
-
-                for (const patient of patients) {
-                    await db.collection('patients').add(patient);
-                }
-
-                // Add sample doctors
-                const doctors = [
-                    { name: 'Dr. Arjun Mehta', specialization: 'Cardiology', experience: 12, phone: '9876543220', email: 'dr.arjun@hospital.com', qualification: 'MD, DM', fee: 1500, availableDays: ['Monday', 'Wednesday', 'Friday'] },
-                    { name: 'Dr. Priya Kapoor', specialization: 'Pediatrics', experience: 8, phone: '9876543221', email: 'dr.priya@hospital.com', qualification: 'MD', fee: 1200, availableDays: ['Tuesday', 'Thursday', 'Saturday'] },
-                    { name: 'Dr. Raj Verma', specialization: 'Orthopedics', experience: 15, phone: '9876543222', email: 'dr.raj@hospital.com', qualification: 'MS, MCh', fee: 1800, availableDays: ['Monday', 'Tuesday', 'Thursday'] }
-                ];
-
-                for (const doctor of doctors) {
-                    await db.collection('doctors').add(doctor);
-                }
-
-                // Add sample appointments
-                const today = new Date();
-                const tomorrow = new Date(today);
-                tomorrow.setDate(tomorrow.getDate() + 1);
-                const yesterday = new Date(today);
-                yesterday.setDate(yesterday.getDate() - 1);
-                
-                const appointments = [
-                    {
-                        patientName: 'Ravi Kumar',
-                        doctorName: 'Dr. Arjun Mehta',
-                        patientId: 'sample1',
-                        doctorId: 'sample1',
-                        date: today,
-                        time: '10:30 AM',
-                        type: 'Consultation',
-                        status: 'Completed',
-                        fee: 1500,
-                        paymentStatus: 'Paid',
-                        symptoms: 'Chest pain and shortness of breath'
-                    },
-                    {
-                        patientName: 'Meena Sharma',
-                        doctorName: 'Dr. Priya Kapoor',
-                        patientId: 'sample2',
-                        doctorId: 'sample2',
-                        date: today,
-                        time: '11:45 AM',
-                        type: 'Follow-up',
-                        status: 'Pending',
-                        fee: 1200,
-                        paymentStatus: 'Pending',
-                        symptoms: 'Fever and cough for 3 days'
-                    },
-                    {
-                        patientName: 'Suresh Patel',
-                        doctorName: 'Dr. Raj Verma',
-                        patientId: 'sample3',
-                        doctorId: 'sample3',
-                        date: tomorrow,
-                        time: '02:00 PM',
-                        type: 'Checkup',
-                        status: 'Scheduled',
-                        fee: 1800,
-                        paymentStatus: 'Pending',
-                        symptoms: 'Knee pain after running'
-                    },
-                    {
-                        patientName: 'Ravi Kumar',
-                        doctorName: 'Dr. Raj Verma',
-                        patientId: 'sample1',
-                        doctorId: 'sample3',
-                        date: yesterday,
-                        time: '09:15 AM',
-                        type: 'Emergency',
-                        status: 'Cancelled',
-                        fee: 0,
-                        paymentStatus: 'Waived',
-                        symptoms: 'Emergency consultation - cancelled'
-                    }
-                ];
-
-                for (const apt of appointments) {
-                    await db.collection('appointments').add(apt);
-                }
-
-                showNotification("✅ Sample data added successfully!");
-                await loadDashboardData();
-
-            } catch (error) {
-                console.error("❌ Error adding sample data:", error);
-                showNotification("Error adding data: " + error.message, "error");
-            }
-        }
-
         // ==================== AUTO-LOGIN ANONYMOUSLY ====================
         function autoLogin() {
             auth.signInAnonymously()
@@ -787,13 +664,6 @@
                 }).catch(error => {
                     showNotification("Error logging out: " + error.message, "error");
                 });
-            }
-        });
-
-        // Add Sample Data Button
-        document.getElementById('addSampleDataBtn').addEventListener('click', async function() {
-            if (confirm('This will add sample patients, doctors, and appointments. Continue?')) {
-                await addSampleData();
             }
         });
 
