@@ -728,15 +728,24 @@
         };
 
         // Initialize Firebase
+        let db;
         try {
-            firebase.initializeApp(firebaseConfig);
-            console.log("Firebase initialized");
+            // Check if Firebase is already initialized
+            if (!firebase.apps.length) {
+                firebase.initializeApp(firebaseConfig);
+            }
+            db = firebase.firestore();
+            
+            // Disable deprecated features
+            db.settings({
+                ignoreUndefinedProperties: true
+            });
+            
+            console.log("✅ Firebase initialized successfully");
         } catch (error) {
-            console.error("Firebase init error:", error);
-            showNotification("Firebase configuration error", "error");
+            console.error("❌ Firebase initialization error:", error);
+            showNotification("Firebase configuration error: " + error.message, "error");
         }
-        
-        const db = firebase.firestore();
 
         // Helper Functions
         function showNotification(message, type = "success") {
@@ -756,8 +765,10 @@
             year: 'numeric'
         });
 
-        // Load Dashboard Stats with timeout
+        // Load Dashboard Stats
         async function loadStats() {
+            if (!db) return;
+            
             try {
                 const patientsSnapshot = await db.collection('patients').get();
                 document.getElementById('totalPatients').textContent = patientsSnapshot.size;
@@ -773,32 +784,7 @@
             }
         }
 
-        // Additional JavaScript validation to prevent pasting/dropping
-        document.getElementById('patientName').addEventListener('keydown', function(e) {
-            // Prevent any key that's not a letter or space
-            const key = e.key;
-            if (!/^[a-zA-Z\s]$/.test(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
-                e.preventDefault();
-            }
-        });
-
-        document.getElementById('phone').addEventListener('keydown', function(e) {
-            // Prevent any key that's not a number
-            const key = e.key;
-            if (!/^[0-9]$/.test(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
-                e.preventDefault();
-            }
-        });
-
-        document.getElementById('emergencyContact').addEventListener('keydown', function(e) {
-            // Prevent any key that's not a number
-            const key = e.key;
-            if (!/^[0-9]$/.test(key) && key !== 'Backspace' && key !== 'Delete' && key !== 'ArrowLeft' && key !== 'ArrowRight' && key !== 'Tab') {
-                e.preventDefault();
-            }
-        });
-
-        // Validation Functions
+        // Validation Functions (keep all your existing validation functions)
         function validateName(name) {
             const nameError = document.getElementById('nameError');
             const nameInput = document.getElementById('patientName');
@@ -1013,6 +999,12 @@
         document.getElementById('patientForm').addEventListener('submit', async function(event) {
             event.preventDefault();
 
+            // Check if db is initialized
+            if (!db) {
+                showNotification("Firebase not initialized. Please refresh.", "error");
+                return;
+            }
+
             // Get form values
             const patientName = document.getElementById("patientName").value;
             const age = document.getElementById("age").value;
@@ -1062,7 +1054,7 @@
             }, 5000);
 
             try {
-                // Save to Firestore
+                // Prepare patient data
                 const patientData = {
                     name: patientName.trim(),
                     age: parseInt(age),
@@ -1073,12 +1065,17 @@
                     emergencyContact: emergencyContact.trim(),
                     address: address.trim(),
                     medicalNotes: medicalNotes && medicalNotes.trim() ? medicalNotes.trim() : null,
-                    registeredDate: new Date(),
-                    status: "Active"
+                    registeredDate: new Date().toISOString(),
+                    status: "Active",
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
                 };
 
+                console.log("Saving patient data:", patientData);
+
                 // Save to Firestore
-                await db.collection('patients').add(patientData);
+                const docRef = await db.collection('patients').add(patientData);
+                
+                console.log("Patient saved with ID:", docRef.id);
 
                 // Clear timeout warning
                 clearTimeout(timeoutId);
@@ -1099,8 +1096,12 @@
                 document.getElementById("address").value = "";
                 document.getElementById("medicalNotes").value = "";
 
-                // Update stats on current page
-                await loadStats();
+                // Update stats
+                try {
+                    await loadStats();
+                } catch (e) {
+                    console.log("Stats update failed:", e);
+                }
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(() => {
@@ -1112,17 +1113,22 @@
                 clearTimeout(timeoutId);
                 timeoutWarning.classList.remove('show');
                 
-                console.error("Error adding patient:", error);
+                console.error("❌ Error adding patient:", error);
                 
-                // Show specific error message
+                // Show detailed error message
+                let errorMsg = "Failed to register patient. ";
+                
                 if (error.code === 'permission-denied') {
-                    errorSpan.textContent = "Permission denied. You don't have access to save data.";
+                    errorMsg = "Permission denied! Please check Firestore Security Rules. Go to Firebase Console → Firestore Database → Rules and set: allow read, write: if true;";
                 } else if (error.code === 'unavailable') {
-                    errorSpan.textContent = "Network error. Please check your internet connection.";
+                    errorMsg = "Network error. Please check your internet connection.";
+                } else if (error.code === 'not-found') {
+                    errorMsg = "Firestore database not found. Please create the database in Firebase Console.";
                 } else {
-                    errorSpan.textContent = "Failed to register patient. Please try again.";
+                    errorMsg += error.message;
                 }
                 
+                errorSpan.textContent = errorMsg;
                 errorDiv.classList.add('show');
                 showNotification("Error adding patient", "error");
                 
@@ -1131,6 +1137,37 @@
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Patient';
             }
         });
+
+        // Test Firebase connection
+        async function testFirebaseConnection() {
+            if (!db) {
+                console.error("Firebase not initialized");
+                return;
+            }
+            
+            try {
+                // Try to write a test document
+                const testRef = db.collection('_test_').doc('connection_test');
+                await testRef.set({ 
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+                    message: "Connection test" 
+                });
+                console.log("✅ Firebase write test successful");
+                
+                // Clean up
+                await testRef.delete();
+                
+                showNotification("Firebase connection successful!", "success");
+            } catch (error) {
+                console.error("❌ Firebase write test failed:", error);
+                
+                if (error.code === 'permission-denied') {
+                    showNotification("⚠️ Permission denied! Update Firestore Rules.", "error");
+                } else {
+                    showNotification("Firebase connection failed: " + error.message, "error");
+                }
+            }
+        }
 
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', function() {
@@ -1142,21 +1179,14 @@
             }
         });
 
-        // Test Firebase connection on load
-        async function testConnection() {
-            try {
-                await db.collection('patients').limit(1).get();
-                console.log("Firebase connection successful");
-            } catch (error) {
-                console.error("Firebase connection failed:", error);
-                showNotification("Cannot connect to database. Check your connection.", "error");
-            }
-        }
-
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
-            testConnection();
             loadStats();
+            
+            // Test connection after a short delay
+            setTimeout(() => {
+                testFirebaseConnection();
+            }, 1000);
         });
     </script>
 </body>
