@@ -62,24 +62,6 @@
       margin-top: 4px;
     }
 
-    .welcome-text {
-      margin-bottom: 20px;
-      padding-bottom: 16px;
-      border-bottom: 1px solid #e0e8f0;
-    }
-
-    .welcome-text h2 {
-      font-size: 18px;
-      font-weight: 600;
-      color: #1b3149;
-      margin-bottom: 4px;
-    }
-
-    .welcome-text p {
-      color: #4f6b8a;
-      font-size: 13px;
-    }
-
     .input-group {
       margin-bottom: 16px;
     }
@@ -104,11 +86,12 @@
       color: #8fa3bc;
       font-size: 14px;
       transition: color 0.2s;
+      z-index: 1;
     }
 
     .input-wrapper input {
       width: 100%;
-      padding: 10px 14px 10px 42px;
+      padding: 10px 40px 10px 42px;
       border: 1.5px solid #e2ebf6;
       border-radius: 12px;
       font-size: 14px;
@@ -134,9 +117,29 @@
       font-size: 13px;
     }
 
-    .input-wrapper input[type="email"] {
-      font-weight: 500;
-      color: #1e3349;
+    /* Password toggle button */
+    .password-toggle {
+      position: absolute;
+      right: 12px;
+      color: #8fa3bc;
+      cursor: pointer;
+      font-size: 16px;
+      transition: color 0.2s;
+      z-index: 2;
+      background: transparent;
+      border: none;
+      padding: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .password-toggle:hover {
+      color: #1e4b6e;
+    }
+
+    .password-toggle:focus {
+      outline: none;
     }
 
     .forgot-password {
@@ -258,7 +261,7 @@
       }
       
       .input-wrapper input {
-        padding: 8px 12px 8px 38px;
+        padding: 8px 40px 8px 38px;
         height: 38px;
       }
     }
@@ -273,11 +276,6 @@
         <p>Management System</p>
       </div>
 
-      <!-- <div class="welcome-text">
-        <h2>Welcome Back!</h2>
-        <p>Sign in to access your dashboard</p>
-      </div> -->
-
       <form onsubmit="return handleLogin(event)">
         <div class="input-group">
           <label class="input-label">Email Address</label>
@@ -291,7 +289,10 @@
           <label class="input-label">Password</label>
           <div class="input-wrapper">
             <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="" value="">
+            <input type="password" id="password" placeholder="Enter password" value="">
+            <button type="button" class="password-toggle" id="togglePassword" onclick="togglePasswordVisibility()" tabindex="-1">
+              <i class="far fa-eye" id="toggleIcon"></i>
+            </button>
           </div>
         </div>
 
@@ -320,6 +321,24 @@
       </div>
     </div>
   </div>
+
+  <script>
+    // Global function for password toggle
+    window.togglePasswordVisibility = function() {
+      const passwordInput = document.getElementById('password');
+      const toggleIcon = document.getElementById('toggleIcon');
+      
+      if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+      } else {
+        passwordInput.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+      }
+    };
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
@@ -354,7 +373,6 @@
           sessionStorage.setItem('userEmail', user.email);
           sessionStorage.setItem('userName', email.split('@')[0]);
           
-         // alert("✓ Login Successful!");
           window.location.href = "dashboard.html";
         })
         .catch((error) => {
