@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NoteShare - Settings</title>
+  <!-- Font Awesome 6 for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- Google Fonts for Inter font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f5f7fb;
+    }
+
+    /* Header/Navigation */
+    .header {
+      background-color: white;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0.8rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+    }
+
+    .logo i {
+      color: #b8933c;
+      font-size: 1.8rem;
+    }
+
+    .logo span {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #0b2b4a;
+      letter-spacing: -0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #4a5b6e;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .nav-links a:hover {
+      color: #b8933c;
+    }
+
+    .nav-links a.active {
+      color: #b8933c;
+      font-weight: 600;
+    }
+
+    .user-profile {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding-left: 1rem;
+      border-left: 2px solid #eaeef4;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .user-info {
+      text-align: right;
+    }
+
+    .user-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0b2b4a;
+    }
+
+    .user-role {
+      font-size: 0.7rem;
+      color: #7f8fa3;
+    }
+
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #0b2b4a, #1e3a5f);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: 600;
+      font-size: 1.2rem;
+      box-shadow: 0 2px 8px rgba(11, 43, 74, 0.2);
+    }
+
+    /* Dropdown Menu */
+    .dropdown-menu {
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background: white;
+      border-radius: 12px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 200px;
+      padding: 0.5rem;
+      display: none;
+      z-index: 1000;
+    }
+
+    .dropdown-menu.show {
+      display: block;
+    }
+
+    .dropdown-item {
+      padding: 0.8rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      color: #2c425c;
+      text-decoration: none;
+      font-size: 0.9rem;
+      border-radius: 8px;
+      transition: background 0.2s;
+      cursor: pointer;
+    }
+
+    .dropdown-item:hover {
+      background: #f5f7fb;
+    }
+
+    .dropdown-item i {
+      color: #b8933c;
+      width: 20px;
+    }
+
+    .dropdown-divider {
+      height: 1px;
+      background: #eaeef4;
+      margin: 0.5rem 0;
+    }
+
+    /* Main Content */
+    .main-content {
+      max-width: 1200px;
+      margin: 6rem auto 2rem;
+      padding: 0 2rem;
+    }
+
+    /* Page Header */
+    .page-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #0b2b4a;
+    }
+
+    .page-header p {
+      color: #7f8fa3;
+      margin-top: 0.3rem;
+    }
+
+    .save-btn {
+      background: #0b2b4a;
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .save-btn:hover {
+      background: #123a60;
+    }
+
+    /* Settings Container */
+    .settings-container {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 2rem;
+    }
+
+    /* Settings Sidebar */
+    .settings-sidebar {
+      background: white;
+      border-radius: 20px;
+      padding: 1.5rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+      height: fit-content;
+    }
+
+    .settings-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .settings-nav-item {
+      padding: 1rem 1.2rem;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: #4a5b6e;
+      text-decoration: none;
+      font-weight: 500;
+      transition: all 0.2s;
+      cursor: pointer;
+    }
+
+    .settings-nav-item i {
+      width: 24px;
+      color: #9aaec5;
+      font-size: 1.1rem;
+      transition: color 0.2s;
+    }
+
+    .settings-nav-item:hover {
+      background: #f5f7fb;
+      color: #0b2b4a;
+    }
+
+    .settings-nav-item:hover i {
+      color: #b8933c;
+    }
+
+    .settings-nav-item.active {
+      background: #f0f4fa;
+      color: #0b2b4a;
+    }
+
+    .settings-nav-item.active i {
+      color: #b8933c;
+    }
+
+    /* Settings Content */
+    .settings-content {
+      background: white;
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    }
+
+    .settings-section {
+      display: none;
+    }
+
+    .settings-section.active {
+      display: block;
+    }
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: #0b2b4a;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #eaeef4;
+    }
+
+    /* Form Styles */
+    .settings-form {
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 600;
+      font-size: 0.9rem;
+      color: #1e3a5f;
+      margin-bottom: 0.5rem;
+    }
+
+    .form-input {
+      width: 100%;
+      background-color: #f8fafd;
+      border: 1.5px solid #e1e8f0;
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+      color: #0b2b4a;
+      outline: none;
+      transition: all 0.15s ease;
+    }
+
+    .form-input:focus {
+      border-color: #b8933c;
+      box-shadow: 0 0 0 4px rgba(184, 147, 60, 0.15);
+      background-color: #ffffff;
+    }
+
+    .form-input:disabled {
+      background-color: #f0f2f5;
+      color: #7f8fa3;
+      cursor: not-allowed;
+    }
+
+    .form-select {
+      width: 100%;
+      background-color: #f8fafd;
+      border: 1.5px solid #e1e8f0;
+      border-radius: 12px;
+      padding: 0.8rem 1.2rem;
+      font-size: 0.95rem;
+      color: #0b2b4a;
+      outline: none;
+      transition: all 0.15s ease;
+      appearance: none;
+      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aaec5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+      background-repeat: no-repeat;
+      background-position: right 15px center;
+      background-size: 12px;
+    }
+
+    .form-select:focus {
+      border-color: #b8933c;
+      box-shadow: 0 0 0 4px rgba(184, 147, 60, 0.15);
+      background-color: #ffffff;
+    }
+
+    .form-text {
+      font-size: 0.8rem;
+      color: #7f8fa3;
+      margin-top: 0.3rem;
+    }
+
+    /* Toggle Switch */
+    .toggle-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid #eaeef4;
+    }
+
+    .toggle-item:last-child {
+      border-bottom: none;
+    }
+
+    .toggle-info h4 {
+      font-size: 1rem;
+      font-weight: 600;
+      color: #0b2b4a;
+      margin-bottom: 0.2rem;
+    }
+
+    .toggle-info p {
+      font-size: 0.85rem;
+      color: #7f8fa3;
+    }
+
+    .toggle-switch {
+      position: relative;
+      display: inline-block;
+      width: 52px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #e1e8f0;
+      transition: 0.3s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: white;
+      transition: 0.3s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: #b8933c;
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(26px);
+    }
+
+    /* Danger Zone */
+    .danger-zone {
+      margin-top: 2rem;
+      padding: 1.5rem;
+      background: #fff5f5;
+      border-radius: 16px;
+      border: 1px solid #ffcdd2;
+    }
+
+    .danger-zone h3 {
+      color: #d32f2f;
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+    }
+
+    .danger-btn {
+      background: #d32f2f;
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 40px;
+      font-weight: 600;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .danger-btn:hover {
+      background: #b71c1c;
+    }
+
+    .danger-btn.secondary {
+      background: transparent;
+      color: #d32f2f;
+      border: 1.5px solid #d32f2f;
+    }
+
+    .danger-btn.secondary:hover {
+      background: #ffebee;
+    }
+
+    /* Success Message */
+    .success-message {
+      background: #e8f5e9;
+      color: #2e7d32;
+      padding: 1rem;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 0.95rem;
+    }
+
+    .success-message i {
+      font-size: 1.2rem;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .settings-container {
+        grid-template-columns: 1fr;
+      }
+      
+      .nav-links {
+        display: none;
+      }
+      
+      .page-header {
+        flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header -->
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo" onclick="redirectToDashboard()">
+        <i class="fas fa-graduation-cap"></i>
+        <span>NoteShare</span>
+      </div>
+      
+      <div class="nav-links">
+        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
+        <a href="#"><i class="fas fa-book-open"></i> My Notes</a>
+        <a href="#"><i class="fas fa-share-alt"></i> Shared with Me</a>
+        <a href="#"><i class="fas fa-star"></i> Favorites</a>
+        <a href="#" class="active"><i class="fas fa-cog"></i> Settings</a>
+      </div>
+      
+      <div class="user-profile" onclick="toggleDropdown()">
+        <div class="user-info">
+          <div class="user-name" id="displayName">Loading...</div>
+          <div class="user-role" id="userDepartment">Loading...</div>
+        </div>
+        <div class="user-avatar" id="userInitials">U</div>
+        
+        <!-- Dropdown Menu -->
+        <div class="dropdown-menu" id="dropdownMenu">
+          <a href="dashboard.html" class="dropdown-item">
+            <i class="fas fa-home"></i> Dashboard
+          </a>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-user"></i> Profile
+          </a>
+          <a href="settings.html" class="dropdown-item">
+            <i class="fas fa-cog"></i> Settings
+          </a>
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-item" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-content">
+    <!-- Page Header -->
+    <div class="page-header">
+      <div>
+        <h1>Settings</h1>
+        <p>Manage your account preferences and security</p>
+      </div>
+      <button class="save-btn" onclick="saveSettings()">
+        <i class="fas fa-save"></i> Save Changes
+      </button>
+    </div>
+
+    <!-- Success Message (hidden by default) -->
+    <div class="success-message" id="successMessage" style="display: none;">
+      <i class="fas fa-check-circle"></i>
+      <span id="successText">Settings saved successfully!</span>
+    </div>
+
+    <!-- Settings Container -->
+    <div class="settings-container">
+      <!-- Settings Sidebar Navigation -->
+      <div class="settings-sidebar">
+        <div class="settings-nav">
+          <div class="settings-nav-item active" onclick="switchSection('profile')">
+            <i class="fas fa-user"></i>
+            Profile Information
+          </div>
+          <div class="settings-nav-item" onclick="switchSection('account')">
+            <i class="fas fa-lock"></i>
+            Account Security
+          </div>
+          <div class="settings-nav-item" onclick="switchSection('notifications')">
+            <i class="fas fa-bell"></i>
+            Notifications
+          </div>
+          <div class="settings-nav-item" onclick="switchSection('privacy')">
+            <i class="fas fa-shield-alt"></i>
+            Privacy
+          </div>
+          <div class="settings-nav-item" onclick="switchSection('appearance')">
+            <i class="fas fa-palette"></i>
+            Appearance
+          </div>
+          <div class="settings-nav-item" onclick="switchSection('preferences')">
+            <i class="fas fa-sliders-h"></i>
+            Study Preferences
+          </div>
+          <div class="settings-nav-item" onclick="switchSection('danger')">
+            <i class="fas fa-exclamation-triangle"></i>
+            Danger Zone
+          </div>
+        </div>
+      </div>
+
+      <!-- Settings Content -->
+      <div class="settings-content">
+        <!-- Profile Information Section -->
+        <div class="settings-section active" id="profile-section">
+          <h2 class="section-title">Profile Information</h2>
+          <div class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-input" id="fullName" placeholder="Enter your full name" onkeypress="restrictFullName(event)">
+              <div class="form-text">Only letters and spaces allowed</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Email Address</label>
+              <input type="email" class="form-input" id="email" placeholder="Enter your email">
+              <div class="form-text">We'll never share your email with anyone else</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Department</label>
+              <select class="form-select" id="department">
+                <option value="Computer Science">Computer Science</option>
+                <option value="Electrical Engineering">Electrical Engineering</option>
+                <option value="Mechanical Engineering">Mechanical Engineering</option>
+                <option value="Civil Engineering">Civil Engineering</option>
+                <option value="Electronics Engineering">Electronics Engineering</option>
+                <option value="Information Technology">Information Technology</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Student ID</label>
+              <input type="text" class="form-input" id="studentId" placeholder="Enter your student ID" disabled>
+              <div class="form-text">Student ID cannot be changed</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Bio</label>
+              <textarea class="form-input" id="bio" rows="4" placeholder="Tell us a bit about yourself"></textarea>
+              <div class="form-text">Maximum 200 characters</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Account Security Section -->
+        <div class="settings-section" id="account-section">
+          <h2 class="section-title">Account Security</h2>
+          <div class="settings-form">
+            <div class="form-group">
+              <label class="form-label">Current Password</label>
+              <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">New Password</label>
+              <input type="password" class="form-input" id="newPassword" placeholder="Enter new password">
+              <div class="form-text">Minimum 8 characters with at least one number and one letter</div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Confirm New Password</label>
+              <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Two-Factor Authentication</label>
+              <div class="toggle-item">
+                <div class="toggle-info">
+                  <h4>Enable 2FA</h4>
+                  <p>Add an extra layer of security to your account</p>
+                </div>
+                <label class="toggle-switch">
+                  <input type="checkbox" id="twoFactor">
+                  <span class="toggle-slider"></span>
+                </label>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label">Login Sessions</label>
+              <div style="background: #f5f7fb; padding: 1rem; border-radius: 12px;">
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                  <span><i class="fas fa-laptop" style="color: #b8933c;"></i> Current Session</span>
+                  <span style="color: #2e7d32; font-size: 0.85rem;">Active Now</span>
+                </div>
+                <div style="display: flex; justify-content: space-between;">
+                  <span><i class="fas fa-mobile-alt" style="color: #7f8fa3;"></i> Mobile App</span>
+                  <span style="color: #7f8fa3; font-size: 0.85rem;">2 days ago</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Notifications Section -->
+        <div class="settings-section" id="notifications-section">
+          <h2 class="section-title">Notification Preferences</h2>
+          
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Email Notifications</h4>
+              <p>Receive updates via email</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="emailNotifications" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Push Notifications</h4>
+              <p>Receive browser notifications</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="pushNotifications" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>New Note Uploads</h4>
+              <p>Get notified when new notes are uploaded in your department</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="newNotesNotify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Comments & Replies</h4>
+              <p>Get notified when someone comments on your notes</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="commentsNotify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Study Group Updates</h4>
+              <p>Notifications about study group activities</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="groupNotify" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Privacy Section -->
+        <div class="settings-section" id="privacy-section">
+          <h2 class="section-title">Privacy Settings</h2>
+          
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Profile Visibility</h4>
+              <p>Allow other students to see your profile</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="profileVisibility" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Show Email</h4>
+              <p>Display your email on your profile</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="showEmail">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Public Notes</h4>
+              <p>Make your uploaded notes visible to everyone</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="publicNotes" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Activity Status</h4>
+              <p>Show when you're active on the platform</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="activityStatus" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="form-group" style="margin-top: 2rem;">
+            <label class="form-label">Blocked Users</label>
+            <div style="background: #f5f7fb; padding: 1rem; border-radius: 12px; text-align: center; color: #7f8fa3;">
+              <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
+              <p>You haven't blocked any users</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Appearance Section -->
+        <div class="settings-section" id="appearance-section">
+          <h2 class="section-title">Appearance</h2>
+          
+          <div class="form-group">
+            <label class="form-label">Theme</label>
+            <select class="form-select" id="theme">
+              <option value="light">Light Mode</option>
+              <option value="dark">Dark Mode</option>
+              <option value="system">System Default</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Font Size</label>
+            <select class="form-select" id="fontSize">
+              <option value="small">Small</option>
+              <option value="medium" selected>Medium</option>
+              <option value="large">Large</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Color Accent</label>
+            <div style="display: flex; gap: 1rem;">
+              <div style="width: 40px; height: 40px; background: #b8933c; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#b8933c')"></div>
+              <div style="width: 40px; height: 40px; background: #0b2b4a; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#0b2b4a')"></div>
+              <div style="width: 40px; height: 40px; background: #2e7d32; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#2e7d32')"></div>
+              <div style="width: 40px; height: 40px; background: #b71c1c; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#b71c1c')"></div>
+              <div style="width: 40px; height: 40px; background: #5e35b1; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#5e35b1')"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Study Preferences Section -->
+        <div class="settings-section" id="preferences-section">
+          <h2 class="section-title">Study Preferences</h2>
+          
+          <div class="form-group">
+            <label class="form-label">Preferred Study Time</label>
+            <select class="form-select" id="studyTime">
+              <option value="morning">Morning (6 AM - 12 PM)</option>
+              <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
+              <option value="evening">Evening (5 PM - 10 PM)</option>
+              <option value="night">Night (10 PM - 6 AM)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Default Department Filter</label>
+            <select class="form-select" id="defaultDept">
+              <option value="all">All Departments</option>
+              <option value="cs">Computer Science</option>
+              <option value="ee">Electrical Engineering</option>
+              <option value="me">Mechanical Engineering</option>
+              <option value="ce">Civil Engineering</option>
+            </select>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Study Reminders</h4>
+              <p>Get daily reminders for study sessions</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="studyReminders" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+
+          <div class="toggle-item">
+            <div class="toggle-info">
+              <h4>Auto-save Notes</h4>
+              <p>Automatically save notes while you work</p>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="autoSave" checked>
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Danger Zone Section -->
+        <div class="settings-section" id="danger-section">
+          <h2 class="section-title">Danger Zone</h2>
+          
+          <div class="danger-zone">
+            <h3><i class="fas fa-exclamation-triangle"></i> Account Deletion</h3>
+            <p style="color: #5f5f5f; margin-bottom: 1.5rem; font-size: 0.95rem;">
+              Once you delete your account, there is no going back. Please be certain.
+            </p>
+            <div style="display: flex; gap: 1rem;">
+              <button class="danger-btn secondary" onclick="showDeletionConfirm()">
+                <i class="fas fa-trash-alt"></i> Delete Account
+              </button>
+            </div>
+          </div>
+
+          <div class="danger-zone" style="margin-top: 1rem; background: #fff3e0; border-color: #ffe0b2;">
+            <h3 style="color: #e65100;"><i class="fas fa-download"></i> Export Data</h3>
+            <p style="color: #5f5f5f; margin-bottom: 1.5rem; font-size: 0.95rem;">
+              Download all your notes and personal data
+            </p>
+            <button class="danger-btn" style="background: #e65100;" onclick="exportData()">
+              <i class="fas fa-file-export"></i> Export Data
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    // Load user data when page loads
+    window.onload = function() {
+      loadUserData();
+    };
+
+    // Toggle dropdown menu
+    function toggleDropdown() {
+      document.getElementById('dropdownMenu').classList.toggle('show');
+    }
+
+    // Close dropdown when clicking outside
+    window.onclick = function(event) {
+      if (!event.target.matches('.user-profile') && !event.target.matches('.user-profile *')) {
+        const dropdown = document.getElementById('dropdownMenu');
+        if (dropdown.classList.contains('show')) {
+          dropdown.classList.remove('show');
+        }
+      }
+    };
+
+    // Load user data from sessionStorage
+    function loadUserData() {
+      const username = sessionStorage.getItem('currentUser');
+      const department = sessionStorage.getItem('userDepartment') || 'Computer Science';
+      const email = sessionStorage.getItem('userEmail') || 'user@example.com';
+      
+      if (username) {
+        document.getElementById('displayName').textContent = username;
+        document.getElementById('userDepartment').textContent = department;
+        document.getElementById('userInitials').textContent = getInitials(username);
+        
+        // Load profile form data
+        document.getElementById('fullName').value = username;
+        document.getElementById('email').value = email;
+        document.getElementById('department').value = department;
+        document.getElementById('studentId').value = 'STU' + Math.floor(Math.random() * 10000);
+        document.getElementById('bio').value = `Student at ${department}`;
+      } else {
+        window.location.href = 'login.html';
+      }
+    }
+
+    // Restrict full name to letters only
+    function restrictFullName(event) {
+      const char = String.fromCharCode(event.which);
+      if (!/^[a-zA-Z\s]$/.test(char)) {
+        event.preventDefault();
+        return false;
+      }
+      return true;
+    }
+
+    // Get initials from name
+    function getInitials(name) {
+      const nameParts = name.trim().split(' ');
+      if (nameParts.length === 1) {
+        return nameParts[0].charAt(0).toUpperCase();
+      } else {
+        return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
+      }
+    }
+
+    // Switch between settings sections
+    function switchSection(section) {
+      // Remove active class from all nav items and sections
+      document.querySelectorAll('.settings-nav-item').forEach(item => {
+        item.classList.remove('active');
+      });
+      document.querySelectorAll('.settings-section').forEach(s => {
+        s.classList.remove('active');
+      });
+      
+      // Add active class to clicked nav item
+      event.target.closest('.settings-nav-item').classList.add('active');
+      
+      // Show corresponding section
+      document.getElementById(section + '-section').classList.add('active');
+    }
+
+    // Save settings
+    function saveSettings() {
+      const fullName = document.getElementById('fullName').value;
+      const email = document.getElementById('email').value;
+      const department = document.getElementById('department').value;
+      
+      // Validate full name
+      if (!/^[A-Za-z\s]+$/.test(fullName)) {
+        alert('Full name can only contain letters and spaces');
+        return;
+      }
+      
+      // Save to sessionStorage
+      sessionStorage.setItem('currentUser', fullName);
+      sessionStorage.setItem('userDepartment', department);
+      sessionStorage.setItem('userEmail', email);
+      
+      // Show success message
+      const successMsg = document.getElementById('successMessage');
+      successMsg.style.display = 'flex';
+      successMsg.querySelector('span').textContent = 'Settings saved successfully!';
+      
+      // Update header
+      document.getElementById('displayName').textContent = fullName;
+      document.getElementById('userDepartment').textContent = department;
+      document.getElementById('userInitials').textContent = getInitials(fullName);
+      
+      // Hide success message after 3 seconds
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 3000);
+    }
+
+    // Select color
+    function selectColor(color) {
+      // Remove border from all color options
+      document.querySelectorAll('[style*="width: 40px"]').forEach(el => {
+        el.style.border = '3px solid transparent';
+      });
+      
+      // Add border to selected
+      event.target.style.border = '3px solid #b8933c';
+      
+      // Save color preference
+      sessionStorage.setItem('accentColor', color);
+      
+      // Show success message
+      const successMsg = document.getElementById('successMessage');
+      successMsg.style.display = 'flex';
+      successMsg.querySelector('span').textContent = 'Color preference saved!';
+      setTimeout(() => {
+        successMsg.style.display = 'none';
+      }, 2000);
+    }
+
+    // Show deletion confirmation
+    function showDeletionConfirm() {
+      if (confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
+        if (confirm('This will permanently delete all your notes and data. Type "DELETE" to confirm.')) {
+          alert('Account deletion request submitted. You will receive an email confirmation.');
+        }
+      }
+    }
+
+    // Export data
+    function exportData() {
+      alert('Your data export has been started. You will receive an email with download link shortly.');
+    }
+
+    // Redirect to dashboard
+    function redirectToDashboard() {
+      window.location.href = 'dashboard.html';
+    }
+
+    // Logout function
+    function logout() {
+      sessionStorage.clear();
+      window.location.href = 'login.html';
+    }
+  </script>
+</body>
+</html>
