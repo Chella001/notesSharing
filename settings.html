@@ -1,1106 +1,815 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NoteShare - Settings</title>
-  <!-- Font Awesome 6 for icons -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <!-- Google Fonts for Inter font -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', sans-serif;
-    }
-
-    body {
-      background-color: #f5f7fb;
-    }
-
-    /* Header/Navigation */
-    .header {
-      background-color: white;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 100;
-    }
-
-    .nav-container {
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 0.8rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      cursor: pointer;
-    }
-
-    .logo i {
-      color: #b8933c;
-      font-size: 1.8rem;
-    }
-
-    .logo span {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: #0b2b4a;
-      letter-spacing: -0.5px;
-    }
-
-    .nav-links {
-      display: flex;
-      gap: 2rem;
-      align-items: center;
-    }
-
-    .nav-links a {
-      text-decoration: none;
-      color: #4a5b6e;
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: color 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-
-    .nav-links a:hover {
-      color: #b8933c;
-    }
-
-    .nav-links a.active {
-      color: #b8933c;
-      font-weight: 600;
-    }
-
-    .user-profile {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      padding-left: 1rem;
-      border-left: 2px solid #eaeef4;
-      cursor: pointer;
-      position: relative;
-    }
-
-    .user-info {
-      text-align: right;
-    }
-
-    .user-name {
-      font-size: 0.9rem;
-      font-weight: 600;
-      color: #0b2b4a;
-    }
-
-    .user-role {
-      font-size: 0.7rem;
-      color: #7f8fa3;
-    }
-
-    .user-avatar {
-      width: 40px;
-      height: 40px;
-      background: linear-gradient(135deg, #0b2b4a, #1e3a5f);
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: white;
-      font-weight: 600;
-      font-size: 1.2rem;
-      box-shadow: 0 2px 8px rgba(11, 43, 74, 0.2);
-    }
-
-    /* Dropdown Menu */
-    .dropdown-menu {
-      position: absolute;
-      top: 60px;
-      right: 0;
-      background: white;
-      border-radius: 12px;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-      width: 200px;
-      padding: 0.5rem;
-      display: none;
-      z-index: 1000;
-    }
-
-    .dropdown-menu.show {
-      display: block;
-    }
-
-    .dropdown-item {
-      padding: 0.8rem 1rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      color: #2c425c;
-      text-decoration: none;
-      font-size: 0.9rem;
-      border-radius: 8px;
-      transition: background 0.2s;
-      cursor: pointer;
-    }
-
-    .dropdown-item:hover {
-      background: #f5f7fb;
-    }
-
-    .dropdown-item i {
-      color: #b8933c;
-      width: 20px;
-    }
-
-    .dropdown-divider {
-      height: 1px;
-      background: #eaeef4;
-      margin: 0.5rem 0;
-    }
-
-    /* Main Content */
-    .main-content {
-      max-width: 1200px;
-      margin: 6rem auto 2rem;
-      padding: 0 2rem;
-    }
-
-    /* Page Header */
-    .page-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-    }
-
-    .page-header h1 {
-      font-size: 2rem;
-      font-weight: 700;
-      color: #0b2b4a;
-    }
-
-    .page-header p {
-      color: #7f8fa3;
-      margin-top: 0.3rem;
-    }
-
-    .save-btn {
-      background: #0b2b4a;
-      color: white;
-      border: none;
-      padding: 0.8rem 2rem;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .save-btn:hover {
-      background: #123a60;
-    }
-
-    /* Settings Container */
-    .settings-container {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 2rem;
-    }
-
-    /* Settings Sidebar */
-    .settings-sidebar {
-      background: white;
-      border-radius: 20px;
-      padding: 1.5rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-      height: fit-content;
-    }
-
-    .settings-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .settings-nav-item {
-      padding: 1rem 1.2rem;
-      border-radius: 12px;
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-      color: #4a5b6e;
-      text-decoration: none;
-      font-weight: 500;
-      transition: all 0.2s;
-      cursor: pointer;
-    }
-
-    .settings-nav-item i {
-      width: 24px;
-      color: #9aaec5;
-      font-size: 1.1rem;
-      transition: color 0.2s;
-    }
-
-    .settings-nav-item:hover {
-      background: #f5f7fb;
-      color: #0b2b4a;
-    }
-
-    .settings-nav-item:hover i {
-      color: #b8933c;
-    }
-
-    .settings-nav-item.active {
-      background: #f0f4fa;
-      color: #0b2b4a;
-    }
-
-    .settings-nav-item.active i {
-      color: #b8933c;
-    }
-
-    /* Settings Content */
-    .settings-content {
-      background: white;
-      border-radius: 20px;
-      padding: 2rem;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
-    }
-
-    .settings-section {
-      display: none;
-    }
-
-    .settings-section.active {
-      display: block;
-    }
-
-    .section-title {
-      font-size: 1.3rem;
-      font-weight: 600;
-      color: #0b2b4a;
-      margin-bottom: 1.5rem;
-      padding-bottom: 1rem;
-      border-bottom: 2px solid #eaeef4;
-    }
-
-    /* Form Styles */
-    .settings-form {
-      max-width: 600px;
-    }
-
-    .form-group {
-      margin-bottom: 1.5rem;
-    }
-
-    .form-label {
-      display: block;
-      font-weight: 600;
-      font-size: 0.9rem;
-      color: #1e3a5f;
-      margin-bottom: 0.5rem;
-    }
-
-    .form-input {
-      width: 100%;
-      background-color: #f8fafd;
-      border: 1.5px solid #e1e8f0;
-      border-radius: 12px;
-      padding: 0.8rem 1.2rem;
-      font-size: 0.95rem;
-      color: #0b2b4a;
-      outline: none;
-      transition: all 0.15s ease;
-    }
-
-    .form-input:focus {
-      border-color: #b8933c;
-      box-shadow: 0 0 0 4px rgba(184, 147, 60, 0.15);
-      background-color: #ffffff;
-    }
-
-    .form-input:disabled {
-      background-color: #f0f2f5;
-      color: #7f8fa3;
-      cursor: not-allowed;
-    }
-
-    .form-select {
-      width: 100%;
-      background-color: #f8fafd;
-      border: 1.5px solid #e1e8f0;
-      border-radius: 12px;
-      padding: 0.8rem 1.2rem;
-      font-size: 0.95rem;
-      color: #0b2b4a;
-      outline: none;
-      transition: all 0.15s ease;
-      appearance: none;
-      background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%239aaec5' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
-      background-repeat: no-repeat;
-      background-position: right 15px center;
-      background-size: 12px;
-    }
-
-    .form-select:focus {
-      border-color: #b8933c;
-      box-shadow: 0 0 0 4px rgba(184, 147, 60, 0.15);
-      background-color: #ffffff;
-    }
-
-    .form-text {
-      font-size: 0.8rem;
-      color: #7f8fa3;
-      margin-top: 0.3rem;
-    }
-
-    /* Toggle Switch */
-    .toggle-item {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 1rem 0;
-      border-bottom: 1px solid #eaeef4;
-    }
-
-    .toggle-item:last-child {
-      border-bottom: none;
-    }
-
-    .toggle-info h4 {
-      font-size: 1rem;
-      font-weight: 600;
-      color: #0b2b4a;
-      margin-bottom: 0.2rem;
-    }
-
-    .toggle-info p {
-      font-size: 0.85rem;
-      color: #7f8fa3;
-    }
-
-    .toggle-switch {
-      position: relative;
-      display: inline-block;
-      width: 52px;
-      height: 26px;
-    }
-
-    .toggle-switch input {
-      opacity: 0;
-      width: 0;
-      height: 0;
-    }
-
-    .toggle-slider {
-      position: absolute;
-      cursor: pointer;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: #e1e8f0;
-      transition: 0.3s;
-      border-radius: 34px;
-    }
-
-    .toggle-slider:before {
-      position: absolute;
-      content: "";
-      height: 20px;
-      width: 20px;
-      left: 3px;
-      bottom: 3px;
-      background-color: white;
-      transition: 0.3s;
-      border-radius: 50%;
-    }
-
-    input:checked + .toggle-slider {
-      background-color: #b8933c;
-    }
-
-    input:checked + .toggle-slider:before {
-      transform: translateX(26px);
-    }
-
-    /* Danger Zone */
-    .danger-zone {
-      margin-top: 2rem;
-      padding: 1.5rem;
-      background: #fff5f5;
-      border-radius: 16px;
-      border: 1px solid #ffcdd2;
-    }
-
-    .danger-zone h3 {
-      color: #d32f2f;
-      font-size: 1rem;
-      font-weight: 600;
-      margin-bottom: 1rem;
-    }
-
-    .danger-btn {
-      background: #d32f2f;
-      color: white;
-      border: none;
-      padding: 0.8rem 1.5rem;
-      border-radius: 40px;
-      font-weight: 600;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: background 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-    }
-
-    .danger-btn:hover {
-      background: #b71c1c;
-    }
-
-    .danger-btn.secondary {
-      background: transparent;
-      color: #d32f2f;
-      border: 1.5px solid #d32f2f;
-    }
-
-    .danger-btn.secondary:hover {
-      background: #ffebee;
-    }
-
-    /* Success Message */
-    .success-message {
-      background: #e8f5e9;
-      color: #2e7d32;
-      padding: 1rem;
-      border-radius: 12px;
-      margin-bottom: 1.5rem;
-      display: flex;
-      align-items: center;
-      gap: 0.8rem;
-      font-size: 0.95rem;
-    }
-
-    .success-message i {
-      font-size: 1.2rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-      .settings-container {
-        grid-template-columns: 1fr;
-      }
-      
-      .nav-links {
-        display: none;
-      }
-      
-      .page-header {
-        flex-direction: column;
-        gap: 1rem;
-        align-items: flex-start;
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management · System Settings</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #eef2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 16px;
+        }
+
+        .dashboard {
+            max-width: 1400px;
+            width: 100%;
+            background: #ffffff;
+            border-radius: 28px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            overflow: hidden;
+        }
+
+        /* Sidebar Styles (matching dashboard) */
+        .sidebar {
+            background: linear-gradient(180deg, #f8fafd 0%, #f0f4fa 100%);
+            padding: 32px 20px;
+            display: flex;
+            flex-direction: column;
+            border-right: 1px solid #d9e1ea;
+        }
+
+        .hospital-name {
+            font-size: 22px;
+            font-weight: 700;
+            letter-spacing: -0.3px;
+            color: #0b2b4b;
+            margin-bottom: 40px;
+            padding-left: 8px;
+            background: linear-gradient(135deg, #0b2b4b 0%, #1e4b6e 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .sidebar-menu {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            flex-grow: 1;
+        }
+
+        .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            border-radius: 16px;
+            color: #2c3e5c;
+            font-weight: 500;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+            border: 1px solid transparent;
+        }
+
+        .menu-item i {
+            width: 24px;
+            font-size: 1.2rem;
+            color: #4a627a;
+        }
+
+        .menu-item.active {
+            background: white;
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 40, 80, 0.08);
+            color: #0a2942;
+            font-weight: 600;
+        }
+
+        .menu-item.active i {
+            color: #1e4b6e;
+        }
+
+        .menu-item:hover:not(.logout) {
+            background: rgba(255, 255, 255, 0.7);
+            border-color: #cbd5e1;
+        }
+
+        .logout {
+            margin-top: auto;
+            color: #b13e3e;
+            border-top: 1px solid #d0ddeb;
+            padding-top: 20px;
+            margin-top: 20px;
+            border-radius: 0;
+        }
+
+        .logout i {
+            color: #b13e3e;
+        }
+
+        .logout:hover {
+            background: #fee9e9;
+            border-color: #f5c2c2;
+        }
+
+        /* Main Content - Settings specific */
+        .main-content {
+            background: white;
+            padding: 28px 32px 32px 32px;
+        }
+
+        .main-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 28px;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .main-header h1 {
+            font-size: 28px;
+            font-weight: 600;
+            color: #0c2d4b;
+            letter-spacing: -0.3px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .date-badge {
+            background: #f0f5fc;
+            padding: 8px 18px;
+            border-radius: 40px;
+            font-size: 14px;
+            color: #2c4c6e;
+            font-weight: 500;
+        }
+
+        /* Settings Category Tabs */
+        .settings-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            border-bottom: 1px solid #e2ebf6;
+            padding-bottom: 8px;
+            margin-bottom: 28px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #5b6f8c;
+            border-radius: 40px;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .tab-btn i {
+            font-size: 1rem;
+        }
+
+        .tab-btn.active {
+            background: #1e4b6e;
+            color: white;
+            box-shadow: 0 4px 12px rgba(30, 75, 110, 0.2);
+        }
+
+        .tab-btn:hover:not(.active) {
+            background: #f0f5fc;
+            color: #1e4b6e;
+        }
+
+        /* Settings Panel Cards */
+        .settings-panel {
+            display: none;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .settings-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .settings-card {
+            background: #fefefe;
+            border: 1px solid #e9eff5;
+            border-radius: 24px;
+            padding: 24px;
+            margin-bottom: 24px;
+            transition: box-shadow 0.2s;
+        }
+
+        .settings-card:hover {
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #0c2d4b;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid #2c7da0;
+            padding-left: 14px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 22px;
+        }
+
+        .form-field {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-field label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #2c4c6e;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .form-field input, .form-field select, .form-field textarea {
+            padding: 12px 16px;
+            border: 1px solid #d4dfec;
+            border-radius: 16px;
+            font-size: 14px;
+            transition: all 0.2s;
+            background: white;
+            outline: none;
+        }
+
+        .form-field input:focus, .form-field select:focus, .form-field textarea:focus {
+            border-color: #2c7da0;
+            box-shadow: 0 0 0 3px rgba(44, 125, 160, 0.1);
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .toggle-label {
+            font-weight: 500;
+            color: #1f3b58;
+        }
+
+        .toggle-desc {
+            font-size: 12px;
+            color: #7c8ba0;
+            margin-top: 4px;
+        }
+
+        /* Custom toggle button */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 52px;
+            height: 28px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #cbd5e1;
+            transition: 0.2s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.2s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: #1e4b6e;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(24px);
+        }
+
+        .action-buttons {
+            display: flex;
+            justify-content: flex-end;
+            gap: 16px;
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid #e9eff5;
+        }
+
+        .btn-save, .btn-reset {
+            padding: 12px 28px;
+            border-radius: 40px;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: none;
+        }
+
+        .btn-save {
+            background: #1e4b6e;
+            color: white;
+        }
+
+        .btn-save:hover {
+            background: #0f3a56;
+            transform: translateY(-1px);
+        }
+
+        .btn-reset {
+            background: white;
+            border: 1px solid #cbd5e1;
+            color: #4a627a;
+        }
+
+        .btn-reset:hover {
+            background: #f8fafc;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #1e4b6e;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transform: translateX(400px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        hr {
+            margin: 16px 0;
+            border-color: #eef2f5;
+        }
+
+        .info-note {
+            background: #f0f9ff;
+            border-radius: 16px;
+            padding: 14px 20px;
+            font-size: 13px;
+            color: #2c7da0;
+            margin-top: 24px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        @media (max-width: 800px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                display: none;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Header -->
-  <header class="header">
-    <div class="nav-container">
-      <div class="logo" onclick="redirectToDashboard()">
-        <i class="fas fa-graduation-cap"></i>
-        <span>NoteShare</span>
-      </div>
-      
-      <div class="nav-links">
-        <a href="dashboard.html"><i class="fas fa-home"></i> Dashboard</a>
-        <a href="#"><i class="fas fa-book-open"></i> My Notes</a>
-        <a href="#"><i class="fas fa-share-alt"></i> Shared with Me</a>
-        <a href="#"><i class="fas fa-star"></i> Favorites</a>
-        <a href="#" class="active"><i class="fas fa-cog"></i> Settings</a>
-      </div>
-      
-      <div class="user-profile" onclick="toggleDropdown()">
-        <div class="user-info">
-          <div class="user-name" id="displayName">Loading...</div>
-          <div class="user-role" id="userDepartment">Loading...</div>
-        </div>
-        <div class="user-avatar" id="userInitials">U</div>
-        
-        <!-- Dropdown Menu -->
-        <div class="dropdown-menu" id="dropdownMenu">
-          <a href="dashboard.html" class="dropdown-item">
-            <i class="fas fa-home"></i> Dashboard
-          </a>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-user"></i> Profile
-          </a>
-          <a href="settings.html" class="dropdown-item">
-            <i class="fas fa-cog"></i> Settings
-          </a>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-item" onclick="logout()">
-            <i class="fas fa-sign-out-alt"></i> Logout
-          </div>
-        </div>
-      </div>
-    </div>
-  </header>
+    <div id="notification" class="notification">Settings updated</div>
 
-  <!-- Main Content -->
-  <main class="main-content">
-    <!-- Page Header -->
-    <div class="page-header">
-      <div>
-        <h1>Settings</h1>
-        <p>Manage your account preferences and security</p>
-      </div>
-      <button class="save-btn" onclick="saveSettings()">
-        <i class="fas fa-save"></i> Save Changes
-      </button>
-    </div>
-
-    <!-- Success Message (hidden by default) -->
-    <div class="success-message" id="successMessage" style="display: none;">
-      <i class="fas fa-check-circle"></i>
-      <span id="successText">Settings saved successfully!</span>
-    </div>
-
-    <!-- Settings Container -->
-    <div class="settings-container">
-      <!-- Settings Sidebar Navigation -->
-      <div class="settings-sidebar">
-        <div class="settings-nav">
-          <div class="settings-nav-item active" onclick="switchSection('profile')">
-            <i class="fas fa-user"></i>
-            Profile Information
-          </div>
-          <div class="settings-nav-item" onclick="switchSection('account')">
-            <i class="fas fa-lock"></i>
-            Account Security
-          </div>
-          <div class="settings-nav-item" onclick="switchSection('notifications')">
-            <i class="fas fa-bell"></i>
-            Notifications
-          </div>
-          <div class="settings-nav-item" onclick="switchSection('privacy')">
-            <i class="fas fa-shield-alt"></i>
-            Privacy
-          </div>
-          <div class="settings-nav-item" onclick="switchSection('appearance')">
-            <i class="fas fa-palette"></i>
-            Appearance
-          </div>
-          <div class="settings-nav-item" onclick="switchSection('preferences')">
-            <i class="fas fa-sliders-h"></i>
-            Study Preferences
-          </div>
-          <div class="settings-nav-item" onclick="switchSection('danger')">
-            <i class="fas fa-exclamation-triangle"></i>
-            Danger Zone
-          </div>
-        </div>
-      </div>
-
-      <!-- Settings Content -->
-      <div class="settings-content">
-        <!-- Profile Information Section -->
-        <div class="settings-section active" id="profile-section">
-          <h2 class="section-title">Profile Information</h2>
-          <div class="settings-form">
-            <div class="form-group">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-input" id="fullName" placeholder="Enter your full name" onkeypress="restrictFullName(event)">
-              <div class="form-text">Only letters and spaces allowed</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Email Address</label>
-              <input type="email" class="form-input" id="email" placeholder="Enter your email">
-              <div class="form-text">We'll never share your email with anyone else</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Department</label>
-              <select class="form-select" id="department">
-                <option value="Computer Science">Computer Science</option>
-                <option value="Electrical Engineering">Electrical Engineering</option>
-                <option value="Mechanical Engineering">Mechanical Engineering</option>
-                <option value="Civil Engineering">Civil Engineering</option>
-                <option value="Electronics Engineering">Electronics Engineering</option>
-                <option value="Information Technology">Information Technology</option>
-              </select>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Student ID</label>
-              <input type="text" class="form-input" id="studentId" placeholder="Enter your student ID" disabled>
-              <div class="form-text">Student ID cannot be changed</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Bio</label>
-              <textarea class="form-input" id="bio" rows="4" placeholder="Tell us a bit about yourself"></textarea>
-              <div class="form-text">Maximum 200 characters</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Account Security Section -->
-        <div class="settings-section" id="account-section">
-          <h2 class="section-title">Account Security</h2>
-          <div class="settings-form">
-            <div class="form-group">
-              <label class="form-label">Current Password</label>
-              <input type="password" class="form-input" id="currentPassword" placeholder="Enter current password">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">New Password</label>
-              <input type="password" class="form-input" id="newPassword" placeholder="Enter new password">
-              <div class="form-text">Minimum 8 characters with at least one number and one letter</div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Confirm New Password</label>
-              <input type="password" class="form-input" id="confirmPassword" placeholder="Confirm new password">
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Two-Factor Authentication</label>
-              <div class="toggle-item">
-                <div class="toggle-info">
-                  <h4>Enable 2FA</h4>
-                  <p>Add an extra layer of security to your account</p>
+    <div class="dashboard">
+        <!-- Sidebar (identical to dashboard design) -->
+        <div class="sidebar">
+            <div class="hospital-name">🏥 Akshaya Clinic</div>
+            <div class="sidebar-menu">
+                <div class="menu-item" onclick="window.location.href='index.html'">
+                    <i class="fas fa-chart-pie"></i> Dashboard
                 </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" id="twoFactor">
-                  <span class="toggle-slider"></span>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="form-label">Login Sessions</label>
-              <div style="background: #f5f7fb; padding: 1rem; border-radius: 12px;">
-                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                  <span><i class="fas fa-laptop" style="color: #b8933c;"></i> Current Session</span>
-                  <span style="color: #2e7d32; font-size: 0.85rem;">Active Now</span>
+                <div class="menu-item" onclick="window.location.href='newPatient.html'">
+                    <i class="fas fa-user-injured"></i> Patients
                 </div>
-                <div style="display: flex; justify-content: space-between;">
-                  <span><i class="fas fa-mobile-alt" style="color: #7f8fa3;"></i> Mobile App</span>
-                  <span style="color: #7f8fa3; font-size: 0.85rem;">2 days ago</span>
+                <div class="menu-item" onclick="window.location.href='newDoctor.html'">
+                    <i class="fas fa-user-md"></i> Doctors
                 </div>
-              </div>
+                <div class="menu-item" onclick="window.location.href='appointments.html'">
+                    <i class="fas fa-calendar-check"></i> Appointments
+                </div>
+                <div class="menu-item" onclick="window.location.href='reports.html'">
+                    <i class="fas fa-chart-bar"></i> Reports
+                </div>
+                <div class="menu-item active" onclick="window.location.href='settings.html'">
+                    <i class="fas fa-cog"></i> Settings
+                </div>
+                <div class="menu-item logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </div>
             </div>
-          </div>
         </div>
 
-        <!-- Notifications Section -->
-        <div class="settings-section" id="notifications-section">
-          <h2 class="section-title">Notification Preferences</h2>
-          
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Email Notifications</h4>
-              <p>Receive updates via email</p>
+        <!-- Settings Main Area -->
+        <div class="main-content">
+            <div class="main-header">
+                <h1><i class="fas fa-sliders-h" style="color: #1e4b6e;"></i> System Settings</h1>
+                <div class="date-badge" id="currentDate"></div>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="emailNotifications" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
 
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Push Notifications</h4>
-              <p>Receive browser notifications</p>
+            <!-- Category Tabs -->
+            <div class="settings-tabs">
+                <button class="tab-btn active" data-tab="general"><i class="fas fa-hospital-user"></i> General</button>
+                <button class="tab-btn" data-tab="appointments"><i class="fas fa-calendar-alt"></i> Appointments</button>
+                <button class="tab-btn" data-tab="notifications"><i class="fas fa-bell"></i> Notifications</button>
+                <button class="tab-btn" data-tab="billing"><i class="fas fa-credit-card"></i> Billing</button>
+                <button class="tab-btn" data-tab="security"><i class="fas fa-shield-alt"></i> Security</button>
+                <button class="tab-btn" data-tab="integrations"><i class="fas fa-plug"></i> Integrations</button>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="pushNotifications" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
 
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>New Note Uploads</h4>
-              <p>Get notified when new notes are uploaded in your department</p>
+            <!-- General Settings Panel -->
+            <div id="generalPanel" class="settings-panel active-panel">
+                <div class="settings-card">
+                    <div class="card-title"><i class="fas fa-building"></i> Hospital Information</div>
+                    <div class="form-grid">
+                        <div class="form-field"><label>Hospital Name</label><input type="text" id="hospitalName" placeholder="Akshaya Clinic"></div>
+                        <div class="form-field"><label>Registration ID</label><input type="text" id="regCode" placeholder="REG-001"></div>
+                        <div class="form-field"><label>Default Timezone</label><select id="timezone"><option value="Asia/Kolkata">IST (Asia/Kolkata)</option><option value="America/New_York">EST</option><option value="Europe/London">GMT</option></select></div>
+                        <div class="form-field"><label>Date Format</label><select id="dateFormat"><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="MM/DD/YYYY">MM/DD/YYYY</option><option value="YYYY-MM-DD">YYYY-MM-DD</option></select></div>
+                        <div class="form-field"><label>Language</label><select id="language"><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option></select></div>
+                    </div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Auto-archive old records</div><div class="toggle-desc">Archive patient records after 1 year</div></div><label class="switch"><input type="checkbox" id="autoArchive"><span class="slider"></span></label></div>
+                </div>
+                <div class="action-buttons"><button class="btn-save" data-category="general"><i class="fas fa-save"></i> Save General Settings</button><button class="btn-reset" data-reset="general">Reset</button></div>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="newNotesNotify" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
 
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Comments & Replies</h4>
-              <p>Get notified when someone comments on your notes</p>
+            <!-- Appointments Panel -->
+            <div id="appointmentsPanel" class="settings-panel">
+                <div class="settings-card">
+                    <div class="card-title"><i class="fas fa-clock"></i> Scheduling Rules</div>
+                    <div class="form-grid">
+                        <div class="form-field"><label>Default Duration (min)</label><input type="number" id="defaultDuration" value="30"></div>
+                        <div class="form-field"><label>Buffer Between Slots (min)</label><input type="number" id="bufferBetween" value="15"></div>
+                        <div class="form-field"><label>Max Advance Booking (days)</label><input type="number" id="maxAdvanceDays" value="60"></div>
+                        <div class="form-field"><label>Working Hours</label><div style="display:flex;gap:8px;"><input type="time" id="workStart" value="09:00"><span>to</span><input type="time" id="workEnd" value="18:00"></div></div>
+                    </div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Allow online booking</div></div><label class="switch"><input type="checkbox" id="onlineBooking"><span class="slider"></span></label></div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Require prepayment</div></div><label class="switch"><input type="checkbox" id="requirePrepay"><span class="slider"></span></label></div>
+                </div>
+                <div class="action-buttons"><button class="btn-save" data-category="appointments"><i class="fas fa-save"></i> Save Appointment Rules</button><button class="btn-reset" data-reset="appointments">Reset</button></div>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="commentsNotify" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
 
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Study Group Updates</h4>
-              <p>Notifications about study group activities</p>
+            <!-- Notifications Panel -->
+            <div id="notificationsPanel" class="settings-panel">
+                <div class="settings-card">
+                    <div class="card-title"><i class="fas fa-envelope"></i> Alert Preferences</div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Email reminders</div><div class="toggle-desc">Send appointment reminders via email</div></div><label class="switch"><input type="checkbox" id="emailAlerts"><span class="slider"></span></label></div>
+                    <div class="toggle-switch"><div><div class="toggle-label">SMS notifications</div></div><label class="switch"><input type="checkbox" id="smsReminders"><span class="slider"></span></label></div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Emergency broadcast</div></div><label class="switch"><input type="checkbox" id="emergencyBroadcast"><span class="slider"></span></label></div>
+                    <div class="form-field"><label>Reminder lead time (hours before)</label><input type="number" id="reminderLead" value="24"></div>
+                </div>
+                <div class="action-buttons"><button class="btn-save" data-category="notifications"><i class="fas fa-save"></i> Save Notification Settings</button><button class="btn-reset" data-reset="notifications">Reset</button></div>
             </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="groupNotify" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
+
+            <!-- Billing Panel -->
+            <div id="billingPanel" class="settings-panel">
+                <div class="settings-card">
+                    <div class="card-title"><i class="fas fa-coins"></i> Financial Configuration</div>
+                    <div class="form-grid">
+                        <div class="form-field"><label>Currency</label><select id="currency"><option value="INR">INR (₹)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option></select></div>
+                        <div class="form-field"><label>Default Tax Rate (%)</label><input type="number" id="taxRate" step="0.1" value="10"></div>
+                        <div class="form-field"><label>Grace Period (days)</label><input type="number" id="gracePeriod" value="15"></div>
+                    </div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Auto-generate invoices</div></div><label class="switch"><input type="checkbox" id="autoInvoice"><span class="slider"></span></label></div>
+                </div>
+                <div class="action-buttons"><button class="btn-save" data-category="billing"><i class="fas fa-save"></i> Save Billing Settings</button><button class="btn-reset" data-reset="billing">Reset</button></div>
+            </div>
+
+            <!-- Security Panel -->
+            <div id="securityPanel" class="settings-panel">
+                <div class="settings-card">
+                    <div class="card-title"><i class="fas fa-lock"></i> Access Control</div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Two-Factor Authentication (staff)</div></div><label class="switch"><input type="checkbox" id="twoFactor"><span class="slider"></span></label></div>
+                    <div class="form-field"><label>Session Timeout (minutes)</label><input type="number" id="sessionTimeout" value="30"></div>
+                    <div class="form-field"><label>Password expiry (days)</label><input type="number" id="passwordExpiry" value="90"></div>
+                    <div class="toggle-switch"><div><div class="toggle-label">IP Whitelist for admin</div></div><label class="switch"><input type="checkbox" id="ipWhitelist"><span class="slider"></span></label></div>
+                </div>
+                <div class="action-buttons"><button class="btn-save" data-category="security"><i class="fas fa-save"></i> Save Security Settings</button><button class="btn-reset" data-reset="security">Reset</button></div>
+            </div>
+
+            <!-- Integrations Panel -->
+            <div id="integrationsPanel" class="settings-panel">
+                <div class="settings-card">
+                    <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> Third-party Integrations</div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Enable EHR Sync (Electronic Health Record)</div></div><label class="switch"><input type="checkbox" id="ehrSync"><span class="slider"></span></label></div>
+                    <div class="form-field"><label>EHR Provider</label><select id="ehrProvider"><option>Epic</option><option>Cerner</option><option>Meditech</option></select></div>
+                    <div class="toggle-switch"><div><div class="toggle-label">Lab System Integration</div></div><label class="switch"><input type="checkbox" id="labIntegration"><span class="slider"></span></label></div>
+                    <div class="form-field"><label>Webhook URL (analytics)</label><input type="text" id="webhookUrl" placeholder="https://api.example.com/webhook"></div>
+                </div>
+                <div class="action-buttons"><button class="btn-save" data-category="integrations"><i class="fas fa-save"></i> Save Integrations</button><button class="btn-reset" data-reset="integrations">Reset</button></div>
+            </div>
+
+            <div class="info-note"><i class="fas fa-database"></i> All settings are securely stored in Firebase Firestore. Changes reflect across the hospital management system instantly.</div>
         </div>
-
-        <!-- Privacy Section -->
-        <div class="settings-section" id="privacy-section">
-          <h2 class="section-title">Privacy Settings</h2>
-          
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Profile Visibility</h4>
-              <p>Allow other students to see your profile</p>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="profileVisibility" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Show Email</h4>
-              <p>Display your email on your profile</p>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="showEmail">
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Public Notes</h4>
-              <p>Make your uploaded notes visible to everyone</p>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="publicNotes" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Activity Status</h4>
-              <p>Show when you're active on the platform</p>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="activityStatus" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="form-group" style="margin-top: 2rem;">
-            <label class="form-label">Blocked Users</label>
-            <div style="background: #f5f7fb; padding: 1rem; border-radius: 12px; text-align: center; color: #7f8fa3;">
-              <i class="fas fa-user-slash" style="font-size: 2rem; margin-bottom: 0.5rem;"></i>
-              <p>You haven't blocked any users</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Appearance Section -->
-        <div class="settings-section" id="appearance-section">
-          <h2 class="section-title">Appearance</h2>
-          
-          <div class="form-group">
-            <label class="form-label">Theme</label>
-            <select class="form-select" id="theme">
-              <option value="light">Light Mode</option>
-              <option value="dark">Dark Mode</option>
-              <option value="system">System Default</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Font Size</label>
-            <select class="form-select" id="fontSize">
-              <option value="small">Small</option>
-              <option value="medium" selected>Medium</option>
-              <option value="large">Large</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Color Accent</label>
-            <div style="display: flex; gap: 1rem;">
-              <div style="width: 40px; height: 40px; background: #b8933c; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#b8933c')"></div>
-              <div style="width: 40px; height: 40px; background: #0b2b4a; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#0b2b4a')"></div>
-              <div style="width: 40px; height: 40px; background: #2e7d32; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#2e7d32')"></div>
-              <div style="width: 40px; height: 40px; background: #b71c1c; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#b71c1c')"></div>
-              <div style="width: 40px; height: 40px; background: #5e35b1; border-radius: 50%; cursor: pointer; border: 3px solid transparent;" onclick="selectColor('#5e35b1')"></div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Study Preferences Section -->
-        <div class="settings-section" id="preferences-section">
-          <h2 class="section-title">Study Preferences</h2>
-          
-          <div class="form-group">
-            <label class="form-label">Preferred Study Time</label>
-            <select class="form-select" id="studyTime">
-              <option value="morning">Morning (6 AM - 12 PM)</option>
-              <option value="afternoon">Afternoon (12 PM - 5 PM)</option>
-              <option value="evening">Evening (5 PM - 10 PM)</option>
-              <option value="night">Night (10 PM - 6 AM)</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Default Department Filter</label>
-            <select class="form-select" id="defaultDept">
-              <option value="all">All Departments</option>
-              <option value="cs">Computer Science</option>
-              <option value="ee">Electrical Engineering</option>
-              <option value="me">Mechanical Engineering</option>
-              <option value="ce">Civil Engineering</option>
-            </select>
-          </div>
-
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Study Reminders</h4>
-              <p>Get daily reminders for study sessions</p>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="studyReminders" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-
-          <div class="toggle-item">
-            <div class="toggle-info">
-              <h4>Auto-save Notes</h4>
-              <p>Automatically save notes while you work</p>
-            </div>
-            <label class="toggle-switch">
-              <input type="checkbox" id="autoSave" checked>
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
-
-        <!-- Danger Zone Section -->
-        <div class="settings-section" id="danger-section">
-          <h2 class="section-title">Danger Zone</h2>
-          
-          <div class="danger-zone">
-            <h3><i class="fas fa-exclamation-triangle"></i> Account Deletion</h3>
-            <p style="color: #5f5f5f; margin-bottom: 1.5rem; font-size: 0.95rem;">
-              Once you delete your account, there is no going back. Please be certain.
-            </p>
-            <div style="display: flex; gap: 1rem;">
-              <button class="danger-btn secondary" onclick="showDeletionConfirm()">
-                <i class="fas fa-trash-alt"></i> Delete Account
-              </button>
-            </div>
-          </div>
-
-          <div class="danger-zone" style="margin-top: 1rem; background: #fff3e0; border-color: #ffe0b2;">
-            <h3 style="color: #e65100;"><i class="fas fa-download"></i> Export Data</h3>
-            <p style="color: #5f5f5f; margin-bottom: 1.5rem; font-size: 0.95rem;">
-              Download all your notes and personal data
-            </p>
-            <button class="danger-btn" style="background: #e65100;" onclick="exportData()">
-              <i class="fas fa-file-export"></i> Export Data
-            </button>
-          </div>
-        </div>
-      </div>
     </div>
-  </main>
 
-  <script>
-    // Load user data when page loads
-    window.onload = function() {
-      loadUserData();
-    };
+    <script>
+        // ---------- FIREBASE CONFIG (from dashboard) ----------
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+            authDomain: "notessharingapp-fc388.firebaseapp.com",
+            projectId: "notessharingapp-fc388",
+            storageBucket: "notessharingapp-fc388.firebasestorage.app",
+            messagingSenderId: "64602136432",
+            appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
+        };
 
-    // Toggle dropdown menu
-    function toggleDropdown() {
-      document.getElementById('dropdownMenu').classList.toggle('show');
-    }
+        let db, auth;
 
-    // Close dropdown when clicking outside
-    window.onclick = function(event) {
-      if (!event.target.matches('.user-profile') && !event.target.matches('.user-profile *')) {
-        const dropdown = document.getElementById('dropdownMenu');
-        if (dropdown.classList.contains('show')) {
-          dropdown.classList.remove('show');
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        db = firebase.firestore();
+        auth = firebase.auth();
+
+        // Helper: Show notification
+        function showNotification(msg, type = "success") {
+            const notif = document.getElementById('notification');
+            notif.textContent = msg;
+            notif.style.background = type === "success" ? "#1e4b6e" : "#b34040";
+            notif.classList.add('show');
+            setTimeout(() => notif.classList.remove('show'), 2800);
         }
-      }
-    };
 
-    // Load user data from sessionStorage
-    function loadUserData() {
-      const username = sessionStorage.getItem('currentUser');
-      const department = sessionStorage.getItem('userDepartment') || 'Computer Science';
-      const email = sessionStorage.getItem('userEmail') || 'user@example.com';
-      
-      if (username) {
-        document.getElementById('displayName').textContent = username;
-        document.getElementById('userDepartment').textContent = department;
-        document.getElementById('userInitials').textContent = getInitials(username);
-        
-        // Load profile form data
-        document.getElementById('fullName').value = username;
-        document.getElementById('email').value = email;
-        document.getElementById('department').value = department;
-        document.getElementById('studentId').value = 'STU' + Math.floor(Math.random() * 10000);
-        document.getElementById('bio').value = `Student at ${department}`;
-      } else {
-        window.location.href = 'login.html';
-      }
-    }
+        // Current date display
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
 
-    // Restrict full name to letters only
-    function restrictFullName(event) {
-      const char = String.fromCharCode(event.which);
-      if (!/^[a-zA-Z\s]$/.test(char)) {
-        event.preventDefault();
-        return false;
-      }
-      return true;
-    }
+        // Auto anonymous auth (like dashboard)
+        auth.signInAnonymously().catch(e => console.log("Anon sign-in optional", e));
 
-    // Get initials from name
-    function getInitials(name) {
-      const nameParts = name.trim().split(' ');
-      if (nameParts.length === 1) {
-        return nameParts[0].charAt(0).toUpperCase();
-      } else {
-        return (nameParts[0].charAt(0) + nameParts[nameParts.length - 1].charAt(0)).toUpperCase();
-      }
-    }
+        // ---------- Default Settings (initial fallback) ----------
+        const defaultSettings = {
+            general: { hospitalName: "Akshaya Clinic", regCode: "HOS-101", timezone: "Asia/Kolkata", dateFormat: "DD/MM/YYYY", language: "en", autoArchive: false },
+            appointments: { defaultDuration: 30, bufferBetween: 15, maxAdvanceDays: 60, workStart: "09:00", workEnd: "18:00", onlineBooking: true, requirePrepay: false },
+            notifications: { emailAlerts: true, smsReminders: true, emergencyBroadcast: false, reminderLead: 24 },
+            billing: { currency: "INR", taxRate: 10, gracePeriod: 15, autoInvoice: true },
+            security: { twoFactor: false, sessionTimeout: 30, passwordExpiry: 90, ipWhitelist: false },
+            integrations: { ehrSync: true, ehrProvider: "Epic", labIntegration: false, webhookUrl: "https://api.akshaya.com/hook" }
+        };
 
-    // Switch between settings sections
-    function switchSection(section) {
-      // Remove active class from all nav items and sections
-      document.querySelectorAll('.settings-nav-item').forEach(item => {
-        item.classList.remove('active');
-      });
-      document.querySelectorAll('.settings-section').forEach(s => {
-        s.classList.remove('active');
-      });
-      
-      // Add active class to clicked nav item
-      event.target.closest('.settings-nav-item').classList.add('active');
-      
-      // Show corresponding section
-      document.getElementById(section + '-section').classList.add('active');
-    }
+        // Global state to hold current loaded settings from Firestore
+        let currentSettings = JSON.parse(JSON.stringify(defaultSettings));
 
-    // Save settings
-    function saveSettings() {
-      const fullName = document.getElementById('fullName').value;
-      const email = document.getElementById('email').value;
-      const department = document.getElementById('department').value;
-      
-      // Validate full name
-      if (!/^[A-Za-z\s]+$/.test(fullName)) {
-        alert('Full name can only contain letters and spaces');
-        return;
-      }
-      
-      // Save to sessionStorage
-      sessionStorage.setItem('currentUser', fullName);
-      sessionStorage.setItem('userDepartment', department);
-      sessionStorage.setItem('userEmail', email);
-      
-      // Show success message
-      const successMsg = document.getElementById('successMessage');
-      successMsg.style.display = 'flex';
-      successMsg.querySelector('span').textContent = 'Settings saved successfully!';
-      
-      // Update header
-      document.getElementById('displayName').textContent = fullName;
-      document.getElementById('userDepartment').textContent = department;
-      document.getElementById('userInitials').textContent = getInitials(fullName);
-      
-      // Hide success message after 3 seconds
-      setTimeout(() => {
-        successMsg.style.display = 'none';
-      }, 3000);
-    }
-
-    // Select color
-    function selectColor(color) {
-      // Remove border from all color options
-      document.querySelectorAll('[style*="width: 40px"]').forEach(el => {
-        el.style.border = '3px solid transparent';
-      });
-      
-      // Add border to selected
-      event.target.style.border = '3px solid #b8933c';
-      
-      // Save color preference
-      sessionStorage.setItem('accentColor', color);
-      
-      // Show success message
-      const successMsg = document.getElementById('successMessage');
-      successMsg.style.display = 'flex';
-      successMsg.querySelector('span').textContent = 'Color preference saved!';
-      setTimeout(() => {
-        successMsg.style.display = 'none';
-      }, 2000);
-    }
-
-    // Show deletion confirmation
-    function showDeletionConfirm() {
-      if (confirm('Are you absolutely sure you want to delete your account? This action cannot be undone.')) {
-        if (confirm('This will permanently delete all your notes and data. Type "DELETE" to confirm.')) {
-          alert('Account deletion request submitted. You will receive an email confirmation.');
+        // Load settings from Firestore (document ID: "hospital_settings")
+        async function loadSettingsFromFirestore() {
+            try {
+                const docRef = db.collection('system_config').doc('hospital_settings');
+                const docSnap = await docRef.get();
+                if (docSnap.exists) {
+                    const data = docSnap.data();
+                    // Merge with defaults (preserve structure)
+                    for (let category of Object.keys(defaultSettings)) {
+                        if (data[category]) {
+                            currentSettings[category] = { ...currentSettings[category], ...data[category] };
+                        }
+                    }
+                } else {
+                    // Create default document if not exists
+                    await docRef.set(defaultSettings);
+                    currentSettings = JSON.parse(JSON.stringify(defaultSettings));
+                }
+                // Populate UI with currentSettings
+                populateUIFromSettings();
+                showNotification("Settings loaded from cloud", "success");
+            } catch (err) {
+                console.error("Firestore load error:", err);
+                // Fallback to defaults but show warning
+                currentSettings = JSON.parse(JSON.stringify(defaultSettings));
+                populateUIFromSettings();
+                showNotification("Using local defaults - check connection", "error");
+            }
         }
-      }
-    }
 
-    // Export data
-    function exportData() {
-      alert('Your data export has been started. You will receive an email with download link shortly.');
-    }
+        // Populate all input fields based on currentSettings
+        function populateUIFromSettings() {
+            // General
+            document.getElementById('hospitalName').value = currentSettings.general.hospitalName || '';
+            document.getElementById('regCode').value = currentSettings.general.regCode || '';
+            document.getElementById('timezone').value = currentSettings.general.timezone;
+            document.getElementById('dateFormat').value = currentSettings.general.dateFormat;
+            document.getElementById('language').value = currentSettings.general.language;
+            document.getElementById('autoArchive').checked = currentSettings.general.autoArchive;
 
-    // Redirect to dashboard
-    function redirectToDashboard() {
-      window.location.href = 'dashboard.html';
-    }
+            // Appointments
+            document.getElementById('defaultDuration').value = currentSettings.appointments.defaultDuration;
+            document.getElementById('bufferBetween').value = currentSettings.appointments.bufferBetween;
+            document.getElementById('maxAdvanceDays').value = currentSettings.appointments.maxAdvanceDays;
+            document.getElementById('workStart').value = currentSettings.appointments.workStart;
+            document.getElementById('workEnd').value = currentSettings.appointments.workEnd;
+            document.getElementById('onlineBooking').checked = currentSettings.appointments.onlineBooking;
+            document.getElementById('requirePrepay').checked = currentSettings.appointments.requirePrepay;
 
-    // Logout function
-    function logout() {
-      sessionStorage.clear();
-      window.location.href = 'login.html';
-    }
-  </script>
+            // Notifications
+            document.getElementById('emailAlerts').checked = currentSettings.notifications.emailAlerts;
+            document.getElementById('smsReminders').checked = currentSettings.notifications.smsReminders;
+            document.getElementById('emergencyBroadcast').checked = currentSettings.notifications.emergencyBroadcast;
+            document.getElementById('reminderLead').value = currentSettings.notifications.reminderLead;
+
+            // Billing
+            document.getElementById('currency').value = currentSettings.billing.currency;
+            document.getElementById('taxRate').value = currentSettings.billing.taxRate;
+            document.getElementById('gracePeriod').value = currentSettings.billing.gracePeriod;
+            document.getElementById('autoInvoice').checked = currentSettings.billing.autoInvoice;
+
+            // Security
+            document.getElementById('twoFactor').checked = currentSettings.security.twoFactor;
+            document.getElementById('sessionTimeout').value = currentSettings.security.sessionTimeout;
+            document.getElementById('passwordExpiry').value = currentSettings.security.passwordExpiry;
+            document.getElementById('ipWhitelist').checked = currentSettings.security.ipWhitelist;
+
+            // Integrations
+            document.getElementById('ehrSync').checked = currentSettings.integrations.ehrSync;
+            document.getElementById('ehrProvider').value = currentSettings.integrations.ehrProvider;
+            document.getElementById('labIntegration').checked = currentSettings.integrations.labIntegration;
+            document.getElementById('webhookUrl').value = currentSettings.integrations.webhookUrl || '';
+        }
+
+        // Collect values from UI for a given category and return object
+        function collectCategoryData(category) {
+            const data = {};
+            if (category === 'general') {
+                data.hospitalName = document.getElementById('hospitalName').value;
+                data.regCode = document.getElementById('regCode').value;
+                data.timezone = document.getElementById('timezone').value;
+                data.dateFormat = document.getElementById('dateFormat').value;
+                data.language = document.getElementById('language').value;
+                data.autoArchive = document.getElementById('autoArchive').checked;
+            } else if (category === 'appointments') {
+                data.defaultDuration = parseInt(document.getElementById('defaultDuration').value);
+                data.bufferBetween = parseInt(document.getElementById('bufferBetween').value);
+                data.maxAdvanceDays = parseInt(document.getElementById('maxAdvanceDays').value);
+                data.workStart = document.getElementById('workStart').value;
+                data.workEnd = document.getElementById('workEnd').value;
+                data.onlineBooking = document.getElementById('onlineBooking').checked;
+                data.requirePrepay = document.getElementById('requirePrepay').checked;
+            } else if (category === 'notifications') {
+                data.emailAlerts = document.getElementById('emailAlerts').checked;
+                data.smsReminders = document.getElementById('smsReminders').checked;
+                data.emergencyBroadcast = document.getElementById('emergencyBroadcast').checked;
+                data.reminderLead = parseInt(document.getElementById('reminderLead').value);
+            } else if (category === 'billing') {
+                data.currency = document.getElementById('currency').value;
+                data.taxRate = parseFloat(document.getElementById('taxRate').value);
+                data.gracePeriod = parseInt(document.getElementById('gracePeriod').value);
+                data.autoInvoice = document.getElementById('autoInvoice').checked;
+            } else if (category === 'security') {
+                data.twoFactor = document.getElementById('twoFactor').checked;
+                data.sessionTimeout = parseInt(document.getElementById('sessionTimeout').value);
+                data.passwordExpiry = parseInt(document.getElementById('passwordExpiry').value);
+                data.ipWhitelist = document.getElementById('ipWhitelist').checked;
+            } else if (category === 'integrations') {
+                data.ehrSync = document.getElementById('ehrSync').checked;
+                data.ehrProvider = document.getElementById('ehrProvider').value;
+                data.labIntegration = document.getElementById('labIntegration').checked;
+                data.webhookUrl = document.getElementById('webhookUrl').value;
+            }
+            return data;
+        }
+
+        // Save specific category to Firestore and update local state
+        async function saveCategory(category) {
+            try {
+                const updatedData = collectCategoryData(category);
+                currentSettings[category] = { ...currentSettings[category], ...updatedData };
+                const docRef = db.collection('system_config').doc('hospital_settings');
+                await docRef.set({ [category]: currentSettings[category] }, { merge: true });
+                showNotification(`${category.charAt(0).toUpperCase() + category.slice(1)} settings saved`, "success");
+            } catch (err) {
+                console.error(err);
+                showNotification(`Failed to save ${category} settings`, "error");
+            }
+        }
+
+        // Reset category to default values (from defaultSettings)
+        function resetCategory(category) {
+            currentSettings[category] = JSON.parse(JSON.stringify(defaultSettings[category]));
+            // Update UI fields manually
+            if (category === 'general') {
+                document.getElementById('hospitalName').value = currentSettings.general.hospitalName;
+                document.getElementById('regCode').value = currentSettings.general.regCode;
+                document.getElementById('timezone').value = currentSettings.general.timezone;
+                document.getElementById('dateFormat').value = currentSettings.general.dateFormat;
+                document.getElementById('language').value = currentSettings.general.language;
+                document.getElementById('autoArchive').checked = currentSettings.general.autoArchive;
+            } else if (category === 'appointments') {
+                document.getElementById('defaultDuration').value = currentSettings.appointments.defaultDuration;
+                document.getElementById('bufferBetween').value = currentSettings.appointments.bufferBetween;
+                document.getElementById('maxAdvanceDays').value = currentSettings.appointments.maxAdvanceDays;
+                document.getElementById('workStart').value = currentSettings.appointments.workStart;
+                document.getElementById('workEnd').value = currentSettings.appointments.workEnd;
+                document.getElementById('onlineBooking').checked = currentSettings.appointments.onlineBooking;
+                document.getElementById('requirePrepay').checked = currentSettings.appointments.requirePrepay;
+            } else if (category === 'notifications') {
+                document.getElementById('emailAlerts').checked = currentSettings.notifications.emailAlerts;
+                document.getElementById('smsReminders').checked = currentSettings.notifications.smsReminders;
+                document.getElementById('emergencyBroadcast').checked = currentSettings.notifications.emergencyBroadcast;
+                document.getElementById('reminderLead').value = currentSettings.notifications.reminderLead;
+            } else if (category === 'billing') {
+                document.getElementById('currency').value = currentSettings.billing.currency;
+                document.getElementById('taxRate').value = currentSettings.billing.taxRate;
+                document.getElementById('gracePeriod').value = currentSettings.billing.gracePeriod;
+                document.getElementById('autoInvoice').checked = currentSettings.billing.autoInvoice;
+            } else if (category === 'security') {
+                document.getElementById('twoFactor').checked = currentSettings.security.twoFactor;
+                document.getElementById('sessionTimeout').value = currentSettings.security.sessionTimeout;
+                document.getElementById('passwordExpiry').value = currentSettings.security.passwordExpiry;
+                document.getElementById('ipWhitelist').checked = currentSettings.security.ipWhitelist;
+            } else if (category === 'integrations') {
+                document.getElementById('ehrSync').checked = currentSettings.integrations.ehrSync;
+                document.getElementById('ehrProvider').value = currentSettings.integrations.ehrProvider;
+                document.getElementById('labIntegration').checked = currentSettings.integrations.labIntegration;
+                document.getElementById('webhookUrl').value = currentSettings.integrations.webhookUrl;
+            }
+            showNotification(`${category} reset to defaults`, "success");
+            // Also persist reset to Firestore
+            saveCategory(category);
+        }
+
+        // Tab switching logic
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.getAttribute('data-tab');
+                document.querySelectorAll('.settings-panel').forEach(panel => panel.classList.remove('active-panel'));
+                document.getElementById(`${tabId}Panel`).classList.add('active-panel');
+                document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                btn.classList.add('active');
+            });
+        });
+
+        // Save buttons event listeners
+        document.querySelectorAll('.btn-save').forEach(btn => {
+            const category = btn.getAttribute('data-category');
+            btn.addEventListener('click', () => saveCategory(category));
+        });
+        document.querySelectorAll('.btn-reset').forEach(btn => {
+            const category = btn.getAttribute('data-reset');
+            btn.addEventListener('click', () => resetCategory(category));
+        });
+
+        // Logout functionality (same as dashboard)
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            if (confirm('Log out from hospital system?')) {
+                auth.signOut().then(() => {
+                    showNotification("Logged out", "success");
+                    setTimeout(() => window.location.href = 'login.html', 1200);
+                }).catch(() => showNotification("Logout error", "error"));
+            }
+        });
+
+        // Initialize: load settings from Firebase
+        loadSettingsFromFirestore();
+    </script>
 </body>
 </html>
