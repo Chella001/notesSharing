@@ -1,401 +1,256 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Hospital Management · Login</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management · Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
 
-    body {
-      min-height: 100vh;
-      background: #eef2f5;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
+        body {
+            min-height: 100vh;
+            background: linear-gradient(135deg, #0b2b4b 0%, #1e4b6e 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+        }
 
-    .login-container {
-      width: 100%;
-      max-width: 380px;
-    }
+        .login-container {
+            width: 100%;
+            max-width: 400px;
+        }
 
-    .login-card {
-      background: #ffffff;
-      border-radius: 24px;
-      padding: 28px 24px;
-      box-shadow: 0 20px 40px -12px rgba(0, 0, 0, 0.15);
-      border: 1px solid #d9e1ea;
-    }
+        .login-card {
+            background: #ffffff;
+            border-radius: 28px;
+            padding: 40px 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
 
-    .hospital-badge {
-      text-align: center;
-      margin-bottom: 16px;
-    }
+        .hospital-logo {
+            text-align: center;
+            margin-bottom: 32px;
+        }
 
-    .hospital-badge i {
-      font-size: 40px;
-      color: #0b2b4b;
-      background: #f4f7fc;
-      padding: 12px;
-      border-radius: 20px;
-      margin-bottom: 12px;
-    }
+        .hospital-logo i {
+            font-size: 56px;
+            color: #1e4b6e;
+            background: #eef2f5;
+            padding: 20px;
+            border-radius: 60px;
+        }
 
-    .hospital-badge h1 {
-      font-size: 24px;
-      font-weight: 600;
-      color: #0b2b4b;
-      letter-spacing: -0.3px;
-    }
+        .hospital-logo h2 {
+            margin-top: 16px;
+            color: #0c2d4b;
+            font-size: 24px;
+        }
 
-    .hospital-badge p {
-      color: #4f6b8a;
-      font-size: 13px;
-      margin-top: 4px;
-    }
+        .hospital-logo p {
+            color: #6b7f9c;
+            font-size: 14px;
+            margin-top: 4px;
+        }
 
-    .input-group {
-      margin-bottom: 16px;
-    }
+        .input-group {
+            margin-bottom: 20px;
+        }
 
-    .input-label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      color: #2c4c6e;
-      margin-bottom: 6px;
-    }
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c4c6e;
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-    .input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
+        .input-wrapper {
+            position: relative;
+        }
 
-    .input-wrapper i:not(.password-toggle i) {
-      position: absolute;
-      left: 14px;
-      color: #8fa3bc;
-      font-size: 14px;
-      transition: color 0.2s;
-      z-index: 1;
-    }
+        .input-wrapper i {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9aaebe;
+        }
 
-    .input-wrapper input {
-      width: 100%;
-      padding: 10px 45px 10px 42px;
-      border: 1.5px solid #e2ebf6;
-      border-radius: 12px;
-      font-size: 14px;
-      transition: all 0.2s;
-      background: #f8fcff;
-      outline: none;
-      color: #1e3349;
-      height: 42px;
-    }
+        .input-wrapper input {
+            width: 100%;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2ebf6;
+            border-radius: 20px;
+            font-size: 15px;
+            transition: all 0.2s;
+            outline: none;
+        }
 
-    .input-wrapper input:focus {
-      border-color: #1e4b6e;
-      background: #ffffff;
-      box-shadow: 0 2px 8px rgba(30, 75, 110, 0.1);
-    }
+        .input-wrapper input:focus {
+            border-color: #1e4b6e;
+            box-shadow: 0 0 0 3px rgba(30, 75, 110, 0.1);
+        }
 
-    .input-wrapper input:focus + i {
-      color: #1e4b6e;
-    }
+        .password-toggle {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: #9aaebe;
+        }
 
-    .input-wrapper input::placeholder {
-      color: #a0b8d0;
-      font-size: 13px;
-    }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: #1e4b6e;
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 16px;
+        }
 
-    /* Password toggle button */
-    .password-toggle {
-      position: absolute;
-      right: 12px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      padding: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 2;
-    }
+        .login-btn:hover {
+            background: #0f3a56;
+            transform: translateY(-2px);
+        }
 
-    .password-toggle i {
-      color: #8fa3bc;
-      font-size: 16px;
-      transition: color 0.2s;
-    }
+        .register-link {
+            text-align: center;
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e8f0;
+        }
 
-    .password-toggle:hover i {
-      color: #1e4b6e;
-    }
+        .register-link a {
+            color: #1e4b6e;
+            text-decoration: none;
+            font-weight: 600;
+        }
 
-    .password-toggle:focus {
-      outline: none;
-    }
+        .error-message {
+            background: #fee9e9;
+            color: #b13e3e;
+            padding: 12px;
+            border-radius: 16px;
+            font-size: 13px;
+            margin-bottom: 20px;
+            display: none;
+            text-align: center;
+        }
 
-    .forgot-password {
-      text-align: right;
-      margin-bottom: 20px;
-      margin-top: 4px;
-    }
-
-    .forgot-password a {
-      color: #2c6b9e;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 500;
-      transition: color 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .forgot-password a:hover {
-      color: #1e4b6e;
-      text-decoration: underline;
-    }
-
-    .login-btn {
-      width: 100%;
-      padding: 12px;
-      background: #1e4b6e;
-      border: none;
-      border-radius: 12px;
-      color: white;
-      font-size: 14px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      box-shadow: 0 6px 12px -4px rgba(30, 75, 110, 0.2);
-      margin-bottom: 16px;
-    }
-
-    .login-btn:hover {
-      background: #0d3250;
-      transform: translateY(-1px);
-      box-shadow: 0 8px 16px -8px rgba(30, 75, 110, 0.3);
-    }
-
-    .login-btn i {
-      font-size: 14px;
-    }
-
-    .register-section {
-      text-align: center;
-      margin-top: 16px;
-      padding-top: 16px;
-      border-top: 1px solid #e0e8f0;
-    }
-
-    .register-section p {
-      color: #4f6b8a;
-      font-size: 13px;
-      margin-bottom: 6px;
-    }
-
-    .register-link {
-      color: #1e4b6e;
-      text-decoration: none;
-      font-weight: 600;
-      font-size: 14px;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      padding: 6px 14px;
-      background: #f4f7fc;
-      border-radius: 30px;
-      transition: all 0.2s;
-    }
-
-    .register-link i {
-      font-size: 11px;
-      transition: transform 0.2s;
-    }
-
-    .register-link:hover {
-      background: #e2eaf3;
-    }
-
-    .register-link:hover i {
-      transform: translateX(4px);
-    }
-
-    .error-message {
-      color: #b34040;
-      font-size: 12px;
-      margin-top: 12px;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      background: #fee9e9;
-      padding: 10px;
-      border-radius: 10px;
-      border: 1px solid #f5c2c2;
-    }
-
-    .error-message.show {
-      display: flex;
-    }
-
-    .error-message i {
-      font-size: 12px;
-      color: #b34040;
-    }
-
-    @media (max-width: 480px) {
-      .login-card {
-        padding: 20px 16px;
-      }
-      
-      .input-wrapper input {
-        padding: 8px 45px 8px 38px;
-        height: 38px;
-      }
-    }
-  </style>
+        .error-message.show {
+            display: block;
+        }
+    </style>
 </head>
 <body>
-  <div class="login-container">
-    <div class="login-card">
-      <div class="hospital-badge">
-        <i class="fas fa-hospital-user"></i>
-        <h1>🏥 Akshaya Clinic</h1>
-        <p>Management System</p>
-      </div>
+    <div class="login-container">
+        <div class="login-card">
+            <div class="hospital-logo">
+                <i class="fas fa-hospital-user"></i>
+                <h2>Akshaya Clinic</h2>
+                <p>Hospital Management System</p>
+            </div>
 
-      <form onsubmit="return handleLogin(event)">
-        <div class="input-group">
-          <label class="input-label">Email Address</label>
-          <div class="input-wrapper">
-            <i class="far fa-envelope"></i>
-            <input type="email" id="email" placeholder="doctor@hospital.com" value="">
-          </div>
+            <div id="errorMessage" class="error-message">
+                <i class="fas fa-exclamation-circle"></i> Invalid credentials
+            </div>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label>Email Address</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-envelope"></i>
+                        <input type="email" id="email" placeholder="admin@akshaya.com" required>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                        <button type="button" class="password-toggle" onclick="togglePassword()">
+                            <i class="far fa-eye"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button type="submit" class="login-btn">
+                    <i class="fas fa-sign-in-alt"></i> Sign In
+                </button>
+            </form>
+
+            <div class="register-link">
+                <a href="register.html">Create New Account →</a>
+            </div>
         </div>
-
-        <div class="input-group">
-          <label class="input-label">Password</label>
-          <div class="input-wrapper">
-            <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Enter password" value="">
-            <button type="button" class="password-toggle" id="togglePassword" onclick="togglePasswordVisibility()" tabindex="-1">
-              <i class="far fa-eye" id="toggleIcon"></i>
-            </button>
-          </div>
-        </div>
-
-        <div class="forgot-password">
-          <a href="#">
-            <i class="fas fa-question-circle"></i> Forgot password?
-          </a>
-        </div>
-
-        <button type="submit" class="login-btn">
-          <i class="fas fa-sign-in-alt"></i>
-          Sign In
-        </button>
-
-        <div id="errorMessage" class="error-message">
-          <i class="fas fa-exclamation-circle"></i>
-          <span></span>
-        </div>
-      </form>
-
-      <div class="register-section">
-        <p>New here?</p>
-        <a href="register.html" class="register-link">
-          Create Account <i class="fas fa-arrow-right"></i>
-        </a>
-      </div>
     </div>
-  </div>
 
-  <script>
-    // Global function for password toggle
-    window.togglePasswordVisibility = function() {
-      const passwordInput = document.getElementById('password');
-      const toggleIcon = document.getElementById('toggleIcon');
-      
-      if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-        toggleIcon.classList.remove('fa-eye');
-        toggleIcon.classList.add('fa-eye-slash');
-      } else {
-        passwordInput.type = 'password';
-        toggleIcon.classList.remove('fa-eye-slash');
-        toggleIcon.classList.add('fa-eye');
-      }
-    };
-  </script>
+    <script>
+        function togglePassword() {
+            const password = document.getElementById('password');
+            const icon = document.querySelector('.password-toggle i');
+            if (password.type === 'password') {
+                password.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                password.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-      authDomain: "notessharingapp-fc388.firebaseapp.com",
-      projectId: "notessharingapp-fc388",
-      storageBucket: "notessharingapp-fc388.firebasestorage.app",
-      messagingSenderId: "64602136432",
-      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+            authDomain: "notessharingapp-fc388.firebaseapp.com",
+            projectId: "notessharingapp-fc388",
+            storageBucket: "notessharingapp-fc388.firebasestorage.app",
+            messagingSenderId: "64602136432",
+            appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
+        };
 
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
 
-    window.handleLogin = function(event) {
-      event.preventDefault();
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('errorMessage');
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("errorMessage");
-      const errorSpan = errorDiv.querySelector('span');
-
-      errorDiv.classList.remove('show');
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          sessionStorage.setItem('currentUser', user.email);
-          sessionStorage.setItem('userEmail', user.email);
-          sessionStorage.setItem('userName', email.split('@')[0]);
-          
-          window.location.href = "dashboard.html";
-        })
-        .catch((error) => {
-          let errorMessage = "Invalid email or password";
-          
-          if (error.code === 'auth/user-not-found') {
-            errorMessage = "No account found";
-          } else if (error.code === 'auth/wrong-password') {
-            errorMessage = "Incorrect password";
-          } else if (error.code === 'auth/invalid-email') {
-            errorMessage = "Invalid email format";
-          } else if (error.code === 'auth/too-many-requests') {
-            errorMessage = "Too many attempts";
-          }
-          
-          errorSpan.textContent = errorMessage;
-          errorDiv.classList.add('show');
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                sessionStorage.setItem('userEmail', email);
+                window.location.href = 'dashboard.html';
+            } catch (error) {
+                errorDiv.textContent = 'Invalid email or password';
+                errorDiv.classList.add('show');
+                setTimeout(() => errorDiv.classList.remove('show'), 3000);
+            }
         });
-    };
-  </script>
+    </script>
 </body>
 </html>
