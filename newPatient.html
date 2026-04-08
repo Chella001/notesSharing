@@ -214,6 +214,8 @@
             border-radius: 40px;
             font-size: 13px;
             color: #2c4c6e;
+            display: inline-block;
+            margin-bottom: 16px;
         }
 
         .patients-table {
@@ -487,10 +489,10 @@
                 <div class="menu-item active">
                     <i class="fas fa-user-injured"></i> Patients
                 </div>
-                <div class="menu-item" onclick="window.location.href='newDoctor.html'">
+                <div class="menu-item" onclick="window.location.href='doctors-list.html'">
                     <i class="fas fa-user-md"></i> Doctors
                 </div>
-                <div class="menu-item" onclick="window.location.href='appointments.html'">
+                <div class="menu-item" onclick="window.location.href='appointments-list.html'">
                     <i class="fas fa-calendar-check"></i> Appointments
                 </div>
                 <div class="menu-item" onclick="window.location.href='reports.html'">
@@ -725,7 +727,6 @@
                 tbody.appendChild(row);
             });
 
-            // Pagination
             const totalPages = Math.ceil(patients.length / itemsPerPage);
             const paginationDiv = document.getElementById('pagination');
             paginationDiv.innerHTML = '';
