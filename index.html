@@ -259,6 +259,24 @@
       color: #b34040;
     }
 
+    .info-message {
+      color: #0b4d66;
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #eef8fb;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #d6eef7;
+    }
+
+    .info-message.show {
+      display: flex;
+    }
+
     @media (max-width: 480px) {
       .login-card {
         padding: 20px 16px;
@@ -315,6 +333,10 @@
           <i class="fas fa-exclamation-circle"></i>
           <span></span>
         </div>
+        <div id="infoMessage" class="info-message">
+          <i class="fas fa-info-circle"></i>
+          <span></span>
+        </div>
       </form>
 
       <div class="register-section">
@@ -352,9 +374,17 @@
       const errorMessage = document.getElementById('errorMessage');
 
       try {
-          // Ensure Firebase config looks valid before calling auth
+          // If Firebase config is invalid, allow a local demo login for development
           if (!window.__FIREBASE_CONFIG_VALID) {
-            throw new Error('Firebase configuration missing or invalid API key. Please update firebase-config.js with your Web API key.');
+            // Demo credentials (development fallback)
+            const demoEmail = 'demo@demo.com';
+            const demoPass = 'demopass';
+            if (email === demoEmail && password === demoPass) {
+              // Simulate successful login in dev mode
+              window.location.href = 'dashboard.html';
+              return;
+            }
+            throw new Error('Firebase configuration missing or invalid API key. For development you can use demo@demo.com / demopass.');
           }
 
           // Firebase authentication logic
@@ -376,6 +406,17 @@
         errorMessage.classList.add('show');
       }
     }
+  </script>
+
+  <script>
+    // Show informative message when Firebase config is missing and provide demo credentials
+    document.addEventListener('DOMContentLoaded', function () {
+      const infoMessage = document.getElementById('infoMessage');
+      if (window.__FIREBASE_CONFIG_VALID === false) {
+        infoMessage.querySelector('span').textContent = 'Firebase config missing or invalid. For local testing use demo@demo.com / demopass or add your Firebase config.';
+        infoMessage.classList.add('show');
+      }
+    });
   </script>
 
   <!-- Load Firebase v8 (namespaced) SDKs required by existing code -->
