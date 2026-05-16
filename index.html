@@ -344,58 +344,12 @@
     };
   </script>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+  <!-- Include centralized Firebase config -->
+  <script src="firebase-config.js" type="module"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-      authDomain: "notessharingapp-fc388.firebaseapp.com",
-      projectId: "notessharingapp-fc388",
-      storageBucket: "notessharingapp-fc388.firebasestorage.app",
-      messagingSenderId: "64602136432",
-      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.handleLogin = function(event) {
-      event.preventDefault();
-
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("errorMessage");
-      const errorSpan = errorDiv.querySelector('span');
-
-      errorDiv.classList.remove('show');
-
-      signInWithEmailAndPassword(auth, email, password)
-        .then((userCredential) => {
-          const user = userCredential.user;
-          sessionStorage.setItem('currentUser', user.email);
-          sessionStorage.setItem('userEmail', user.email);
-          sessionStorage.setItem('userName', email.split('@')[0]);
-          
-          window.location.href = "dashboard.html";
-        })
-        .catch((error) => {
-          let errorMessage = "Invalid email or password";
-          
-          if (error.code === 'auth/user-not-found') {
-            errorMessage = "No account found";
-          } else if (error.code === 'auth/wrong-password') {
-            errorMessage = "Incorrect password";
-          } else if (error.code === 'auth/invalid-email') {
-            errorMessage = "Invalid email format";
-          } else if (error.code === 'auth/too-many-requests') {
-            errorMessage = "Too many attempts";
-          }
-          
-          errorSpan.textContent = errorMessage;
-          errorDiv.classList.add('show');
-        });
-    };
+  <!-- Remove redundant Firebase initialization -->
+  <script>
+  // Remove Firebase initialization block
   </script>
 </body>
 </html>

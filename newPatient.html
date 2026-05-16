@@ -9,6 +9,8 @@
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <!-- Include centralized Firebase config -->
+    <script src="firebase-config.js" type="module"></script>
     <style>
         * {
             margin: 0;
@@ -705,29 +707,6 @@
     </div>
 
     <script>
-        // Firebase Configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-            authDomain: "notessharingapp-fc388.firebaseapp.com",
-            projectId: "notessharingapp-fc388",
-            storageBucket: "notessharingapp-fc388.firebasestorage.app",
-            messagingSenderId: "64602136432",
-            appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-        };
-
-        // Initialize Firebase
-        let db;
-        try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-            }
-            db = firebase.firestore();
-            console.log("✅ Firebase initialized");
-        } catch (error) {
-            console.error("❌ Firebase init error:", error);
-            showNotification("Firebase configuration error", "error");
-        }
-
         // Helper Functions
         function showNotification(message, type = "success") {
             const notification = document.getElementById('notification');

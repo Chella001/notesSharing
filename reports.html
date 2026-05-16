@@ -659,37 +659,10 @@
         </div>
     </div>
 
+    <!-- Include centralized Firebase config -->
+    <script src="firebase-config.js" type="module"></script>
+
     <script>
-        // ==================== FIREBASE CONFIGURATION ====================
-        const firebaseConfig = {
-            apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-            authDomain: "notessharingapp-fc388.firebaseapp.com",
-            projectId: "notessharingapp-fc388",
-            storageBucket: "notessharingapp-fc388.firebasestorage.app",
-            messagingSenderId: "64602136432",
-            appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-        };
-
-        // ==================== INITIALIZE FIREBASE ====================
-        let db;
-        let auth;
-        let revenueChart, statusChart, doctorRevenueChart, typeChart;
-        let currentStartDate, currentEndDate;
-        
-        try {
-            if (!firebase.apps.length) {
-                firebase.initializeApp(firebaseConfig);
-                console.log("✅ Firebase initialized successfully");
-            }
-            
-            db = firebase.firestore();
-            auth = firebase.auth();
-            
-        } catch (error) {
-            console.error("❌ Firebase initialization error:", error);
-            showNotification("Firebase configuration error: " + error.message, "error");
-        }
-
         // ==================== HELPER FUNCTIONS ====================
         function showNotification(message, type = "success") {
             const notification = document.getElementById('notification');

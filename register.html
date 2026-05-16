@@ -330,81 +330,12 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
-    import { 
-      getAuth, 
-      createUserWithEmailAndPassword,
-      updateProfile 
-    } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+  <!-- Include centralized Firebase config -->
+  <script src="firebase-config.js" type="module"></script>
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
-      authDomain: "notessharingapp-fc388.firebaseapp.com",
-      projectId: "notessharingapp-fc388",
-      storageBucket: "notessharingapp-fc388.firebasestorage.app",
-      messagingSenderId: "64602136432",
-      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-
-    window.handleRegister = async function(event) {
-      event.preventDefault();
-
-      const fullname = document.getElementById("fullname").value;
-      const department = document.getElementById("department").value;
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const errorDiv = document.getElementById("errorMessage");
-      const errorSpan = errorDiv.querySelector('span');
-
-      errorDiv.classList.remove('show');
-
-      // Basic validation
-      if (!department) {
-        errorSpan.textContent = "Please select a department";
-        errorDiv.classList.add('show');
-        return;
-      }
-
-      if (password.length < 6) {
-        errorSpan.textContent = "Password must be at least 6 characters";
-        errorDiv.classList.add('show');
-        return;
-      }
-
-      try {
-        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-        await updateProfile(userCredential.user, {
-          displayName: fullname
-        });
-
-        // Store additional user data (you can save department to Firestore later)
-        sessionStorage.setItem('userName', fullname);
-        sessionStorage.setItem('userEmail', email);
-        sessionStorage.setItem('userDepartment', department);
-
-        alert("✓ Registration Successful! Please login.");
-        window.location.href = "index.html";
-
-      } catch (error) {
-        let errorMessage = "Registration failed";
-        
-        if (error.code === 'auth/email-already-in-use') {
-          errorMessage = "Email already in use";
-        } else if (error.code === 'auth/invalid-email') {
-          errorMessage = "Invalid email format";
-        } else if (error.code === 'auth/weak-password') {
-          errorMessage = "Password too weak";
-        }
-        
-        errorSpan.textContent = errorMessage;
-        errorDiv.classList.add('show');
-      }
-    };
+  <!-- Remove redundant Firebase initialization -->
+  <script>
+  // Remove Firebase initialization block
   </script>
 </body>
 </html>
