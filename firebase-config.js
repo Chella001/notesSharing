@@ -18,8 +18,5 @@ if (!firebase.apps.length) {
     console.log("✅ Firebase already initialized");
 }
 
-const db = firebase.firestore();
-const auth = firebase.auth();
-
-// Export Firebase instances
-export { db, auth };
+// Make Firebase globally available
+window.firebase = firebase;
