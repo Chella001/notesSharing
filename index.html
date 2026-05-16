@@ -352,15 +352,27 @@
       const errorMessage = document.getElementById('errorMessage');
 
       try {
-        // Firebase authentication logic
-        const auth = firebase.auth();
-        const userCredential = await auth.signInWithEmailAndPassword(email, password);
+          // Ensure Firebase config looks valid before calling auth
+          if (!window.__FIREBASE_CONFIG_VALID) {
+            throw new Error('Firebase configuration missing or invalid API key. Please update firebase-config.js with your Web API key.');
+          }
 
-        // Redirect to dashboard.html on successful login
-        window.location.href = 'dashboard.html';
+          // Firebase authentication logic
+          if (!window.firebase || !firebase.auth) {
+            throw new Error('Firebase SDK not loaded. Check console for details.');
+          }
+
+          const auth = firebase.auth();
+          const userCredential = await auth.signInWithEmailAndPassword(email, password);
+
+          // Redirect to dashboard.html on successful login
+          window.location.href = 'dashboard.html';
       } catch (error) {
         // Display error message
-        errorMessage.querySelector('span').textContent = error.message;
+          console.error(error);
+          // Prefer readable message for known API key error
+          const msg = (error && error.message) ? error.message : 'Login failed';
+          errorMessage.querySelector('span').textContent = msg;
         errorMessage.classList.add('show');
       }
     }
