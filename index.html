@@ -19,7 +19,8 @@
       display: flex;
       align-items: center;
       justify-content: center;
-@ -24,199 +24,324 @@
+      padding: 16px;
+    }
 
     .login-container {
       width: 100%;
@@ -344,7 +345,18 @@
   </script>
 
   <script type="module">
-@ -235,22 +360,42 @@
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
+      authDomain: "notessharingapp-fc388.firebaseapp.com",
+      projectId: "notessharingapp-fc388",
+      storageBucket: "notessharingapp-fc388.firebasestorage.app",
+      messagingSenderId: "64602136432",
+      appId: "1:64602136432:web:6e32abecc2bc9ec98179b5"
+    };
+
     const app = initializeApp(firebaseConfig);
     const auth = getAuth(app);
 
