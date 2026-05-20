@@ -248,6 +248,7 @@
       padding: 10px;
       border-radius: 10px;
       border: 1px solid #f5c2c2;
+<<<<<<< HEAD
     }
 
     .error-message.show {
@@ -257,6 +258,35 @@
     .error-message i {
       font-size: 12px;
       color: #b34040;
+=======
+    }
+
+    .error-message.show {
+      display: flex;
+    }
+
+    .error-message i {
+      font-size: 12px;
+      color: #b34040;
+    }
+
+    .info-message {
+      color: #0b4d66;
+      font-size: 13px;
+      margin-top: 12px;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      background: #eef8fb;
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #d6eef7;
+    }
+
+    .info-message.show {
+      display: flex;
+>>>>>>> parent of 7507afc (commit)
     }
 
     @media (max-width: 480px) {
@@ -352,9 +382,23 @@
       const errorMessage = document.getElementById('errorMessage');
 
       try {
+<<<<<<< HEAD
           // Ensure Firebase config looks valid before calling auth
           if (!window.__FIREBASE_CONFIG_VALID) {
             throw new Error('Firebase configuration missing or invalid API key. Please update firebase-config.js with your Web API key.');
+=======
+          // If Firebase config is invalid, allow a local demo login for development
+          if (!window.__FIREBASE_CONFIG_VALID) {
+            // Demo credentials (development fallback)
+            const demoEmail = 'demo@demo.com';
+            const demoPass = 'demopass';
+            if (email === demoEmail && password === demoPass) {
+              // Simulate successful login in dev mode
+              window.location.href = 'dashboard.html';
+              return;
+            }
+            throw new Error('Firebase configuration missing or invalid API key. For development you can use demo@demo.com / demopass.');
+>>>>>>> parent of 7507afc (commit)
           }
 
           // Firebase authentication logic
@@ -374,8 +418,37 @@
           const msg = (error && error.message) ? error.message : 'Login failed';
           errorMessage.querySelector('span').textContent = msg;
         errorMessage.classList.add('show');
+<<<<<<< HEAD
       }
     }
+=======
+      }
+    }
+  </script>
+
+  <script>
+    // Show informative message when Firebase config is missing and provide demo credentials
+    document.addEventListener('DOMContentLoaded', function () {
+      const infoMessage = document.getElementById('infoMessage');
+      if (window.__FIREBASE_CONFIG_VALID === false) {
+        infoMessage.querySelector('span').textContent = 'Firebase config missing or invalid. For local testing use demo@demo.com / demopass or add your Firebase config.';
+        infoMessage.classList.add('show');
+      }
+    });
+  </script>
+
+  <!-- Load Firebase v8 (namespaced) SDKs required by existing code -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+  <!-- Include centralized Firebase config (uses global `firebase`) -->
+  <script src="firebase-config.js"></script>
+
+  <!-- Remove redundant Firebase initialization -->
+  <script>
+  // ...existing code...
+>>>>>>> parent of 7507afc (commit)
   </script>
 
   <!-- Load Firebase v8 (namespaced) SDKs required by existing code -->
