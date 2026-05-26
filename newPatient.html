@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
         if (!sessionStorage.getItem('currentUser')) {
@@ -18,7 +19,10 @@
     <!-- Include centralized Firebase config -->
     <script src="firebase-config.js" type="module"></script>
     <link rel="stylesheet" href="theme.css">
+    <!-- EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
 </head>
+
 <body>
     <!-- Notification Toast -->
     <div id="notification" class="notification">Data loaded successfully</div>
@@ -134,7 +138,8 @@
 
                         <!-- Contact Info -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-phone-alt"></i>Phone Number * (10 digits)</label>
+                            <label class="input-label"><i class="fas fa-phone-alt"></i>Phone Number * (10
+                                digits)</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-alt"></i>
                                 <input type="text" id="phone" placeholder="9876543210" maxlength="10" required>
@@ -181,10 +186,12 @@
                         </div>
 
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-phone-volume"></i>Emergency Contact * (10 digits)</label>
+                            <label class="input-label"><i class="fas fa-phone-volume"></i>Emergency Contact * (10
+                                digits)</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-volume"></i>
-                                <input type="text" id="emergencyContact" placeholder="9876543210" maxlength="10" required>
+                                <input type="text" id="emergencyContact" placeholder="9876543210" maxlength="10"
+                                    required>
                             </div>
                             <div id="emergencyError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -210,7 +217,8 @@
                             <label class="input-label"><i class="fas fa-notes-medical"></i>Medical Notes</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-stethoscope"></i>
-                                <textarea id="medicalNotes" placeholder="Allergies, current medications, or other notes" rows="2"></textarea>
+                                <textarea id="medicalNotes" placeholder="Allergies, current medications, or other notes"
+                                    rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -247,6 +255,11 @@
     </div>
 
     <script>
+        // EmailJS Configuration
+        const EMAILJS_PUBLIC_KEY = "WWgImk29-cZf3pzRj"; // Replace with your EmailJS Public Key
+        const EMAILJS_SERVICE_ID = "service_6i7cxc9"; // Replace with your EmailJS Service ID
+        const EMAILJS_TEMPLATE_ID = "template_xc4kvgi"; // Replace with your EmailJS Template ID
+
         let db;
         // Helper Functions
         function showNotification(message, type = "success") {
@@ -269,7 +282,7 @@
         // Load Stats
         async function loadStats() {
             if (!db) return;
-            
+
             try {
                 const patientsSnapshot = await db.collection('patients').get();
                 document.getElementById('totalPatients').textContent = patientsSnapshot.size;
@@ -289,21 +302,21 @@
             const nameError = document.getElementById('nameError');
             const nameInput = document.getElementById('patientName');
             const errorSpan = nameError.querySelector('span');
-            
+
             if (!name || name.trim() === '') {
                 errorSpan.textContent = "Name is required";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
             }
-            
+
             if (name.length < 2) {
                 errorSpan.textContent = "Name must be at least 2 characters";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
             }
-            
+
             nameError.classList.remove('show');
             nameInput.classList.remove('error');
             return true;
@@ -313,14 +326,14 @@
             const ageError = document.getElementById('ageError');
             const ageInput = document.getElementById('age');
             const errorSpan = ageError.querySelector('span');
-            
+
             if (!age || age === '') {
                 errorSpan.textContent = "Age is required";
                 ageError.classList.add('show');
                 ageInput.classList.add('error');
                 return false;
             }
-            
+
             const ageNum = parseInt(age);
             if (isNaN(ageNum) || ageNum < 0 || ageNum > 150) {
                 errorSpan.textContent = "Please enter a valid age between 0 and 150";
@@ -328,7 +341,7 @@
                 ageInput.classList.add('error');
                 return false;
             }
-            
+
             ageError.classList.remove('show');
             ageInput.classList.remove('error');
             return true;
@@ -338,21 +351,21 @@
             const phoneError = document.getElementById('phoneError');
             const phoneInput = document.getElementById('phone');
             const errorSpan = phoneError.querySelector('span');
-            
+
             if (!phone || phone.trim() === '') {
                 errorSpan.textContent = "Phone number is required";
                 phoneError.classList.add('show');
                 phoneInput.classList.add('error');
                 return false;
             }
-            
+
             if (!/^\d{10}$/.test(phone)) {
                 errorSpan.textContent = "Please enter exactly 10 digits";
                 phoneError.classList.add('show');
                 phoneInput.classList.add('error');
                 return false;
             }
-            
+
             phoneError.classList.remove('show');
             phoneInput.classList.remove('error');
             return true;
@@ -362,13 +375,13 @@
             const emailError = document.getElementById('emailError');
             const emailInput = document.getElementById('email');
             const errorSpan = emailError.querySelector('span');
-            
+
             if (!email || email.trim() === '') {
                 emailError.classList.remove('show');
                 emailInput.classList.remove('error');
                 return true;
             }
-            
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 errorSpan.textContent = "Please enter a valid email address";
@@ -376,7 +389,7 @@
                 emailInput.classList.add('error');
                 return false;
             }
-            
+
             emailError.classList.remove('show');
             emailInput.classList.remove('error');
             return true;
@@ -386,14 +399,14 @@
             const bloodError = document.getElementById('bloodGroupError');
             const bloodInput = document.getElementById('bloodGroup');
             const errorSpan = bloodError.querySelector('span');
-            
+
             if (!bloodGroup || bloodGroup === '') {
                 errorSpan.textContent = "Please select a blood group";
                 bloodError.classList.add('show');
                 bloodInput.classList.add('error');
                 return false;
             }
-            
+
             bloodError.classList.remove('show');
             bloodInput.classList.remove('error');
             return true;
@@ -403,21 +416,21 @@
             const emergencyError = document.getElementById('emergencyError');
             const emergencyInput = document.getElementById('emergencyContact');
             const errorSpan = emergencyError.querySelector('span');
-            
+
             if (!contact || contact.trim() === '') {
                 errorSpan.textContent = "Emergency contact is required";
                 emergencyError.classList.add('show');
                 emergencyInput.classList.add('error');
                 return false;
             }
-            
+
             if (!/^\d{10}$/.test(contact)) {
                 errorSpan.textContent = "Please enter exactly 10 digits";
                 emergencyError.classList.add('show');
                 emergencyInput.classList.add('error');
                 return false;
             }
-            
+
             emergencyError.classList.remove('show');
             emergencyInput.classList.remove('error');
             return true;
@@ -427,57 +440,57 @@
             const addressError = document.getElementById('addressError');
             const addressInput = document.getElementById('address');
             const errorSpan = addressError.querySelector('span');
-            
+
             if (!address || address.trim() === '') {
                 errorSpan.textContent = "Address is required";
                 addressError.classList.add('show');
                 addressInput.classList.add('error');
                 return false;
             }
-            
+
             if (address.length < 5) {
                 errorSpan.textContent = "Please enter a complete address";
                 addressError.classList.add('show');
                 addressInput.classList.add('error');
                 return false;
             }
-            
+
             addressError.classList.remove('show');
             addressInput.classList.remove('error');
             return true;
         }
 
         // Real-time validation
-        document.getElementById('patientName').addEventListener('input', function() {
+        document.getElementById('patientName').addEventListener('input', function () {
             validateName(this.value);
         });
 
-        document.getElementById('age').addEventListener('input', function() {
+        document.getElementById('age').addEventListener('input', function () {
             validateAge(this.value);
         });
 
-        document.getElementById('phone').addEventListener('input', function() {
+        document.getElementById('phone').addEventListener('input', function () {
             validatePhone(this.value);
         });
 
-        document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('email').addEventListener('input', function () {
             validateEmail(this.value);
         });
 
-        document.getElementById('bloodGroup').addEventListener('change', function() {
+        document.getElementById('bloodGroup').addEventListener('change', function () {
             validateBloodGroup(this.value);
         });
 
-        document.getElementById('emergencyContact').addEventListener('input', function() {
+        document.getElementById('emergencyContact').addEventListener('input', function () {
             validateEmergencyContact(this.value);
         });
 
-        document.getElementById('address').addEventListener('input', function() {
+        document.getElementById('address').addEventListener('input', function () {
             validateAddress(this.value);
         });
 
         // Handle Form Submit
-        document.getElementById('patientForm').addEventListener('submit', async function(event) {
+        document.getElementById('patientForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             if (!db) {
@@ -516,7 +529,7 @@
             const isEmergencyValid = validateEmergencyContact(emergencyContact);
             const isAddressValid = validateAddress(address);
 
-            if (!isNameValid || !isAgeValid || !isPhoneValid || !isEmailValid || 
+            if (!isNameValid || !isAgeValid || !isPhoneValid || !isEmailValid ||
                 !isBloodGroupValid || !isEmergencyValid || !isAddressValid) {
                 errorSpan.textContent = "Please fix the errors in the form";
                 errorDiv.classList.add('show');
@@ -552,7 +565,7 @@
 
                 // Save to Firestore
                 const docRef = await db.collection('patients').add(patientData);
-                
+
                 console.log("Patient saved with ID:", docRef.id);
 
                 // Clear timeout warning
@@ -566,9 +579,21 @@
 
                 // Send email to patient
                 if (patientData.email) {
-                    const subject = encodeURIComponent("Welcome to Akshaya Clinic");
-                    const body = encodeURIComponent(`Dear ${patientData.name},\n\nYour registration at Akshaya Clinic is successful.\n\nThank you for choosing us.\n\nRegards,\nAkshaya Clinic`);
-                    window.location.href = `mailto:${patientData.email}?subject=${subject}&body=${body}`;
+                    if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+                        const templateParams = {
+                            to_name: patientData.name,
+                            to_email: patientData.email,
+                            message: `Your registration at Akshaya Clinic is successful. Thank you for choosing us.`
+                        };
+                        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                            .then(function (response) {
+                                console.log('Email sent successfully!', response.status, response.text);
+                            }, function (error) {
+                                console.error('Failed to send email...', error);
+                            });
+                    } else {
+                        console.warn("EmailJS is not initialized or configured.");
+                    }
                 }
 
                 // Clear form
@@ -592,9 +617,9 @@
             } catch (error) {
                 clearTimeout(timeoutId);
                 timeoutWarning.classList.remove('show');
-                
+
                 console.error("❌ Error adding patient:", error);
-                
+
                 let errorMsg = "Failed to register patient. ";
                 if (error.code === 'permission-denied') {
                     errorMsg = "Permission denied! Please check Firestore Security Rules.";
@@ -603,18 +628,18 @@
                 } else {
                     errorMsg += error.message;
                 }
-                
+
                 errorSpan.textContent = errorMsg;
                 errorDiv.classList.add('show');
                 showNotification("Error adding patient", "error");
-                
+
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Patient';
             }
         });
 
         // Logout
-        document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('logoutBtn').addEventListener('click', function () {
             window.showLogoutConfirmation(() => {
                 sessionStorage.clear();
                 showNotification("Logged out successfully");
@@ -628,7 +653,11 @@
         document.addEventListener('DOMContentLoaded', () => {
             db = window.db;
             loadStats();
+            if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+                emailjs.init(EMAILJS_PUBLIC_KEY);
+            }
         });
     </script>
 </body>
+
 </html>
