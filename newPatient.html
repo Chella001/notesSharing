@@ -564,6 +564,13 @@
                 successDiv.classList.add('show');
                 showNotification("Patient added successfully!");
 
+                // Send email to patient
+                if (patientData.email) {
+                    const subject = encodeURIComponent("Welcome to Akshaya Clinic");
+                    const body = encodeURIComponent(`Dear ${patientData.name},\n\nYour registration at Akshaya Clinic is successful.\n\nThank you for choosing us.\n\nRegards,\nAkshaya Clinic`);
+                    window.location.href = `mailto:${patientData.email}?subject=${subject}&body=${body}`;
+                }
+
                 // Clear form
                 document.getElementById("patientName").value = "";
                 document.getElementById("age").value = "";
