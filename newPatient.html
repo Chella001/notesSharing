@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        if (!sessionStorage.getItem('currentUser')) {
+            window.location.href = 'index.html';
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hospital Management · Add Patient</title>
@@ -1068,6 +1073,7 @@
         // Logout
         document.getElementById('logoutBtn').addEventListener('click', function() {
             if (confirm('Are you sure you want to logout?')) {
+                sessionStorage.clear();
                 showNotification("Logged out successfully");
                 setTimeout(() => {
                     window.location.href = 'index.html';

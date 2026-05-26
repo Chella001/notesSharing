@@ -1,6 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script>
+        if (!sessionStorage.getItem('currentUser')) {
+            window.location.href = 'index.html';
+        }
+    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hospital Management · System Settings</title>
@@ -804,6 +809,7 @@
         document.getElementById('logoutBtn').addEventListener('click', () => {
             if (confirm('Log out from hospital system?')) {
                 auth.signOut().then(() => {
+                    sessionStorage.clear();
                     showNotification("Logged out", "success");
                     setTimeout(() => window.location.href = 'index.html', 1200);
                 }).catch(() => showNotification("Logout error", "error"));
