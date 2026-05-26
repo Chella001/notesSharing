@@ -106,6 +106,20 @@
 
       errorDiv.classList.remove('show');
 
+      // Enhanced Validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!email || !emailRegex.test(email.trim())) {
+        errorSpan.textContent = "Please enter a valid email address";
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      if (!password || password.trim() === '') {
+        errorSpan.textContent = "Please enter your password";
+        errorDiv.classList.add('show');
+        return;
+      }
+
       signInWithEmailAndPassword(auth, email, password)
         .then((userCredential) => {
           const user = userCredential.user;
