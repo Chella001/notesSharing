@@ -588,11 +588,14 @@
                         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
                             .then(function (response) {
                                 console.log('Email sent successfully!', response.status, response.text);
+                                showNotification("Email sent to patient successfully!");
                             }, function (error) {
                                 console.error('Failed to send email...', error);
+                                showNotification("Failed to send email: " + (error.text || error.message || JSON.stringify(error)), "error");
                             });
                     } else {
                         console.warn("EmailJS is not initialized or configured.");
+                        showNotification("EmailJS is not configured", "error");
                     }
                 }
 
