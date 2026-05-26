@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description"
+        content="MediOrbit - Decentralized, zero-gravity hospital management system. Elevating patient registry, clinical telemetry, and medical operations beyond terrestrial bounds.">
+    <title>MediOrbit | Zero-Gravity Hospital Management System</title>
+
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="mediorbit.css">
+</head>
+
+<body>
+
+    <!-- Twinkling Starfield & Nebulae -->
+    <div class="starfield-container" id="starfieldContainer">
+        <div class="nebula-cyan"></div>
+        <div class="nebula-purple"></div>
+        <div class="nebula-center"></div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-icon">
+                <div class="logo-ring"></div>
+                <div class="logo-core"></div>
+            </div>
+            <span>MediOrbit</span>
+        </a>
+
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#features">Features</a></li>
+            <li><a href="#stats">Telemetry</a></li>
+            <li><a href="#orbit">System Orbit</a></li>
+            <li><a href="#compliance">Compliance</a></li>
+        </ul>
+
+        <button class="nav-cta" onclick="scrollToCta()">Request Access</button>
+
+        <button class="hamburger" id="hamburger" aria-label="Toggle Navigation Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero-section" id="hero">
+        <div class="container">
+            <div class="hero-grid">
+
+                <!-- Left: Content -->
+                <div class="hero-content">
+                    <div class="pulse-badge">
+                        <span class="pulse-dot"></span>
+                        <span class="badge-text">Orbital Node Beta-12 Live</span>
+                    </div>
+                    <h1 class="hero-title">Healthcare, elevated beyond gravity</h1>
+                    <p class="hero-subtitle">
+                        MediOrbit is the first zero-gravity hospital management system designed for orbital medical
+                        stations, deep-space outposts, and advanced terrestrial clinics. Seamlessly coordinate patient
+                        care, pharmacy telemetry, and laboratory scheduling with zero-latency synchronization.
+                    </p>
+                    <div class="hero-ctas">
+                        <button class="btn-primary" onclick="scrollToCta()">
+                            Request Launch Demo <i class="fas fa-rocket"></i>
+                        </button>
+                        <a href="#features" class="btn-secondary">
+                            Explore Modules <i class="fas fa-compass"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Right: Visualizer (Desktop only, fallback on mobile) -->
+                <div class="hero-visualizer" id="orbit">
+                    <!-- Interactive Orbit Core -->
+                    <div class="orbit-container">
+                        <!-- Orbit Rings -->
+                        <div class="orbit-ring ring-inner"></div>
+                        <div class="orbit-ring ring-outer"></div>
+
+                        <!-- Center Card (System Uptime) -->
+                        <div class="central-card">
+                            <div class="central-pulse">
+                                <div class="radar-wave"></div>
+                                <div class="radar-wave"></div>
+                                <div class="radar-wave"></div>
+                                <div class="central-core"></div>
+                            </div>
+                            <div class="central-label">Satellite Uptime</div>
+                            <div class="central-value">99.998%</div>
+                            <div class="central-sub">Nodes synchronized</div>
+                        </div>
+
+                        <!-- Card 1: Patients Today -->
+                        <div class="floating-card card-patients float-p">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-user-injured"></i>
+                                <span class="card-title-orbit">Patients Today</span>
+                            </div>
+                            <div class="card-value-orbit">1,284</div>
+                            <div class="card-meta-orbit success">
+                                <i class="fas fa-caret-up"></i> 12.4% vs yesterday
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Prescriptions -->
+                        <div class="floating-card card-prescriptions float-pr">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-file-medical purple-icon"></i>
+                                <span class="card-title-orbit">Prescriptions</span>
+                            </div>
+                            <div class="card-value-orbit">842</div>
+                            <div class="card-meta-orbit">
+                                <i class="fas fa-check-circle"></i> 98% Fulfilled
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Appointments -->
+                        <div class="floating-card card-appointments float-a">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-calendar-check"></i>
+                                <span class="card-title-orbit">Appointments</span>
+                            </div>
+                            <div class="card-value-orbit">386</div>
+                            <div class="card-meta-orbit warning">
+                                <i class="fas fa-clock"></i> 24 Pending Action
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Lab Reports -->
+                        <div class="floating-card card-reports float-l">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-vial purple-icon"></i>
+                                <span class="card-title-orbit">Lab Reports</span>
+                            </div>
+                            <div class="card-value-orbit">142</div>
+                            <div class="card-meta-orbit">
+                                <i class="fas fa-shield-alt"></i> 99.2% Accuracy
+                            </div>
+                        </div>
+
+                        <!-- Card 5: Bed Occupancy -->
+                        <div class="floating-card card-occupancy float-b">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-procedures"></i>
+                                <span class="card-title-orbit">Bed Occupancy</span>
+                            </div>
+                            <div class="card-value-orbit">87.5%</div>
+                            <div class="card-progress">
+                                <div class="card-progress-bar" style="width: 87.5%"></div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6: Staff On Duty -->
+                        <div class="floating-card card-staff float-s">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-user-md purple-icon"></i>
+                                <span class="card-title-orbit">Staff On Duty</span>
+                            </div>
+                            <div class="card-value-orbit">74 / 85</div>
+                            <div class="card-meta-orbit">
+                                <i class="fas fa-circle-notch fa-spin"></i> 9 Emergency teams
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mobile Fallback Grid (displayed only on small screens) -->
+                    <div class="orbit-fallback-grid">
+                        <div class="central-card-fallback">
+                            <div class="central-label">Satellite Uptime</div>
+                            <div class="central-value" style="color: var(--color-accent-cyan);">99.998%</div>
+                            <div class="central-sub">All nodes synchronized</div>
+                        </div>
+
+                        <div class="floating-card">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-user-injured"></i>
+                                <span class="card-title-orbit">Patients Today</span>
+                            </div>
+                            <div class="card-value-orbit">1,284</div>
+                        </div>
+
+                        <div class="floating-card">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-file-medical"></i>
+                                <span class="card-title-orbit">Prescriptions</span>
+                            </div>
+                            <div class="card-value-orbit">842</div>
+                        </div>
+
+                        <div class="floating-card">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-calendar-check"></i>
+                                <span class="card-title-orbit">Appointments</span>
+                            </div>
+                            <div class="card-value-orbit">386</div>
+                        </div>
+
+                        <div class="floating-card">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-vial"></i>
+                                <span class="card-title-orbit">Lab Reports</span>
+                            </div>
+                            <div class="card-value-orbit">142</div>
+                        </div>
+
+                        <div class="floating-card">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-procedures"></i>
+                                <span class="card-title-orbit">Bed Occupancy</span>
+                            </div>
+                            <div class="card-value-orbit">87.5%</div>
+                        </div>
+
+                        <div class="floating-card">
+                            <div class="card-header-orbit">
+                                <i class="fas fa-user-md"></i>
+                                <span class="card-title-orbit">Staff On Duty</span>
+                            </div>
+                            <div class="card-value-orbit">74 / 85</div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Bar Section -->
+    <section class="stats-bar-section" id="stats">
+        <div class="container">
+            <div class="stats-bar-container">
+
+                <div class="stat-item">
+                    <div class="stat-number-glow">500+</div>
+                    <div class="stat-label-space">Clinics & Hospitals</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-number-glow">2M+</div>
+                    <div class="stat-label-space">Records Processed</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-number-glow">99.9%</div>
+                    <div class="stat-label-space">System Uptime</div>
+                </div>
+
+                <div class="stat-item">
+                    <div class="stat-number-glow">24/7</div>
+                    <div class="stat-label-space">Orbital Support</div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features-section" id="features">
+        <div class="container">
+            <div class="section-title-wrapper">
+                <h2 class="section-title">6-Module System Core</h2>
+                <p class="section-desc">Every layer of clinical operations, re-engineered for resilience and speed in
+                    the most demanding environments.</p>
+            </div>
+
+            <div class="features-grid">
+
+                <!-- Module 1: Patient Registry -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-address-book"></i>
+                    </div>
+                    <h3 class="feature-title">Patient Registry</h3>
+                    <p class="feature-description">
+                        Biometric check-in with decentralized cryptographic medical records. Synchronize patient
+                        histories automatically across terrestrial databases and orbital stations.
+                    </p>
+                    <a href="#contact" class="feature-link">Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Module 2: Scheduler -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Smart Scheduler</h3>
+                    <p class="feature-description">
+                        Intelligent scheduling algorithms that prioritize urgent diagnostic slots, manage medical team
+                        shifts, and prevent appointment friction dynamically.
+                    </p>
+                    <a href="#contact" class="feature-link">Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Module 3: Pharmacy & Billing -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-file-invoice-dollar"></i>
+                    </div>
+                    <h3 class="feature-title">Pharmacy & Billing</h3>
+                    <p class="feature-description">
+                        Robotic inventory tracking, automated prescription dispensing validations, and smart insurance
+                        claim submissions with integrated ledger audit trails.
+                    </p>
+                    <a href="#contact" class="feature-link">Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Module 4: Laboratory -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-microscope"></i>
+                    </div>
+                    <h3 class="feature-title">Laboratory Systems</h3>
+                    <p class="feature-description">
+                        Direct connection to digital telemetry scanners, DNA sequencing pipes, and automated specimen
+                        analyzers with real-time digital signature delivery.
+                    </p>
+                    <a href="#contact" class="feature-link">Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Module 5: Ward Management -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-hospital"></i>
+                    </div>
+                    <h3 class="feature-title">Ward Management</h3>
+                    <p class="feature-description">
+                        Real-time bed telemetry, environmental sensor tracking, and automated life support syncing
+                        designed for high-care wards and isolation units.
+                    </p>
+                    <a href="#contact" class="feature-link">Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+                <!-- Module 6: Analytics -->
+                <div class="feature-card">
+                    <div class="feature-icon-wrapper">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Predictive Analytics</h3>
+                    <p class="feature-description">
+                        AI-assisted diagnostic telemetry checks, station resource load predictions, and active bandwidth
+                        logs mapping cross-node health network loads.
+                    </p>
+                    <a href="#contact" class="feature-link">Details <i class="fas fa-arrow-right"></i></a>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Glowing CTA / Demo Request Section -->
+    <section class="cta-section" id="contact">
+        <div class="container">
+            <div class="cta-card">
+                <div class="cta-glow-border"></div>
+                <div class="cta-content">
+                    <h2 class="cta-title">Ready to elevate clinical efficiency?</h2>
+                    <p class="cta-desc">
+                        Bring MediOrbit's zero-gravity architecture to your medical team. Enter your corporate email to
+                        request early simulator dashboard credentials.
+                    </p>
+
+                    <form class="cta-form" id="demoForm" onsubmit="handleDemoRequest(event)">
+                        <div class="form-input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" class="cta-input" placeholder="medical-officer@agency.org" required
+                                id="demoEmail">
+                        </div>
+                        <button type="submit" class="cta-submit-btn">
+                            Request Access <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+
+                <div class="footer-brand">
+                    <a href="#" class="logo">
+                        <div class="logo-icon">
+                            <div class="logo-ring"></div>
+                            <div class="logo-core"></div>
+                        </div>
+                        <span>MediOrbit</span>
+                    </a>
+                    <p class="footer-desc">
+                        A cybernetic clinic management ecosystem designed to withstand gravity fluctuations and sync
+                        health nodes globally.
+                    </p>
+                    <div class="footer-socials">
+                        <a href="#" class="social-link" aria-label="Github"><i class="fab fa-github"></i></a>
+                        <a href="#" class="social-link" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                        <a href="#" class="social-link" aria-label="Discord"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="footer-column-title">Modules</h4>
+                    <ul class="footer-links">
+                        <li><a href="#features">Registry Hub</a></li>
+                        <li><a href="#features">Smart Scheduler</a></li>
+                        <li><a href="#features">Pharmacy System</a></li>
+                        <li><a href="#features">Diagnostics Portal</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-column-title">Resources</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Telemetry API</a></li>
+                        <li><a href="#">Security Audit</a></li>
+                        <li><a href="#">Developer Core</a></li>
+                        <li><a href="#">Orbital Status</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="footer-column-title">Company</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">About MediOrbit</a></li>
+                        <li><a href="#">Press Kit</a></li>
+                        <li><a href="#">Contact Officers</a></li>
+                        <li><a href="#">Command Center</a></li>
+                    </ul>
+                </div>
+
+            </div>
+
+            <!-- Compliance Section -->
+            <div class="compliance-section" id="compliance">
+                <div class="compliance-badges">
+                    <div class="badge">
+                        <i class="fas fa-shield-halved"></i> HIPAA Compliant
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-user-lock purple-badge-icon"></i> SOC2 Certified
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-globe"></i> GDPR Compliant
+                    </div>
+                    <div class="badge">
+                        <i class="fas fa-network-wired purple-badge-icon"></i> HL7 / FHIR Standard
+                    </div>
+                </div>
+
+                <div class="footer-info">
+                    &copy; 2026 MediOrbit Space Agencies. <span>All systems operational</span>
+                </div>
+            </div>
+
+        </div>
+    </footer>
+
+    <!-- Toast Notification -->
+    <div class="toast-container">
+        <div class="toast" id="toast">
+            <i class="fas fa-circle-check"></i>
+            <span id="toastMessage">Demo request received successfully!</span>
+        </div>
+    </div>
+
+    <!-- JavaScript logic -->
+    <script>
+        // 1. Dynamic Twinkling Stars Generator
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('starfieldContainer');
+            const totalStars = 100;
+
+            for (let i = 0; i < totalStars; i++) {
+                const star = document.createElement('div');
+                star.classList.add('star');
+
+                // Random position coordinates
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+
+                // Random sizing (0.5px to 2.5px)
+                const size = Math.random() * 2 + 0.5;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+
+                // Twinkling animation variables
+                const duration = Math.random() * 3 + 2; // 2s to 5s
+                const delay = Math.random() * 5; // 0s to 5s
+                const maxOpacity = Math.random() * 0.6 + 0.4; // 0.4 to 1.0
+
+                star.style.setProperty('--duration', `${duration}s`);
+                star.style.setProperty('--delay', `${delay}s`);
+                star.style.setProperty('--max-opacity', maxOpacity);
+
+                // Colors accentuation (some white, some cyan tint, some purple tint)
+                const colorRand = Math.random();
+                if (colorRand > 0.85) {
+                    // Cyan star
+                    star.style.backgroundColor = '#7DD6FF';
+                    star.style.boxShadow = '0 0 6px rgba(125, 214, 255, 0.8)';
+                } else if (colorRand > 0.7) {
+                    // Purple star
+                    star.style.backgroundColor = '#A78BFA';
+                    star.style.boxShadow = '0 0 6px rgba(167, 139, 250, 0.8)';
+                } else {
+                    star.style.backgroundColor = '#ffffff';
+                }
+
+                container.appendChild(star);
+            }
+        });
+
+        // 2. Navbar glass/shadow scroll behavior
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 40) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 3. Mobile Hamburger Menu Toggle
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // Close mobile menu on links click
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // 4. Smooth scrolling CTA function
+        function scrollToCta() {
+            document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+            setTimeout(() => {
+                document.getElementById('demoEmail').focus();
+            }, 600);
+        }
+
+        // 5. Interactive form submission showing a toast notification
+        function handleDemoRequest(event) {
+            event.preventDefault();
+            const emailInput = document.getElementById('demoEmail');
+            const email = emailInput.value.trim();
+
+            if (email) {
+                // Show success toast
+                const toast = document.getElementById('toast');
+                const toastMessage = document.getElementById('toastMessage');
+                toastMessage.textContent = `Launch access request sent for ${email}!`;
+
+                toast.classList.add('show');
+
+                // Clear input
+                emailInput.value = '';
+
+                // Hide toast after 4 seconds
+                setTimeout(() => {
+                    toast.classList.remove('show');
+                }, 4000);
+            }
+        }
+    </script>
+</body>
+
+</html>
