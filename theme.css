@@ -1374,3 +1374,107 @@ input:checked + .slider:before {
         white-space: nowrap;
     }
 }
+
+/* --- Custom Modal --- */
+.custom-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(15, 23, 42, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transition: all var(--transition-normal);
+}
+
+.custom-modal-overlay.show {
+    opacity: 1;
+    visibility: visible;
+}
+
+.custom-modal {
+    background: var(--bg-card);
+    border-radius: var(--radius-xl);
+    padding: 32px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: var(--shadow-xl);
+    transform: scale(0.95) translateY(10px);
+    transition: all var(--transition-normal);
+    text-align: center;
+}
+
+.custom-modal-overlay.show .custom-modal {
+    transform: scale(1) translateY(0);
+}
+
+.custom-modal-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: var(--danger-light);
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    margin: 0 auto 20px auto;
+}
+
+.custom-modal h3 {
+    font-family: var(--font-display);
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin-bottom: 12px;
+}
+
+.custom-modal p {
+    color: var(--text-secondary);
+    font-size: 15px;
+    margin-bottom: 32px;
+    line-height: 1.5;
+}
+
+.custom-modal-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.custom-modal-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-full);
+    font-weight: 600;
+    font-size: 15px;
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    border: none;
+}
+
+.custom-modal-cancel {
+    background: var(--bg-page);
+    color: var(--text-secondary);
+    border: 1.5px solid var(--border-color);
+}
+
+.custom-modal-cancel:hover {
+    background: var(--border-color);
+    color: var(--text-primary);
+}
+
+.custom-modal-confirm {
+    background: var(--danger);
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+}
+
+.custom-modal-confirm:hover {
+    background: var(--danger-dark);
+}

@@ -196,3 +196,44 @@ document.addEventListener('DOMContentLoaded', () => {
         window.applyHospitalSettings();
     }, 300);
 });
+
+// Custom Logout Modal popup builder
+window.showLogoutConfirmation = function(onConfirm) {
+    let overlay = document.getElementById('custom-logout-modal');
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'custom-logout-modal';
+        overlay.className = 'custom-modal-overlay';
+        overlay.innerHTML = `
+            <div class="custom-modal">
+                <div class="custom-modal-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h3>Confirm Logout</h3>
+                <p>Are you sure you want to securely log out of the hospital management system?</p>
+                <div class="custom-modal-actions">
+                    <button class="custom-modal-btn custom-modal-cancel" id="modal-cancel-btn">Cancel</button>
+                    <button class="custom-modal-btn custom-modal-confirm" id="modal-confirm-btn">Log Out</button>
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+        
+        document.getElementById('modal-cancel-btn').addEventListener('click', () => {
+            overlay.classList.remove('show');
+        });
+    }
+    
+    // Setup confirm button and remove old event listeners if any
+    const confirmBtn = document.getElementById('modal-confirm-btn');
+    const newConfirmBtn = confirmBtn.cloneNode(true);
+    confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+    
+    newConfirmBtn.addEventListener('click', () => {
+        overlay.classList.remove('show');
+        if (onConfirm) onConfirm();
+    });
+    
+    // Trigger animation
+    setTimeout(() => overlay.classList.add('show'), 10);
+};

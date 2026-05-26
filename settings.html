@@ -639,13 +639,13 @@
 
         // Logout functionality (same as dashboard)
         document.getElementById('logoutBtn').addEventListener('click', () => {
-            if (confirm('Log out from hospital system?')) {
+            window.showLogoutConfirmation(() => {
                 auth.signOut().then(() => {
                     sessionStorage.clear();
                     showNotification("Logged out", "success");
                     setTimeout(() => window.location.href = 'index.html', 1200);
                 }).catch(() => showNotification("Logout error", "error"));
-            }
+            });
         });
 
         // Initialize: load settings from Firebase
