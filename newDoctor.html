@@ -308,7 +308,7 @@
         function showNotification(message, type = "success") {
             const notification = document.getElementById('notification');
             notification.textContent = message;
-            notification.style.background = type === "success" ? "#1e4b6e" : "#b34040";
+            notification.style.background = type === "success" ? "var(--primary)" : "var(--danger)";
             notification.classList.add('show');
             setTimeout(() => {
                 notification.classList.remove('show');

@@ -1,17 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Hospital Management · Register</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">    <link rel="stylesheet" href="theme.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <link rel="stylesheet" href="theme.css">
 </head>
+
 <body>
   <div class="register-container">
     <div class="register-card">
       <div class="hospital-badge">
         <i class="fas fa-hospital-user"></i>
-        <h1>🏥 Hospital Name</h1>
+        <h1 class="hospital-name">🏥 Hospital Name</h1>
         <p>Management System</p>
       </div>
 
@@ -84,9 +87,69 @@
   <!-- Include centralized Firebase config -->
   <script src="firebase-config.js" type="module"></script>
 
-  <!-- Remove redundant Firebase initialization -->
-  <script>
-  // Remove Firebase initialization block
+  <script type="module">
+    window.handleRegister = async function (event) {
+      event.preventDefault();
+
+      const fullname = document.getElementById("fullname").value;
+      const department = document.getElementById("department").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const errorDiv = document.getElementById("errorMessage");
+      const errorSpan = errorDiv.querySelector('span');
+
+      errorDiv.classList.remove('show');
+
+      // Basic validation
+      if (!department) {
+        errorSpan.textContent = "Please select a department";
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      if (password.length < 6) {
+        errorSpan.textContent = "Password must be at least 6 characters";
+        errorDiv.classList.add('show');
+        return;
+      }
+
+      try {
+        const auth = window.auth;
+        if (!auth) {
+          throw new Error("Authentication service is initializing. Please try again.");
+        }
+        const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+
+        await userCredential.user.updateProfile({
+          displayName: fullname
+        });
+
+        // Store additional user data
+        sessionStorage.setItem('userName', fullname);
+        sessionStorage.setItem('userEmail', email);
+        sessionStorage.setItem('userDepartment', department);
+
+        alert("✓ Registration Successful! Please login.");
+        window.location.href = "index.html";
+
+      } catch (error) {
+        let errorMessage = "Registration failed";
+
+        if (error.code === 'auth/email-already-in-use') {
+          errorMessage = "Email already in use";
+        } else if (error.code === 'auth/invalid-email') {
+          errorMessage = "Invalid email format";
+        } else if (error.code === 'auth/weak-password') {
+          errorMessage = "Password too weak";
+        } else {
+          errorMessage = error.message;
+        }
+
+        errorSpan.textContent = errorMessage;
+        errorDiv.classList.add('show');
+      }
+    };
   </script>
 </body>
+
 </html>

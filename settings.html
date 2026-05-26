@@ -75,15 +75,69 @@
                 <div class="settings-card">
                     <div class="card-title"><i class="fas fa-building"></i> Hospital Information</div>
                     <div class="form-grid">
-                        <div class="form-field"><label>Hospital Name</label><input type="text" id="hospitalName" placeholder="Akshaya Clinic"></div>
-                        <div class="form-field"><label>Registration ID</label><input type="text" id="regCode" placeholder="REG-001"></div>
-                        <div class="form-field"><label>Default Timezone</label><select id="timezone"><option value="Asia/Kolkata">IST (Asia/Kolkata)</option><option value="America/New_York">EST</option><option value="Europe/London">GMT</option></select></div>
-                        <div class="form-field"><label>Date Format</label><select id="dateFormat"><option value="DD/MM/YYYY">DD/MM/YYYY</option><option value="MM/DD/YYYY">MM/DD/YYYY</option><option value="YYYY-MM-DD">YYYY-MM-DD</option></select></div>
-                        <div class="form-field"><label>Language</label><select id="language"><option value="en">English</option><option value="es">Spanish</option><option value="fr">French</option></select></div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-hospital"></i> Hospital Name</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-hospital"></i>
+                                <input type="text" id="hospitalName" placeholder="Akshaya Clinic">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-id-card"></i> Registration ID</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-id-card"></i>
+                                <input type="text" id="regCode" placeholder="REG-001">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-globe"></i> Default Timezone</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-globe"></i>
+                                <select id="timezone">
+                                    <option value="Asia/Kolkata">IST (Asia/Kolkata)</option>
+                                    <option value="America/New_York">EST</option>
+                                    <option value="Europe/London">GMT</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-calendar-alt"></i> Date Format</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar-alt"></i>
+                                <select id="dateFormat">
+                                    <option value="DD/MM/YYYY">DD/MM/YYYY</option>
+                                    <option value="MM/DD/YYYY">MM/DD/YYYY</option>
+                                    <option value="YYYY-MM-DD">YYYY-MM-DD</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-language"></i> Language</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-language"></i>
+                                <select id="language">
+                                    <option value="en">English</option>
+                                    <option value="es">Spanish</option>
+                                    <option value="fr">French</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Auto-archive old records</div><div class="toggle-desc">Archive patient records after 1 year</div></div><label class="switch"><input type="checkbox" id="autoArchive"><span class="slider"></span></label></div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Auto-archive old records</div>
+                            <div class="toggle-desc">Archive patient records after 1 year</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoArchive">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="action-buttons"><button class="btn-save" data-category="general"><i class="fas fa-save"></i> Save General Settings</button><button class="btn-reset" data-reset="general">Reset</button></div>
+                <div class="action-buttons">
+                    <button class="btn-save" data-category="general"><i class="fas fa-save"></i> Save General Settings</button>
+                    <button class="btn-reset" data-reset="general">Reset</button>
+                </div>
             </div>
 
             <!-- Appointments Panel -->
@@ -91,27 +145,111 @@
                 <div class="settings-card">
                     <div class="card-title"><i class="fas fa-clock"></i> Scheduling Rules</div>
                     <div class="form-grid">
-                        <div class="form-field"><label>Default Duration (min)</label><input type="number" id="defaultDuration" value="30"></div>
-                        <div class="form-field"><label>Buffer Between Slots (min)</label><input type="number" id="bufferBetween" value="15"></div>
-                        <div class="form-field"><label>Max Advance Booking (days)</label><input type="number" id="maxAdvanceDays" value="60"></div>
-                        <div class="form-field"><label>Working Hours</label><div style="display:flex;gap:8px;"><input type="time" id="workStart" value="09:00"><span>to</span><input type="time" id="workEnd" value="18:00"></div></div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-hourglass-half"></i> Default Duration (min)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-hourglass-half"></i>
+                                <input type="number" id="defaultDuration" value="30">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-history"></i> Buffer Between Slots (min)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-history"></i>
+                                <input type="number" id="bufferBetween" value="15">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-calendar-check"></i> Max Advance Booking (days)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar-check"></i>
+                                <input type="number" id="maxAdvanceDays" value="60">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-business-time"></i> Working Hours</label>
+                            <div style="display:flex; align-items:center; gap:8px;">
+                                <div class="input-wrapper" style="flex:1;">
+                                    <i class="fas fa-clock"></i>
+                                    <input type="time" id="workStart" value="09:00">
+                                </div>
+                                <span style="font-weight: 600; color: var(--text-secondary);">to</span>
+                                <div class="input-wrapper" style="flex:1;">
+                                    <i class="fas fa-clock"></i>
+                                    <input type="time" id="workEnd" value="18:00">
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Allow online booking</div></div><label class="switch"><input type="checkbox" id="onlineBooking"><span class="slider"></span></label></div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Require prepayment</div></div><label class="switch"><input type="checkbox" id="requirePrepay"><span class="slider"></span></label></div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Allow online booking</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="onlineBooking">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Require prepayment</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="requirePrepay">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="action-buttons"><button class="btn-save" data-category="appointments"><i class="fas fa-save"></i> Save Appointment Rules</button><button class="btn-reset" data-reset="appointments">Reset</button></div>
+                <div class="action-buttons">
+                    <button class="btn-save" data-category="appointments"><i class="fas fa-save"></i> Save Appointment Rules</button>
+                    <button class="btn-reset" data-reset="appointments">Reset</button>
+                </div>
             </div>
 
             <!-- Notifications Panel -->
             <div id="notificationsPanel" class="settings-panel">
                 <div class="settings-card">
                     <div class="card-title"><i class="fas fa-envelope"></i> Alert Preferences</div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Email reminders</div><div class="toggle-desc">Send appointment reminders via email</div></div><label class="switch"><input type="checkbox" id="emailAlerts"><span class="slider"></span></label></div>
-                    <div class="toggle-switch"><div><div class="toggle-label">SMS notifications</div></div><label class="switch"><input type="checkbox" id="smsReminders"><span class="slider"></span></label></div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Emergency broadcast</div></div><label class="switch"><input type="checkbox" id="emergencyBroadcast"><span class="slider"></span></label></div>
-                    <div class="form-field"><label>Reminder lead time (hours before)</label><input type="number" id="reminderLead" value="24"></div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Email reminders</div>
+                            <div class="toggle-desc">Send appointment reminders via email</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="emailAlerts">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">SMS notifications</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="smsReminders">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Emergency broadcast</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="emergencyBroadcast">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="input-group" style="margin-top: 16px;">
+                        <label class="input-label"><i class="fas fa-bell"></i> Reminder lead time (hours before)</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-bell"></i>
+                            <input type="number" id="reminderLead" value="24">
+                        </div>
+                    </div>
                 </div>
-                <div class="action-buttons"><button class="btn-save" data-category="notifications"><i class="fas fa-save"></i> Save Notification Settings</button><button class="btn-reset" data-reset="notifications">Reset</button></div>
+                <div class="action-buttons">
+                    <button class="btn-save" data-category="notifications"><i class="fas fa-save"></i> Save Notification Settings</button>
+                    <button class="btn-reset" data-reset="notifications">Reset</button>
+                </div>
             </div>
 
             <!-- Billing Panel -->
@@ -119,37 +257,140 @@
                 <div class="settings-card">
                     <div class="card-title"><i class="fas fa-coins"></i> Financial Configuration</div>
                     <div class="form-grid">
-                        <div class="form-field"><label>Currency</label><select id="currency"><option value="INR">INR (₹)</option><option value="USD">USD ($)</option><option value="EUR">EUR (€)</option></select></div>
-                        <div class="form-field"><label>Default Tax Rate (%)</label><input type="number" id="taxRate" step="0.1" value="10"></div>
-                        <div class="form-field"><label>Grace Period (days)</label><input type="number" id="gracePeriod" value="15"></div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-money-bill-wave"></i> Currency</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-money-bill-wave"></i>
+                                <select id="currency">
+                                    <option value="INR">INR (₹)</option>
+                                    <option value="USD">USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-percent"></i> Default Tax Rate (%)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-percent"></i>
+                                <input type="number" id="taxRate" step="0.1" value="10">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-calendar-times"></i> Grace Period (days)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-calendar-times"></i>
+                                <input type="number" id="gracePeriod" value="15">
+                            </div>
+                        </div>
                     </div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Auto-generate invoices</div></div><label class="switch"><input type="checkbox" id="autoInvoice"><span class="slider"></span></label></div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Auto-generate invoices</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="autoInvoice">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="action-buttons"><button class="btn-save" data-category="billing"><i class="fas fa-save"></i> Save Billing Settings</button><button class="btn-reset" data-reset="billing">Reset</button></div>
+                <div class="action-buttons">
+                    <button class="btn-save" data-category="billing"><i class="fas fa-save"></i> Save Billing Settings</button>
+                    <button class="btn-reset" data-reset="billing">Reset</button>
+                </div>
             </div>
 
             <!-- Security Panel -->
             <div id="securityPanel" class="settings-panel">
                 <div class="settings-card">
                     <div class="card-title"><i class="fas fa-lock"></i> Access Control</div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Two-Factor Authentication (staff)</div></div><label class="switch"><input type="checkbox" id="twoFactor"><span class="slider"></span></label></div>
-                    <div class="form-field"><label>Session Timeout (minutes)</label><input type="number" id="sessionTimeout" value="30"></div>
-                    <div class="form-field"><label>Password expiry (days)</label><input type="number" id="passwordExpiry" value="90"></div>
-                    <div class="toggle-switch"><div><div class="toggle-label">IP Whitelist for admin</div></div><label class="switch"><input type="checkbox" id="ipWhitelist"><span class="slider"></span></label></div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Two-Factor Authentication (staff)</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="twoFactor">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-grid" style="margin-top: 16px; margin-bottom: 16px;">
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-user-clock"></i> Session Timeout (minutes)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-user-clock"></i>
+                                <input type="number" id="sessionTimeout" value="30">
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-key"></i> Password expiry (days)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-key"></i>
+                                <input type="number" id="passwordExpiry" value="90">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">IP Whitelist for admin</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="ipWhitelist">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="action-buttons"><button class="btn-save" data-category="security"><i class="fas fa-save"></i> Save Security Settings</button><button class="btn-reset" data-reset="security">Reset</button></div>
+                <div class="action-buttons">
+                    <button class="btn-save" data-category="security"><i class="fas fa-save"></i> Save Security Settings</button>
+                    <button class="btn-reset" data-reset="security">Reset</button>
+                </div>
             </div>
 
             <!-- Integrations Panel -->
             <div id="integrationsPanel" class="settings-panel">
                 <div class="settings-card">
                     <div class="card-title"><i class="fas fa-cloud-upload-alt"></i> Third-party Integrations</div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Enable EHR Sync (Electronic Health Record)</div></div><label class="switch"><input type="checkbox" id="ehrSync"><span class="slider"></span></label></div>
-                    <div class="form-field"><label>EHR Provider</label><select id="ehrProvider"><option>Epic</option><option>Cerner</option><option>Meditech</option></select></div>
-                    <div class="toggle-switch"><div><div class="toggle-label">Lab System Integration</div></div><label class="switch"><input type="checkbox" id="labIntegration"><span class="slider"></span></label></div>
-                    <div class="form-field"><label>Webhook URL (analytics)</label><input type="text" id="webhookUrl" placeholder="https://api.example.com/webhook"></div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Enable EHR Sync (Electronic Health Record)</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="ehrSync">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="form-grid" style="margin-top: 16px; margin-bottom: 16px;">
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-server"></i> EHR Provider</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-server"></i>
+                                <select id="ehrProvider">
+                                    <option>Epic</option>
+                                    <option>Cerner</option>
+                                    <option>Meditech</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label class="input-label"><i class="fas fa-link"></i> Webhook URL (analytics)</label>
+                            <div class="input-wrapper">
+                                <i class="fas fa-link"></i>
+                                <input type="text" id="webhookUrl" placeholder="https://api.example.com/webhook">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="toggle-switch">
+                        <div>
+                            <div class="toggle-label">Lab System Integration</div>
+                        </div>
+                        <label class="switch">
+                            <input type="checkbox" id="labIntegration">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <div class="action-buttons"><button class="btn-save" data-category="integrations"><i class="fas fa-save"></i> Save Integrations</button><button class="btn-reset" data-reset="integrations">Reset</button></div>
+                <div class="action-buttons">
+                    <button class="btn-save" data-category="integrations"><i class="fas fa-save"></i> Save Integrations</button>
+                    <button class="btn-reset" data-reset="integrations">Reset</button>
+                </div>
             </div>
 
          <div class="info-note"><i class="fas fa-database"></i> All settings are securely stored in Firebase Firestore. Changes reflect across the hospital management system instantly.</div>
@@ -173,11 +414,10 @@
         db = firebase.firestore();
         auth = firebase.auth();
 
-        // Helper: Show notification
         function showNotification(msg, type = "success") {
             const notif = document.getElementById('notification');
             notif.textContent = msg;
-            notif.style.background = type === "success" ? "#1e4b6e" : "#b34040";
+            notif.style.background = type === "success" ? "var(--primary)" : "var(--danger)";
             notif.classList.add('show');
             setTimeout(() => notif.classList.remove('show'), 2800);
         }
