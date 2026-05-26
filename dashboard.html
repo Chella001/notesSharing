@@ -437,6 +437,7 @@
     </div>
 
     <script>
+        let db, auth;
         // ==================== HELPER FUNCTIONS ====================
         function showNotification(message, type = "success") {
             const notification = document.getElementById('notification');
@@ -562,7 +563,7 @@
                             <td>${dateStr}</td>
                             <td>${apt.time || '10:00 AM'}</td>
                             <td><span class="status ${statusClass}">${apt.status || 'Pending'}</span></td>
-                            <td><strong>₹${apt.fee?.toLocaleString() || '0'}</strong></td>
+                            <td><strong>${window.currencySymbol || '₹'}${apt.fee?.toLocaleString() || '0'}</strong></td>
                         `;
                         appointmentsBody.appendChild(row);
                     });
@@ -636,6 +637,8 @@
 
         // ==================== INITIAL LOAD ====================
         document.addEventListener('DOMContentLoaded', () => {
+            db = window.db;
+            auth = window.auth;
             // Try anonymous login (won't break if it fails)
             autoLogin();
             
@@ -673,7 +676,8 @@
                             totalRevenue += data.fee;
                         }
                     });
-                    document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+                    const symbol = window.currencySymbol || '₹';
+                    document.getElementById('totalRevenue').textContent = `${symbol}${totalRevenue.toLocaleString()}`;
                     
                     // Refresh the recent appointments table
                     loadDashboardData();

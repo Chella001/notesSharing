@@ -668,6 +668,7 @@
     <script src="firebase-config.js" type="module"></script>
 
     <script>
+        let db;
         // ==================== HELPER FUNCTIONS ====================
         function showNotification(message, type = "success") {
             const notification = document.getElementById('notification');
@@ -1190,6 +1191,7 @@
 
         // ==================== INITIAL LOAD ====================
         document.addEventListener('DOMContentLoaded', () => {
+            db = window.db;
             autoLogin();
             setDefaultDateRange();
             loadReports();
