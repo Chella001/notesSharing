@@ -79,6 +79,8 @@ window.applyHospitalSettings = async function () {
                 document.querySelectorAll('.hospital-name').forEach(el => {
                     const hasEmoji = el.innerText.includes('🏥');
                     el.innerText = (hasEmoji ? '🏥 ' : '') + settings.general.hospitalName;
+                    // Make the element visible after updating the name
+                    el.style.visibility = 'visible';
                 });
             }
 
