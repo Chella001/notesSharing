@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
         if (!sessionStorage.getItem('currentUser')) {
@@ -380,7 +381,9 @@
             color: #0a5e3c;
         }
 
-        .loading, .error, .no-data {
+        .loading,
+        .error,
+        .no-data {
             text-align: center;
             padding: 40px;
             color: #666;
@@ -399,7 +402,7 @@
             color: white;
             padding: 12px 24px;
             border-radius: 50px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
             transform: translateX(400px);
             transition: transform 0.3s ease;
             z-index: 1000;
@@ -458,12 +461,21 @@
         }
 
         @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 1; }
+            0% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+
+            100% {
+                opacity: 1;
+            }
         }
     </style>
 </head>
+
 <body>
     <!-- Notification Toast -->
     <div id="notification" class="notification">Reports loaded successfully</div>
@@ -501,7 +513,7 @@
         <div class="main-content">
             <div class="main-header">
                 <h1>
-                    Reports & Analytics 
+                    Reports & Analytics
                     <span class="live-badge">
                         <i class="fas fa-circle"></i> LIVE
                     </span>
@@ -692,10 +704,10 @@
             const endDate = new Date();
             const startDate = new Date();
             startDate.setDate(startDate.getDate() - 30);
-            
+
             document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
             document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
-            
+
             currentStartDate = startDate;
             currentEndDate = endDate;
         }
@@ -704,7 +716,7 @@
         function resetDateRange() {
             setDefaultDateRange();
             loadReports();
-            
+
             // Update active tab
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             document.querySelector('.filter-tab').classList.add('active');
@@ -714,8 +726,8 @@
         function setDateRange(range) {
             const endDate = new Date();
             const startDate = new Date();
-            
-            switch(range) {
+
+            switch (range) {
                 case 'week':
                     startDate.setDate(startDate.getDate() - 7);
                     break;
@@ -732,17 +744,17 @@
                     startDate.setFullYear(2000);
                     break;
             }
-            
+
             document.getElementById('startDate').value = startDate.toISOString().split('T')[0];
             document.getElementById('endDate').value = endDate.toISOString().split('T')[0];
-            
+
             currentStartDate = startDate;
             currentEndDate = endDate;
-            
+
             // Update active tab
             document.querySelectorAll('.filter-tab').forEach(t => t.classList.remove('active'));
             event.target.classList.add('active');
-            
+
             loadReports();
         }
 
@@ -751,16 +763,16 @@
             try {
                 const startDate = document.getElementById('startDate').value;
                 const endDate = document.getElementById('endDate').value;
-                
+
                 const start = new Date(startDate);
                 start.setHours(0, 0, 0, 0);
-                
+
                 const end = new Date(endDate);
                 end.setHours(23, 59, 59, 999);
 
                 // Get all appointments
                 const appointmentsSnapshot = await db.collection('appointments').get();
-                
+
                 // Filter appointments by date range
                 const appointments = [];
                 let totalRevenue = 0;
@@ -769,36 +781,36 @@
                 const statusCount = {};
                 const doctorRevenue = {};
                 const typeCount = {};
-                
+
                 appointmentsSnapshot.forEach(doc => {
                     const apt = doc.data();
                     let aptDate = apt.date;
-                    
+
                     if (aptDate && aptDate.toDate) {
                         aptDate = aptDate.toDate();
                     }
-                    
+
                     if (aptDate && aptDate >= start && aptDate <= end) {
                         appointments.push(apt);
-                        
+
                         // Calculate revenue
                         if (apt.status === 'Completed' && apt.fee) {
                             totalRevenue += apt.fee;
                             completedCount++;
-                            
+
                             // Revenue by day
                             const dateStr = aptDate.toISOString().split('T')[0];
                             revenueByDay[dateStr] = (revenueByDay[dateStr] || 0) + apt.fee;
-                            
+
                             // Revenue by doctor
                             const doctorName = apt.doctorName || 'Unknown';
                             doctorRevenue[doctorName] = (doctorRevenue[doctorName] || 0) + apt.fee;
                         }
-                        
+
                         // Count by status
                         const status = apt.status || 'Pending';
                         statusCount[status] = (statusCount[status] || 0) + 1;
-                        
+
                         // Count by type
                         const type = apt.type || 'Consultation';
                         typeCount[type] = (typeCount[type] || 0) + 1;
@@ -808,10 +820,10 @@
                 // Update summary stats
                 document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
                 document.getElementById('totalAppointments').textContent = appointments.length;
-                
+
                 const avgFee = appointments.length > 0 ? totalRevenue / appointments.length : 0;
                 document.getElementById('avgFee').textContent = `₹${Math.round(avgFee).toLocaleString()}`;
-                
+
                 const completionRate = appointments.length > 0 ? Math.round((completedCount / appointments.length) * 100) : 0;
                 document.getElementById('completionRate').textContent = `${completionRate}%`;
 
@@ -823,10 +835,10 @@
                 updateStatusChart(statusCount);
                 updateDoctorRevenueChart(doctorRevenue);
                 updateTypeChart(typeCount);
-                
+
                 // Update transactions table
                 updateTransactionsTable(appointments);
-                
+
                 // Update doctor performance table
                 updateDoctorPerformance(appointments);
 
@@ -843,24 +855,24 @@
                 const startDate = new Date(document.getElementById('startDate').value);
                 const endDate = new Date(document.getElementById('endDate').value);
                 const periodLength = endDate - startDate;
-                
+
                 const prevStart = new Date(startDate.getTime() - periodLength);
                 const prevEnd = new Date(startDate.getTime() - 1);
-                
+
                 const appointmentsSnapshot = await db.collection('appointments').get();
-                
+
                 let prevAppointments = 0;
                 let prevRevenue = 0;
                 let prevCompleted = 0;
-                
+
                 appointmentsSnapshot.forEach(doc => {
                     const apt = doc.data();
                     let aptDate = apt.date;
-                    
+
                     if (aptDate && aptDate.toDate) {
                         aptDate = aptDate.toDate();
                     }
-                    
+
                     if (aptDate && aptDate >= prevStart && aptDate <= prevEnd) {
                         prevAppointments++;
                         if (apt.status === 'Completed' && apt.fee) {
@@ -869,16 +881,16 @@
                         }
                     }
                 });
-                
+
                 const prevAvgFee = prevAppointments > 0 ? prevRevenue / prevAppointments : 0;
                 const prevCompletionRate = prevAppointments > 0 ? (prevCompleted / prevAppointments) * 100 : 0;
-                
+
                 // Calculate and display trends
                 displayTrend('revenueTrend', currentRevenue, prevRevenue);
                 displayTrend('appointmentsTrend', currentAppointments, prevAppointments);
                 displayTrend('avgFeeTrend', currentAvgFee, prevAvgFee);
                 displayTrend('completionTrend', currentCompletionRate, prevCompletionRate, '%');
-                
+
             } catch (error) {
                 console.error("Error calculating trends:", error);
             }
@@ -890,10 +902,10 @@
                 element.innerHTML = '';
                 return;
             }
-            
+
             const change = ((current - previous) / previous) * 100;
             const isPositive = change > 0;
-            
+
             element.innerHTML = `
                 <span class="${isPositive ? 'trend-up' : 'trend-down'}">
                     <i class="fas fa-${isPositive ? 'arrow-up' : 'arrow-down'}"></i>
@@ -906,12 +918,12 @@
         // ==================== UPDATE CHARTS ====================
         function updateRevenueChart(revenueByDay) {
             const ctx = document.getElementById('revenueChart').getContext('2d');
-            
+
             const dates = Object.keys(revenueByDay).sort();
             const revenues = dates.map(date => revenueByDay[date]);
-            
+
             if (revenueChart) revenueChart.destroy();
-            
+
             revenueChart = new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -939,7 +951,7 @@
 
         function updateStatusChart(statusCount) {
             const ctx = document.getElementById('statusChart').getContext('2d');
-            
+
             const statusColors = {
                 'Completed': '#0a5e3c',
                 'Pending': '#aa7130',
@@ -949,16 +961,16 @@
                 'In Progress': '#856404',
                 'No Show': '#9e9e9e'
             };
-            
+
             if (statusChart) statusChart.destroy();
-            
+
             statusChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
                     labels: Object.keys(statusCount),
                     datasets: [{
                         data: Object.values(statusCount),
-                        backgroundColor: Object.keys(statusCount).map(status => 
+                        backgroundColor: Object.keys(statusCount).map(status =>
                             statusColors[status] || '#4f6b8a'
                         )
                     }]
@@ -977,12 +989,12 @@
 
         function updateDoctorRevenueChart(doctorRevenue) {
             const ctx = document.getElementById('doctorRevenueChart').getContext('2d');
-            
+
             const doctors = Object.keys(doctorRevenue).slice(0, 5); // Top 5
             const revenues = doctors.map(doc => doctorRevenue[doc]);
-            
+
             if (doctorRevenueChart) doctorRevenueChart.destroy();
-            
+
             doctorRevenueChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
@@ -1007,9 +1019,9 @@
 
         function updateTypeChart(typeCount) {
             const ctx = document.getElementById('typeChart').getContext('2d');
-            
+
             if (typeChart) typeChart.destroy();
-            
+
             typeChart = new Chart(ctx, {
                 type: 'pie',
                 data: {
@@ -1042,23 +1054,23 @@
         function updateTransactionsTable(appointments) {
             const tbody = document.getElementById('transactionsBody');
             tbody.innerHTML = '';
-            
+
             if (appointments.length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="no-data">No transactions found</td></tr>';
                 return;
             }
-            
+
             // Sort by date descending
             appointments.sort((a, b) => {
                 const dateA = a.date?.toDate ? a.date.toDate() : new Date(a.date);
                 const dateB = b.date?.toDate ? b.date.toDate() : new Date(b.date);
                 return dateB - dateA;
             });
-            
+
             // Show last 10 transactions
             appointments.slice(0, 10).forEach(apt => {
                 const row = document.createElement('tr');
-                
+
                 let dateStr = 'N/A';
                 if (apt.date) {
                     if (apt.date.toDate) {
@@ -1067,7 +1079,7 @@
                         dateStr = apt.date.toLocaleDateString('en-GB');
                     }
                 }
-                
+
                 row.innerHTML = `
                     <td>${dateStr}</td>
                     <td><strong>${apt.patientName || 'Unknown'}</strong></td>
@@ -1082,13 +1094,13 @@
 
         function updateDoctorPerformance(appointments) {
             const tbody = document.getElementById('doctorPerformanceBody');
-            
+
             // Calculate doctor stats
             const doctorStats = {};
-            
+
             appointments.forEach(apt => {
                 const doctorName = apt.doctorName || 'Unknown';
-                
+
                 if (!doctorStats[doctorName]) {
                     doctorStats[doctorName] = {
                         name: doctorName,
@@ -1099,7 +1111,7 @@
                         totalFee: 0
                     };
                 }
-                
+
                 doctorStats[doctorName].appointments++;
                 if (apt.status === 'Completed' && apt.fee) {
                     doctorStats[doctorName].completed++;
@@ -1107,21 +1119,21 @@
                     doctorStats[doctorName].totalFee += apt.fee;
                 }
             });
-            
+
             tbody.innerHTML = '';
-            
+
             if (Object.keys(doctorStats).length === 0) {
                 tbody.innerHTML = '<tr><td colspan="6" class="no-data">No doctor data found</td></tr>';
                 return;
             }
-            
+
             // Sort by revenue descending
             const sortedDoctors = Object.values(doctorStats).sort((a, b) => b.revenue - a.revenue);
-            
+
             sortedDoctors.forEach(doctor => {
                 const row = document.createElement('tr');
                 const avgFee = doctor.completed > 0 ? Math.round(doctor.revenue / doctor.completed) : 0;
-                
+
                 row.innerHTML = `
                     <td><strong>${doctor.name}</strong></td>
                     <td>${doctor.specialization}</td>
@@ -1137,10 +1149,10 @@
         // ==================== EXPORT TO CSV ====================
         function exportToCSV() {
             const rows = [];
-            
+
             // Add header
             rows.push(['Date', 'Patient', 'Doctor', 'Type', 'Status', 'Fee']);
-            
+
             // Get table data
             document.querySelectorAll('#transactionsBody tr').forEach(row => {
                 if (!row.classList.contains('no-data') && !row.classList.contains('loading')) {
@@ -1152,10 +1164,10 @@
                     rows.push(rowData);
                 }
             });
-            
+
             // Convert to CSV
             const csvContent = rows.map(row => row.join(',')).join('\n');
-            
+
             // Download
             const blob = new Blob([csvContent], { type: 'text/csv' });
             const url = window.URL.createObjectURL(blob);
@@ -1163,7 +1175,7 @@
             a.href = url;
             a.download = `hospital_report_${new Date().toISOString().split('T')[0]}.csv`;
             a.click();
-            
+
             showNotification("Report exported successfully!");
         }
 
@@ -1175,7 +1187,7 @@
         }
 
         // ==================== LOGOUT ====================
-        document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('logoutBtn').addEventListener('click', function () {
             if (confirm('Are you sure you want to logout?')) {
                 auth.signOut().then(() => {
                     sessionStorage.clear();
@@ -1195,7 +1207,7 @@
             autoLogin();
             setDefaultDateRange();
             loadReports();
-            
+
             // Set up real-time listeners for live updates
             if (db) {
                 // Listen for appointments changes
@@ -1206,7 +1218,7 @@
                 }, (error) => {
                     console.log("Appointment listener error:", error);
                 });
-                
+
                 // Listen for patients changes (affects patient names)
                 db.collection('patients').onSnapshot(() => {
                     console.log("Patients changed, reloading reports...");
@@ -1214,7 +1226,7 @@
                 }, (error) => {
                     console.log("Patient listener error:", error);
                 });
-                
+
                 // Listen for doctors changes (affects doctor names)
                 db.collection('doctors').onSnapshot(() => {
                     console.log("Doctors changed, reloading reports...");
@@ -1226,4 +1238,5 @@
         });
     </script>
 </body>
+
 </html>
