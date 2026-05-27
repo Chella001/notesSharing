@@ -583,6 +583,7 @@
                         const templateParams = {
                             to_name: patientData.name,
                             to_email: patientData.email,
+                            email: patientData.email,
                             message: `Your registration at Akshaya Clinic is successful. Thank you for choosing us.`
                         };
                         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
