@@ -108,7 +108,7 @@
                     </div>
                 </div>
 
-                <form id="patientForm">
+                <form class="ds-form" id="patientForm">
                     <div class="form-grid">
                         <!-- Full Name - Only Alphabets -->
                         <div class="input-group full-width">
@@ -248,10 +248,10 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <a href="dashboard.html" class="ds-btn ds-btn-secondary">
+                        <a href="dashboard.html" class="ds-btn-secondary">
                             <i class="fas fa-times"></i> Cancel
                         </a>
-                        <button type="submit" class="ds-btn ds-btn-primary" id="submitBtn">
+                        <button type="submit" class="ds-btn-primary" id="submitBtn">
                             <i class="fas fa-save"></i> Save Patient
                         </button>
                     </div>
@@ -276,16 +276,16 @@
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="patientSearch" class="search-input ds-input ds-input" 
+                            <input type="text" id="patientSearch" class="search-input ds-input" 
                                 placeholder="Search patients by name/phone/email..." oninput="filterPatients()" >
                         </div>
-                        <select id="genderFilter" class="table-filter ds-select ds-select"  onchange="filterPatients()" >
+                        <select id="genderFilter" class="table-filter ds-select"  onchange="filterPatients()" >
                             <option value="">All Genders</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                             <option value="Other">Other</option>
                         </select>
-                        <select id="bloodGroupFilter" class="table-filter ds-select ds-select"  onchange="filterPatients()" >
+                        <select id="bloodGroupFilter" class="table-filter ds-select"  onchange="filterPatients()" >
                             <option value="">All Blood Groups</option>
                             <option value="A+">A+</option>
                             <option value="A-">A-</option>

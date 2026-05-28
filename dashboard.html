@@ -57,16 +57,16 @@
 
             <!-- Quick Actions -->
             <div class="quick-actions" style="display: flex; gap: 16px; margin-bottom: 8px; flex-wrap: wrap;">
-                <button class="ds-btn ds-btn-primary" onclick="window.location.href='newPatient.html'">
+                <button class="ds-btn-primary" onclick="window.location.href='newPatient.html'">
                     <i class="fas fa-user-plus"></i> New Patient
                 </button>
-                <button class="ds-btn ds-btn-secondary" onclick="window.location.href='appointments.html'">
+                <button class="ds-btn-secondary" onclick="window.location.href='appointments.html'">
                     <i class="fas fa-calendar-plus"></i> Schedule Appointment
                 </button>
-                <button class="ds-btn ds-btn-secondary" onclick="window.location.href='newDoctor.html'">
+                <button class="ds-btn-secondary" onclick="window.location.href='newDoctor.html'">
                     <i class="fas fa-user-md"></i> Add Doctor
                 </button>
-                <button class="ds-btn ds-btn-ghost" onclick="window.location.href='reports.html'">
+                <button class="ds-btn-ghost" onclick="window.location.href='reports.html'">
                     <i class="fas fa-file-export"></i> Export Report
                 </button>
             </div>
@@ -76,7 +76,7 @@
                 <div class="ds-card">
                     <div class="ds-card-header">
                         <h3 class="text-h4">Revenue & Appointments</h3>
-                        <button class="ds-btn ds-btn-ghost" style="padding: 4px 8px;"><i class="fas fa-ellipsis-h"></i></button>
+                        <button class="ds-btn-ghost" style="padding: 4px 8px;"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
                     <div id="trendChart" style="min-height: 280px; width: 100%;"></div>
                 </div>
@@ -152,9 +152,9 @@
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="appointmentSearch" class="search-input ds-input ds-input"  placeholder="Search patients/doctors..." oninput="filterRecentAppointments()" >
+                            <input type="text" id="appointmentSearch" class="search-input ds-input"  placeholder="Search patients/doctors..." oninput="filterRecentAppointments()" >
                         </div>
-                        <select id="statusFilter" class="table-filter ds-select ds-select"  onchange="filterRecentAppointments()" >
+                        <select id="statusFilter" class="table-filter ds-select"  onchange="filterRecentAppointments()" >
                             <option value="">All Statuses</option>
                             <option value="Scheduled">Scheduled</option>
                             <option value="Confirmed">Confirmed</option>

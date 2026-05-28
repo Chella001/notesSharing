@@ -104,7 +104,7 @@
                     </div>
                 </div>
 
-                <form id="doctorForm">
+                <form class="ds-form" id="doctorForm">
                     <div class="form-grid">
                         <!-- Full Name - Only Alphabets -->
                         <div class="input-group full-width">
@@ -261,10 +261,10 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <a href="dashboard.html" class="ds-btn ds-btn-secondary">
+                        <a href="dashboard.html" class="ds-btn-secondary">
                             <i class="fas fa-times"></i> Cancel
                         </a>
-                        <button type="submit" class="ds-btn ds-btn-primary" id="submitBtn">
+                        <button type="submit" class="ds-btn-primary" id="submitBtn">
                             <i class="fas fa-save"></i> Save Doctor
                         </button>
                     </div>
@@ -289,9 +289,9 @@
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="doctorSearch" class="search-input ds-input ds-input"  placeholder="Search doctors by name/specialization..." oninput="filterDoctors()" >
+                            <input type="text" id="doctorSearch" class="search-input ds-input"  placeholder="Search doctors by name/specialization..." oninput="filterDoctors()" >
                         </div>
-                        <select id="specializationFilter" class="table-filter ds-select ds-select"  onchange="filterDoctors()" >
+                        <select id="specializationFilter" class="table-filter ds-select"  onchange="filterDoctors()" >
                             <option value="">All Specializations</option>
                             <option value="General Medicine">General Medicine</option>
                             <option value="Pediatrics">Pediatrics</option>
@@ -302,7 +302,7 @@
                             <option value="Neurology">Neurology</option>
                             <option value="Ophthalmology">Ophthalmology</option>
                         </select>
-                        <select id="experienceFilter" class="table-filter ds-select ds-select"  onchange="filterDoctors()" >
+                        <select id="experienceFilter" class="table-filter ds-select"  onchange="filterDoctors()" >
                             <option value="">All Experience levels</option>
                             <option value="1-5">1 - 5 Years</option>
                             <option value="6-10">6 - 10 Years</option>

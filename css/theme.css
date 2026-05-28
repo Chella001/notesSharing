@@ -32,7 +32,7 @@
     --danger-light: rgba(239, 68, 68, 0.08);
     --danger-dark: #dc2626;
 
-    /* LIGHT THEME VARIABLES */
+    /* Legacy LIGHT THEME VARIABLES mapping */
     --bg-page-gradient: radial-gradient(circle at top right, #f8fafc 40%, #e2e8f0 100%);
     --bg-page: #f8fafc;
     --bg-card: rgba(255, 255, 255, 0.85);
@@ -49,26 +49,9 @@
     --text-secondary: #334155;  /* Slate grey secondary */
     --text-muted: #64748b;      /* Slate muted */
     
-    /* Typography */
-    --font-display: 'Plus Jakarta Sans', -apple-system, sans-serif;
-    --font-body: 'Inter', -apple-system, sans-serif;
-    
-    /* Shadows */
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-    
     /* Glassmorphic values */
     --glass-blur: 16px;
     --glass-border: 1px solid rgba(255, 255, 255, 0.6);
-    
-    /* Radii */
-    --radius-sm: 8px;
-    --radius-md: 12px;
-    --radius-lg: 16px;
-    --radius-xl: 24px;
-    --radius-full: 9999px;
     
     /* Transitions */
     --transition-fast: 0.15s cubic-bezier(0.16, 1, 0.3, 1);
@@ -91,11 +74,6 @@ body.dark {
     --text-secondary: #d4d4d8;
     --text-muted: #71717a;
     
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4), 0 4px 6px -2px rgba(0, 0, 0, 0.2);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 10px 10px -5px rgba(0, 0, 0, 0.3);
-    
     --glass-border: 1px solid rgba(255, 255, 255, 0.05);
 }
 
@@ -104,7 +82,7 @@ body.dark {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: var(--font-body);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
 }
 

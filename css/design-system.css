@@ -189,6 +189,13 @@ body.dark {
 }
 
 /* --- 6. Modern Form Styles --- */
+.ds-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    width: 100%;
+}
+
 .ds-form-group {
     display: flex;
     flex-direction: column;
