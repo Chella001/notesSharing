@@ -599,37 +599,33 @@
                 <div class="stats-grid" style="margin-bottom: 24px;">
                     <div class="stat-card">
                         <div class="stat-label">Total Nurses <span><i class="fas fa-user-nurse"></i></span></div>
-                        <div class="stat-number" id="statsTotalNurses">14</div>
-                        <div class="stat-trend" style="color: var(--success);"><i class="fas fa-arrow-up"></i> 1 new
-                            registered</div>
+                        <div class="stat-number" id="statsTotalNurses">—</div>
+                        <div class="stat-trend" id="statsTotalNursesTrend" style="color: var(--ds-text-secondary);">Loading...</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Active Shifts <span><i class="fas fa-calendar-check"></i></span></div>
-                        <div class="stat-number" id="statsActiveShifts">8</div>
-                        <div class="stat-trend"><i class="fas fa-check-circle"></i> Morning duty assigned</div>
+                        <div class="stat-number" id="statsActiveShifts">—</div>
+                        <div class="stat-trend" id="statsActiveShiftsTrend" style="color: var(--ds-text-secondary);">Loading...</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Assigned Patients <span><i class="fas fa-user-injured"></i></span></div>
-                        <div class="stat-number" id="statsAssignedPatients">22</div>
-                        <div class="stat-trend" style="color: var(--warning);"><i class="fas fa-bed"></i> 4 in ICU units
-                        </div>
+                        <div class="stat-number" id="statsAssignedPatients">—</div>
+                        <div class="stat-trend" id="statsAssignedPatientsTrend" style="color: var(--ds-text-secondary);">Loading...</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Urgent Alerts <span><i class="fas fa-exclamation-triangle"></i></span>
                         </div>
-                        <div class="stat-number" id="statsUrgentAlerts" style="color: var(--danger);">1</div>
-                        <div class="stat-trend" style="color: var(--danger);"><i class="fas fa-bell"></i> Critical
-                            Vitals Triggered</div>
+                        <div class="stat-number" id="statsUrgentAlerts" style="color: var(--danger);">—</div>
+                        <div class="stat-trend" id="statsUrgentAlertsTrend" style="color: var(--ds-text-secondary);">Loading...</div>
                     </div>
                 </div>
 
-                <!-- Emergency Alert Broadcast Feed -->
-                <div class="alert-card" id="alertBroadcastCard">
+                <!-- Emergency Alert Broadcast Feed (hidden until a critical vital exists) -->
+                <div class="alert-card" id="alertBroadcastCard" style="display:none;">
                     <i class="fas fa-exclamation-circle"></i>
                     <div>
-                        <div class="alert-title">CRITICAL ALERT: ICU Bed 3 (Ramesh Kumar) SpO2 Dropped to 90%</div>
-                        <div class="alert-desc">Assigned Nurse: Sneha Nair is on her way. Doctor alerted. Updated 2 mins
-                            ago.</div>
+                        <div class="alert-title" id="alertBroadcastTitle"></div>
+                        <div class="alert-desc" id="alertBroadcastDesc"></div>
                     </div>
                 </div>
 
@@ -689,29 +685,11 @@
                             </div>
                         </div>
 
-                        <!-- Real-time Alerts & Handover Announcements -->
+                        <!-- Recent Nurse Board Notes — rendered dynamically from mockMessages -->
                         <div class="ds-card">
                             <h3 class="text-h3" style="margin-bottom: 16px;">Recent Nurse Board Notes</h3>
                             <div style="display: flex; flex-direction: column; gap: 12px;" id="dashboardAnnouncements">
-                                <div
-                                    style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                                        <strong>Shift Handover Note</strong>
-                                        <small style="color:var(--ds-text-secondary)">Today, 08:00 AM</small>
-                                    </div>
-                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">ICU Bed 2
-                                        patient needs medication dosage checked by noon. Handed over from Night Shift
-                                        Team.</p>
-                                </div>
-                                <div
-                                    style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
-                                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
-                                        <strong>Duty Announcement</strong>
-                                        <small style="color:var(--ds-text-secondary)">Yesterday</small>
-                                    </div>
-                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">Emergency ward
-                                        sanitation scheduled for Thursday evening. Morning shifts remain unaffected.</p>
-                                </div>
+                                <!-- Populated dynamically -->
                             </div>
                         </div>
                     </div>
@@ -730,11 +708,7 @@
                             <div class="table-controls">
                                 <select id="rosterDeptFilter" class="table-filter" onchange="filterRoster()">
                                     <option value="">All Departments</option>
-                                    <option value="General Ward">General Ward</option>
-                                    <option value="ICU">ICU</option>
-                                    <option value="OPD">OPD</option>
-                                    <option value="Emergency">Emergency</option>
-                                    <option value="Pediatrics">Pediatrics</option>
+                                    <!-- Populated dynamically from nurse data -->
                                 </select>
                                 <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i
                                         class="fas fa-user-plus"></i> Add Nurse</button>
@@ -911,25 +885,24 @@
                                 style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
                                 <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">
                                     Average Workload Index</div>
-                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">74%</div>
-                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i
+                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);" id="perfWorkload">—</div>
+                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;" id="perfWorkloadNote"><i
                                         class="fas fa-check"></i> Balanced allocation</div>
                             </div>
                             <div
                                 style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
                                 <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">
-                                    On-Time Shift Attendance</div>
-                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--success);">98.2%</div>
-                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i
-                                        class="fas fa-chevron-up"></i> Over industry average</div>
+                                    Total Nurses on Active Duty</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--success);" id="perfActiveNurses">—</div>
+                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;" id="perfActiveNursesNote"><i
+                                        class="fas fa-user-nurse"></i> Staff on roster</div>
                             </div>
                             <div
                                 style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
                                 <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">
-                                    Total Shifts Conducted (This Month)</div>
-                                <div style="font-size: 1.8rem; font-weight: 800; color: #0ea5e9;">240</div>
-                                <div style="font-size: 0.72rem; color: var(--ds-text-secondary); margin-top: 4px;">42
-                                    hours overtime logs</div>
+                                    Total Patient Assignments</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: #0ea5e9;" id="perfTotalAssignments">—</div>
+                                <div style="font-size: 0.72rem; color: var(--ds-text-secondary); margin-top: 4px;" id="perfAssignmentsNote">Across all wards</div>
                             </div>
                         </div>
                     </div>
@@ -1367,39 +1340,108 @@
             const tbody = document.getElementById('dashboardDutyBody');
             tbody.innerHTML = '';
 
-            // Generate some active shift rows
-            mockNurses.forEach(nurse => {
-                const shift = mockShifts.find(s => s.nurseId === nurse.id) || { mon: 'M' };
-                const assignment = mockAssignments.find(a => a.nurseName === nurse.name) || { patientName: 'None', ward: 'N/A' };
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${nurse.name}</strong><br><span style="font-size:11px; color:var(--ds-text-secondary)">${nurse.id}</span></td>
-                    <td>${nurse.dept}</td>
-                    <td><span class="shift-badge shift-m">Morning (M)</span></td>
-                    <td>${assignment.ward}</td>
-                    <td><strong>${assignment.patientName}</strong></td>
-                    <td><span class="status completed" style="font-size: 11px;">Active Duty</span></td>
-                `;
-                tbody.appendChild(tr);
-            });
+            if (mockNurses.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" style="text-align:center; padding:32px; color:var(--ds-text-tertiary);"><i class="fas fa-user-slash" style="font-size:24px; display:block; margin-bottom:10px; opacity:0.4;"></i>No nurses on duty yet</td></tr>`;
+            } else {
+                mockNurses.forEach(nurse => {
+                    const shiftObj = mockShifts.find(s => s.nurseId === nurse.id);
+                    const assignment = mockAssignments.find(a => a.nurseName === nurse.name) || { patientName: 'Unassigned', ward: 'N/A' };
+                    // Determine today's shift label
+                    const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'];
+                    const todayKey = dayKeys[new Date().getDay()];
+                    const todayShift = shiftObj ? shiftObj[todayKey] : 'M';
+                    let shiftClass = 'shift-off';
+                    let shiftLabel = todayShift;
+                    if (todayShift === 'M') { shiftClass = 'shift-m'; shiftLabel = 'Morning (M)'; }
+                    else if (todayShift === 'E') { shiftClass = 'shift-e'; shiftLabel = 'Evening (E)'; }
+                    else if (todayShift === 'N') { shiftClass = 'shift-n'; shiftLabel = 'Night (N)'; }
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td><strong>${nurse.name}</strong><br><span style="font-size:11px; color:var(--ds-text-secondary)">${nurse.id}</span></td>
+                        <td>${nurse.dept}</td>
+                        <td><span class="shift-badge ${shiftClass}">${shiftLabel}</span></td>
+                        <td>${assignment.ward}</td>
+                        <td><strong>${assignment.patientName}</strong></td>
+                        <td><span class="status ${todayShift === 'OFF' ? 'inactive' : 'active'}" style="font-size: 11px;">${todayShift === 'OFF' ? 'Day Off' : 'Active Duty'}</span></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
 
-            // Update stats indicators dynamically
-            document.getElementById('statsTotalNurses').textContent = mockNurses.length;
-            document.getElementById('statsActiveShifts').textContent = mockShifts.length;
-            document.getElementById('statsAssignedPatients').textContent = mockAssignments.length;
-
-            // Count critical alert vitals
+            // --- Stats ---
+            const totalNurses = mockNurses.length;
+            const activeShifts = mockShifts.filter(s => {
+                const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'];
+                const tk = dayKeys[new Date().getDay()];
+                return s[tk] !== 'OFF';
+            }).length;
+            const assignedCount = mockAssignments.length;
             const criticals = mockVitals.filter(v => v.condition === 'Critical').length;
+            const icuCount = mockAssignments.filter(a => a.ward && a.ward.toLowerCase().includes('icu')).length;
+
+            document.getElementById('statsTotalNurses').textContent = totalNurses;
+            document.getElementById('statsActiveShifts').textContent = activeShifts;
+            document.getElementById('statsAssignedPatients').textContent = assignedCount;
             document.getElementById('statsUrgentAlerts').textContent = criticals;
+
+            // Dynamic trend texts
+            const recentNurse = mockNurses.length > 0 ? mockNurses[mockNurses.length - 1].name : null;
+            document.getElementById('statsTotalNursesTrend').style.color = totalNurses > 0 ? 'var(--success)' : 'var(--ds-text-secondary)';
+            document.getElementById('statsTotalNursesTrend').innerHTML = recentNurse
+                ? `<i class="fas fa-arrow-up"></i> Latest: ${recentNurse}`
+                : `<i class="fas fa-info-circle"></i> No nurses registered yet`;
+
+            document.getElementById('statsActiveShiftsTrend').innerHTML = activeShifts > 0
+                ? `<i class="fas fa-check-circle"></i> ${activeShifts} nurse(s) on duty today`
+                : `<i class="fas fa-moon"></i> No active shifts today`;
+
+            document.getElementById('statsAssignedPatientsTrend').style.color = icuCount > 0 ? 'var(--warning)' : 'var(--ds-text-secondary)';
+            document.getElementById('statsAssignedPatientsTrend').innerHTML = icuCount > 0
+                ? `<i class="fas fa-bed"></i> ${icuCount} in ICU unit(s)`
+                : `<i class="fas fa-bed"></i> No ICU assignments`;
+
+            document.getElementById('statsUrgentAlertsTrend').style.color = criticals > 0 ? 'var(--danger)' : 'var(--success)';
+            document.getElementById('statsUrgentAlertsTrend').innerHTML = criticals > 0
+                ? `<i class="fas fa-bell"></i> ${criticals} critical vital(s) triggered`
+                : `<i class="fas fa-check-circle"></i> All vitals normal`;
+
+            // --- Critical alert banner ---
             const alertBroadcast = document.getElementById('alertBroadcastCard');
             if (criticals > 0) {
                 alertBroadcast.style.display = 'flex';
                 const crit = mockVitals.find(v => v.condition === 'Critical');
-                alertBroadcast.querySelector('.alert-title').textContent = `CRITICAL ALERT: ${crit.patientName} SpO2 Drop/High Vitals detected!`;
-                alertBroadcast.querySelector('.alert-desc').textContent = `Temp: ${crit.temp}°F | Blood Pressure: ${crit.bp} | Oxygen: ${crit.o2}% SpO2. Emergency team alerted.`;
+                document.getElementById('alertBroadcastTitle').textContent = `CRITICAL ALERT: ${crit.patientName} — High Vitals Detected!`;
+                document.getElementById('alertBroadcastDesc').textContent = `Temp: ${crit.temp}°F | BP: ${crit.bp} | Pulse: ${crit.pulse} bpm | O₂: ${crit.o2}% SpO2. Emergency team alerted at ${crit.time}.`;
             } else {
                 alertBroadcast.style.display = 'none';
             }
+
+            // --- Board notes from mockMessages ---
+            renderBoardNotes();
+        }
+
+        // Render Recent Board Notes from message feed
+        function renderBoardNotes() {
+            const container = document.getElementById('dashboardAnnouncements');
+            container.innerHTML = '';
+            if (mockMessages.length === 0) {
+                container.innerHTML = `<div style="text-align:center; padding:24px; color:var(--ds-text-tertiary);"><i class="fas fa-clipboard" style="font-size:24px; display:block; margin-bottom:8px; opacity:0.4;"></i>No board notes yet. Send a message in Handover Chat.</div>`;
+                return;
+            }
+            // Show latest 5 messages as board notes
+            const recent = [...mockMessages].reverse().slice(0, 5);
+            recent.forEach(m => {
+                const div = document.createElement('div');
+                div.style.cssText = 'padding:12px; background:var(--ds-bg-app); border:1px solid var(--ds-border); border-radius:8px;';
+                div.innerHTML = `
+                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                        <strong>${m.sender}</strong>
+                        <small style="color:var(--ds-text-secondary)">${m.time}</small>
+                    </div>
+                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">${m.msg}</p>
+                `;
+                container.appendChild(div);
+            });
         }
 
         // 2. Render Nurse Roster
@@ -1598,6 +1640,10 @@
                 });
             }
 
+            // --- Update task counts in trend text ---
+            const pendingCount = pendings.length;
+            const completedCount = completeds.length;
+
             if (completeds.length === 0) {
                 completedContainer.innerHTML = '<div style="text-align: center; padding: 24px; color: var(--ds-text-tertiary);">No completed tasks yet</div>';
             } else {
@@ -1681,25 +1727,38 @@
             const sidebar = document.getElementById('chatContacts');
             sidebar.innerHTML = '';
 
-            const contacts = [
-                { name: "General Handover Chat", role: "Public Feed", id: "general" },
-                { name: "Sneha Nair", role: "ICU Staff Nurse", id: "sneha" },
-                { name: "Maria Joseph", role: "Emergency Staff Nurse", id: "maria" },
-                { name: "Dr. Arvind", role: "Clinical Director", id: "arvind" }
-            ];
+            // General broadcast always first
+            const generalItem = document.createElement('div');
+            generalItem.className = 'chat-user-item active';
+            generalItem.innerHTML = `
+                <div class="chat-user-av"><i class="fas fa-broadcast-tower" style="font-size:0.7rem;"></i></div>
+                <div class="chat-user-info">
+                    <h5>General Handover Chat</h5>
+                    <p>Public Feed</p>
+                </div>
+            `;
+            sidebar.appendChild(generalItem);
 
-            contacts.forEach(c => {
-                const item = document.createElement('div');
-                item.className = `chat-user-item ${c.id === 'general' ? 'active' : ''}`;
-                item.innerHTML = `
-                    <div class="chat-user-av">${c.name.charAt(0)}</div>
-                    <div class="chat-user-info">
-                        <h5>${c.name}</h5>
-                        <p>${c.role}</p>
-                    </div>
-                `;
-                sidebar.appendChild(item);
-            });
+            // Build contacts dynamically from registered nurses
+            if (mockNurses.length === 0) {
+                const empty = document.createElement('div');
+                empty.style.cssText = 'padding:16px; font-size:0.78rem; color:var(--ds-text-tertiary); text-align:center;';
+                empty.textContent = 'No nurse contacts yet';
+                sidebar.appendChild(empty);
+            } else {
+                mockNurses.forEach(n => {
+                    const item = document.createElement('div');
+                    item.className = 'chat-user-item';
+                    item.innerHTML = `
+                        <div class="chat-user-av">${n.name.charAt(0)}</div>
+                        <div class="chat-user-info">
+                            <h5>${n.name}</h5>
+                            <p>${n.dept} Nurse</p>
+                        </div>
+                    `;
+                    sidebar.appendChild(item);
+                });
+            }
 
             // Render message feed
             const messageFlow = document.getElementById('chatMessageFlow');
@@ -1730,22 +1789,56 @@
             showNotification("Message sent!");
         };
 
-        // 8. Render Reports Activity Log
+        // 8. Render Reports Activity Log + dynamic performance metrics
         function renderReports() {
             const tbody = document.getElementById('activityLogTableBody');
             tbody.innerHTML = '';
 
-            mockLogs.forEach(log => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td>${log.time}</td>
-                    <td><strong>${log.operator}</strong></td>
-                    <td><span class="status completed" style="background: rgba(var(--primary-rgb), 0.08); color: var(--primary); border:none;">${log.category}</span></td>
-                    <td>${log.desc}</td>
-                    <td><code>${log.ref}</code></td>
-                `;
-                tbody.appendChild(tr);
-            });
+            if (mockLogs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--ds-text-tertiary);"><i class="fas fa-clipboard-list" style="font-size:24px; display:block; margin-bottom:8px; opacity:0.4;"></i>No activity logged yet</td></tr>`;
+            } else {
+                mockLogs.forEach(log => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${log.time}</td>
+                        <td><strong>${log.operator}</strong></td>
+                        <td><span class="status completed" style="background: rgba(var(--primary-rgb), 0.08); color: var(--primary); border:none;">${log.category}</span></td>
+                        <td>${log.desc}</td>
+                        <td><code>${log.ref}</code></td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            // --- Compute performance metrics from live data ---
+            const totalNurses = mockNurses.length;
+            const totalAssignments = mockAssignments.length;
+
+            // Workload: ratio of assigned nurses to total nurses (as a %)
+            const assignedNurseNames = [...new Set(mockAssignments.map(a => a.nurseName))];
+            const workload = totalNurses > 0
+                ? Math.round((assignedNurseNames.length / totalNurses) * 100)
+                : 0;
+
+            // Count nurses on shift today
+            const dayKeys = ['sun','mon','tue','wed','thu','fri','sat'];
+            const todayKey = dayKeys[new Date().getDay()];
+            const onDutyToday = mockShifts.filter(s => s[todayKey] !== 'OFF').length;
+
+            document.getElementById('perfWorkload').textContent = totalNurses > 0 ? `${workload}%` : '—';
+            document.getElementById('perfWorkloadNote').innerHTML = workload > 80
+                ? `<i class="fas fa-exclamation-triangle"></i> High workload — consider adding staff`
+                : workload > 0
+                    ? `<i class="fas fa-check"></i> Balanced allocation`
+                    : `<i class="fas fa-info-circle"></i> No assignments yet`;
+
+            document.getElementById('perfActiveNurses').textContent = onDutyToday;
+            document.getElementById('perfActiveNursesNote').innerHTML = `<i class="fas fa-user-nurse"></i> of ${totalNurses} total nurses on duty today`;
+
+            document.getElementById('perfTotalAssignments').textContent = totalAssignments;
+            document.getElementById('perfAssignmentsNote').innerHTML = totalAssignments > 0
+                ? `Across ${[...new Set(mockAssignments.map(a => a.ward))].length} ward(s)`
+                : `No patients allocated yet`;
         }
 
         function logActivity(category, desc, ref = "N/A") {
@@ -1754,9 +1847,9 @@
             renderReports();
         }
 
-        // Populate dynamic modal dropdown selections
+        // Populate dynamic modal dropdown selections + department filter
         function populateDropdowns() {
-            // Populate nurse list
+            // --- Nurse dropdowns (modal selects) ---
             const swapSelect = document.getElementById('swapNurseSelect');
             const assignNurseSelect = document.getElementById('assignNurseSelect');
 
@@ -1769,7 +1862,20 @@
                 assignNurseSelect.innerHTML += opt;
             });
 
-            // Populate patient list
+            // --- Rebuild department filter from actual nurse departments ---
+            const deptFilter = document.getElementById('rosterDeptFilter');
+            const currentDept = deptFilter.value; // preserve selection if possible
+            const departments = [...new Set(mockNurses.map(n => n.dept))].sort();
+            deptFilter.innerHTML = '<option value="">All Departments</option>';
+            departments.forEach(dept => {
+                const opt = document.createElement('option');
+                opt.value = dept;
+                opt.textContent = dept;
+                if (dept === currentDept) opt.selected = true;
+                deptFilter.appendChild(opt);
+            });
+
+            // --- Patient dropdowns ---
             const assignPatientSelect = document.getElementById('assignPatientSelect');
             const vitalsPatientSelect = document.getElementById('vitalsPatientSelect');
             const taskPatientSelect = document.getElementById('taskPatientSelect');
