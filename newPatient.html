@@ -792,7 +792,7 @@
             const tbody = document.getElementById('patientsBody');
             tbody.innerHTML = '';
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="no-data">📭 No matching patients found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="no-data"><div style="text-align: center; padding: 48px; color: var(--ds-text-tertiary);"><i class="fas fa-users-slash" style="font-size: 32px; margin-bottom: 16px; display: block; opacity: 0.5;"></i><h3 class="text-h4">No patients found</h3><p class="text-body-sm">Try adjusting your filters or register a new patient.</p></div></td></tr>`;
                 return;
             }
 

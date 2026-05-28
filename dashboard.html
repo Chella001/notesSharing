@@ -188,6 +188,7 @@
         // ==================== LOAD DASHBOARD DATA ====================
         async function loadDashboardData() {
             try {
+                if (window.showLoading) window.showLoading("Syncing Dashboard Data...");
                 // Check if we came from any of the add pages
                 const urlParams = new URLSearchParams(window.location.search);
                 
@@ -230,7 +231,9 @@
                 loadedAppointments = await appointmentModel.getRecent(25);
                 
                 renderAppointments(loadedAppointments);
+                if (window.hideLoading) window.hideLoading();
             } catch (error) {
+                if (window.hideLoading) window.hideLoading();
                 console.error("❌ Error loading data:", error);
                 
                 // Show error but keep existing values if any
@@ -245,7 +248,7 @@
                 }
                 
                 document.getElementById('appointmentsBody').innerHTML = 
-                    `<tr><td colspan="6" class="error">❌ Error loading appointments. Please check your connection.</td></tr>`;
+                    `<tr><td colspan="6" class="error"><div style="text-align: center; padding: 24px; color: var(--color-danger);"><i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 12px; display: block;"></i>Error loading appointments. Please check your connection.</div></td></tr>`;
                 
                 showNotification("Error loading data: " + error.message, "error");
             }
@@ -258,7 +261,7 @@
             appointmentsBody.innerHTML = '';
 
             if (list.length === 0) {
-                appointmentsBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 No matching appointments found.</td></tr>';
+                appointmentsBody.innerHTML = '<tr><td colspan="6" class="no-data"><div style="text-align: center; padding: 48px; color: var(--ds-text-tertiary);"><i class="fas fa-inbox" style="font-size: 32px; margin-bottom: 16px; display: block; opacity: 0.5;"></i><h3 class="text-h4">No appointments found</h3><p class="text-body-sm">Your schedule is clear. Enjoy the rest of your day!</p></div></td></tr>';
             } else {
                 list.forEach(apt => {
                     const row = document.createElement('tr');

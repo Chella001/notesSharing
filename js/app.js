@@ -58,3 +58,33 @@ document.addEventListener('DOMContentLoaded', () => {
         document.body.classList.add('dark');
     }
 });
+
+// Global Loading State Handlers
+window.showLoading = function(message = "Loading...") {
+    let loader = document.getElementById('global-loader');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'global-loader';
+        loader.innerHTML = `
+            <div style="
+                position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+                background: rgba(0,0,0,0.4); backdrop-filter: blur(4px);
+                z-index: 99999; display: flex; flex-direction: column;
+                align-items: center; justify-content: center; color: white;
+                font-family: var(--font-sans);
+            ">
+                <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem; color: var(--brand-500);"></i>
+                <div id="global-loader-msg" style="font-weight: 500;">${message}</div>
+            </div>
+        `;
+        document.body.appendChild(loader);
+    } else {
+        document.getElementById('global-loader-msg').textContent = message;
+        loader.style.display = 'flex';
+    }
+};
+
+window.hideLoading = function() {
+    const loader = document.getElementById('global-loader');
+    if (loader) loader.style.display = 'none';
+};
