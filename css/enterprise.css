@@ -13,6 +13,49 @@
     grid-template-columns: 68px 1fr;
 }
 
+/* ---- Floating toggle button (visible always) ---- */
+.sidebar-toggle-btn {
+    position: fixed;
+    top: 18px;
+    left: 232px;             /* lines up with sidebar edge */
+    z-index: 200;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    background: #1e293b;
+    border: 2px solid rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.7);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; font-size: 11px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.35);
+    transition: left 0.3s cubic-bezier(0.16,1,0.3,1), transform 0.2s ease, background 0.18s;
+}
+.sidebar-toggle-btn:hover {
+    background: #334155;
+    color: #fff;
+    transform: scale(1.1);
+}
+.dashboard.sidebar-is-collapsed .sidebar-toggle-btn {
+    left: 52px;
+}
+.sidebar-toggle-btn i {
+    transition: transform 0.3s ease;
+}
+.dashboard.sidebar-is-collapsed .sidebar-toggle-btn i {
+    transform: rotate(180deg);
+}
+
+/* ---- Mobile backdrop ---- */
+.sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 998;
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.2s ease;
+}
+.sidebar-backdrop.show { display: block; }
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
 /* ---- Sidebar shell ---- */
 .sidebar {
     width: 272px;
@@ -28,20 +71,22 @@
     transition: width 0.3s cubic-bezier(0.16,1,0.3,1);
     z-index: 100;
 }
-.sidebar-collapsed { width: 68px !important; }
-.sidebar-collapsed .brand-text,
-.sidebar-collapsed .brand-sub,
-.sidebar-collapsed .menu-group-title,
-.sidebar-collapsed .section-chevron,
-.sidebar-collapsed .sidebar-search-wrap,
-.sidebar-collapsed .menu-item span,
-.sidebar-collapsed .menu-badge,
-.sidebar-collapsed .sidebar-user-info,
-.sidebar-collapsed .sidebar-user-role,
-.sidebar-collapsed .theme-toggle-btn span,
-.sidebar-collapsed .logout span { display: none !important; }
-.sidebar-collapsed .menu-items-wrapper { max-height: 0 !important; overflow: hidden; }
-.sidebar-collapsed .sidebar-pin-btn i { transform: rotate(90deg); }
+/* Collapsed: icon-only mode */
+.sidebar-is-collapsed .sidebar { width: 68px; }
+.sidebar-is-collapsed .brand-text,
+.sidebar-is-collapsed .brand-sub,
+.sidebar-is-collapsed .menu-group-title,
+.sidebar-is-collapsed .section-chevron,
+.sidebar-is-collapsed .sidebar-search-wrap,
+.sidebar-is-collapsed .menu-item span,
+.sidebar-is-collapsed .menu-badge,
+.sidebar-is-collapsed .sidebar-user-info,
+.sidebar-is-collapsed .sidebar-user-name,
+.sidebar-is-collapsed .sidebar-user-role,
+.sidebar-is-collapsed .theme-toggle-btn span,
+.sidebar-is-collapsed .logout span { display: none !important; }
+.sidebar-is-collapsed .menu-items-wrapper { max-height: 0 !important; overflow: hidden; }
+.sidebar-is-collapsed .sidebar-pin-btn { display: none; }
 
 /* ---- Brand ---- */
 .sidebar-brand {
@@ -281,6 +326,8 @@ body.dark .header-date-badge { background: rgba(255,255,255,0.04); border-color:
 @media (max-width: 1024px) {
     .dashboard { grid-template-columns: 240px 1fr; }
     .sidebar { width: 240px; }
+    .sidebar-toggle-btn { left: 208px; }
+    .dashboard.sidebar-is-collapsed .sidebar-toggle-btn { left: 52px; }
 }
 
 @media (max-width: 768px) {
@@ -289,14 +336,38 @@ body.dark .header-date-badge { background: rgba(255,255,255,0.04); border-color:
         position: fixed; left: 0; top: 0; height: 100%;
         width: 280px !important;
         transform: translateX(-100%);
-        transition: transform 0.3s ease, width 0.3s ease;
+        transition: transform 0.3s ease;
         z-index: 999; box-shadow: 4px 0 24px rgba(0,0,0,0.3);
     }
     .sidebar.mobile-open { transform: translateX(0); }
-    .sidebar-collapsed { transform: translateX(-100%) !important; }
+    /* On mobile, collapse has no effect — it's always drawer */
+    .sidebar-is-collapsed .sidebar { width: 280px !important; }
+    .sidebar-is-collapsed .sidebar .brand-text,
+    .sidebar-is-collapsed .sidebar .brand-sub,
+    .sidebar-is-collapsed .sidebar .menu-group-title,
+    .sidebar-is-collapsed .sidebar .section-chevron,
+    .sidebar-is-collapsed .sidebar .sidebar-search-wrap,
+    .sidebar-is-collapsed .sidebar .menu-item span,
+    .sidebar-is-collapsed .sidebar .menu-badge,
+    .sidebar-is-collapsed .sidebar .sidebar-user-info,
+    .sidebar-is-collapsed .sidebar .sidebar-user-name,
+    .sidebar-is-collapsed .sidebar .sidebar-user-role,
+    .sidebar-is-collapsed .sidebar .theme-toggle-btn span,
+    .sidebar-is-collapsed .sidebar .logout span { display: flex !important; }
+    .sidebar-is-collapsed .sidebar .menu-items-wrapper { max-height: 500px !important; overflow: visible; }
+    /* Mobile toggle button */
+    .sidebar-toggle-btn {
+        position: fixed; left: 12px; top: 14px;
+        z-index: 1000;
+        background: #1e293b;
+    }
+    .dashboard.sidebar-is-collapsed .sidebar-toggle-btn { left: 12px; }
+    .sidebar.mobile-open ~ * .sidebar-toggle-btn,
+    .sidebar-toggle-btn.sidebar-open { left: calc(280px - 14px); }
     .mobile-menu-btn { display: flex !important; }
-    .sidebar-pin-btn { display: none; }
+    .sidebar-pin-btn { display: none !important; }
     .main-header { padding: 16px 16px 0; }
+    .dashboard { grid-template-columns: 1fr; }
 }
 
 /* ============================================================

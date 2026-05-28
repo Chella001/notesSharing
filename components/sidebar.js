@@ -202,14 +202,65 @@ class AppSidebar extends HTMLElement {
     }
 
     restoreCollapsedState() {
-        // Restore sidebar collapsed (icon-only) mode
-        if (localStorage.getItem('sidebarCollapsed') === 'true') {
-            const sidebar = this.querySelector('#appSidebar');
-            if (sidebar) {
-                sidebar.classList.add('sidebar-collapsed');
-                document.querySelector('.dashboard')?.classList.add('sidebar-is-collapsed');
-            }
+        const dashboard = document.querySelector('.dashboard');
+        if (localStorage.getItem('sidebarCollapsed') === 'true' && dashboard) {
+            dashboard.classList.add('sidebar-is-collapsed');
         }
+        // Inject the global floating toggle button into body (once)
+        this._injectToggleButton();
+    }
+
+    _injectToggleButton() {
+        if (document.getElementById('globalSidebarToggle')) return; // already exists
+
+        const isMobile = window.innerWidth < 768;
+
+        // Create floating toggle button
+        const btn = document.createElement('button');
+        btn.id = 'globalSidebarToggle';
+        btn.className = 'sidebar-toggle-btn';
+        btn.title = 'Toggle Sidebar';
+        btn.innerHTML = '<i class="fas fa-chevron-left"></i>';
+        document.body.appendChild(btn);
+
+        // Create mobile backdrop
+        const backdrop = document.createElement('div');
+        backdrop.id = 'sidebarBackdrop';
+        backdrop.className = 'sidebar-backdrop';
+        document.body.appendChild(backdrop);
+
+        const dashboard = document.querySelector('.dashboard');
+        const sidebar = this.querySelector('#appSidebar');
+
+        const toggle = () => {
+            if (isMobile || window.innerWidth < 768) {
+                // Mobile: drawer open/close
+                const isOpen = sidebar?.classList.toggle('mobile-open');
+                backdrop.classList.toggle('show', isOpen);
+                btn.style.left = isOpen ? (280 - 14) + 'px' : '12px';
+            } else {
+                // Desktop: collapse/expand
+                const isCollapsed = dashboard?.classList.toggle('sidebar-is-collapsed');
+                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
+            }
+        };
+
+        btn.addEventListener('click', toggle);
+
+        // Backdrop click closes mobile sidebar
+        backdrop.addEventListener('click', () => {
+            sidebar?.classList.remove('mobile-open');
+            backdrop.classList.remove('show');
+            btn.style.left = '12px';
+        });
+
+        // Responsive: reset on resize
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar?.classList.remove('mobile-open');
+                backdrop.classList.remove('show');
+            }
+        });
     }
 
     setupEventListeners() {
@@ -254,14 +305,13 @@ class AppSidebar extends HTMLElement {
             w.style.maxHeight = '500px';
         });
 
-        // --- Pin / Collapse sidebar ---
+        // --- Pin button inside sidebar (desktop only) ---
         const pinBtn = this.querySelector('#sidebarPinBtn');
-        const sidebar = this.querySelector('#appSidebar');
-        if (pinBtn && sidebar) {
+        if (pinBtn) {
             pinBtn.addEventListener('click', () => {
-                const isCollapsed = sidebar.classList.toggle('sidebar-collapsed');
-                document.querySelector('.dashboard')?.classList.toggle('sidebar-is-collapsed', isCollapsed);
-                localStorage.setItem('sidebarCollapsed', isCollapsed);
+                const dashboard = document.querySelector('.dashboard');
+                const isCollapsed = dashboard?.classList.toggle('sidebar-is-collapsed');
+                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
             });
         }
 
