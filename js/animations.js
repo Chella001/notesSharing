@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
         );
     }
     
-    // 3. Button Micro-interactions (Hover & Tap)
+    // 3. Button Micro-interactions (Hover only to preserve native clicks)
     const initButtons = () => {
         const buttons = document.querySelectorAll('.ds-btn, .view-all, .tab-btn');
         buttons.forEach(btn => {
@@ -27,16 +27,10 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.dataset.animated = "true";
             
             btn.addEventListener('mouseenter', () => {
-                animate(btn, { scale: 1.03 }, { duration: 0.2, easing: spring({ stiffness: 400, damping: 15 }) });
+                animate(btn, { scale: 1.02 }, { duration: 0.2, easing: spring({ stiffness: 400, damping: 15 }) });
             });
             btn.addEventListener('mouseleave', () => {
                 animate(btn, { scale: 1 }, { duration: 0.2, easing: spring({ stiffness: 400, damping: 15 }) });
-            });
-            btn.addEventListener('mousedown', () => {
-                animate(btn, { scale: 0.95 }, { duration: 0.1 });
-            });
-            btn.addEventListener('mouseup', () => {
-                animate(btn, { scale: 1.03 }, { duration: 0.2, easing: spring({ stiffness: 400, damping: 15 }) });
             });
         });
     };

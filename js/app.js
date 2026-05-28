@@ -61,7 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Global Loading State Handlers
-window.showLoading = function(message = "Loading...") {
+let globalLoaderTimeout;
+
+window.showLoading = function(message = "Loading...", timeoutMs = 8000) {
     let loader = document.getElementById('global-loader');
     if (!loader) {
         loader = document.createElement('div');
@@ -76,6 +78,7 @@ window.showLoading = function(message = "Loading...") {
             ">
                 <i class="fas fa-circle-notch fa-spin" style="font-size: 2rem; margin-bottom: 1rem; color: var(--brand-500);"></i>
                 <div id="global-loader-msg" style="font-weight: 500;">${message}</div>
+                <button onclick="window.hideLoading()" style="margin-top: 16px; background: transparent; border: 1px solid rgba(255,255,255,0.5); color: white; padding: 4px 12px; border-radius: 4px; cursor: pointer; font-size: 12px; opacity: 0.8;">Dismiss</button>
             </div>
         `;
         document.body.appendChild(loader);
@@ -95,17 +98,26 @@ window.showLoading = function(message = "Loading...") {
             }
         }
     }
+    
+    // Failsafe timeout to prevent permanent blocking
+    clearTimeout(globalLoaderTimeout);
+    if (timeoutMs > 0) {
+        globalLoaderTimeout = setTimeout(() => {
+            window.hideLoading();
+        }, timeoutMs);
+    }
 };
 
 window.hideLoading = function() {
     const loader = document.getElementById('global-loader');
     if (loader) {
         if (window.animate) {
-            window.animate(loader, { opacity: [1, 0] }, { duration: 0.2 }).finished.then(() => {
-                loader.style.display = 'none';
-            });
+            window.animate(loader, { opacity: [1, 0] }, { duration: 0.2 });
+            setTimeout(() => {
+                loader.remove();
+            }, 200);
         } else {
-            loader.style.display = 'none';
+            loader.remove();
         }
     }
 };
