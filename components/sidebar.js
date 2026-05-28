@@ -3,7 +3,7 @@ class AppSidebar extends HTMLElement {
 
     connectedCallback() {
         this._sections = this._buildSections();
-        this._collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        this._collapsed = localStorage.getItem('sidebarCollapsed') !== 'false';
         this._expandedSections = new Set(
             JSON.parse(localStorage.getItem('sidebarExpanded') || '["overview","clinical","operations"]')
         );
@@ -110,11 +110,11 @@ class AppSidebar extends HTMLElement {
         const isDark = localStorage.getItem('theme') === 'dark';
 
         this.innerHTML = `
-        <aside class="sb${this._collapsed ? ' sb-mini' : ''}" id="appSidebar" role="navigation" aria-label="Main Navigation">
+        <aside class="sb${this._collapsed ? '' : ' sb-open'}" id="appSidebar" role="navigation" aria-label="Main Navigation">
 
             <!-- Brand -->
             <div class="sb-brand">
-                <div class="sb-brand-logo"><i class="fas fa-heartbeat"></i></div>
+                <div class="sb-brand-logo"><i class="fas fa-desktop"></i></div>
                 <div class="sb-brand-text">
                     <div class="sb-brand-name">Akshaya Clinic</div>
                     <div class="sb-brand-sub">Enterprise Suite</div>
@@ -279,7 +279,7 @@ class AppSidebar extends HTMLElement {
         btn.id = 'sbFloatToggle';
         btn.className = 'sb-float-toggle';
         btn.setAttribute('title', 'Toggle sidebar');
-        btn.innerHTML = '<i class="fas fa-bars"></i>';
+        btn.innerHTML = '<i class="fas fa-chevron-right"></i>';
         document.body.appendChild(btn);
 
         // Backdrop for mobile
@@ -298,18 +298,18 @@ class AppSidebar extends HTMLElement {
                 btn.classList.toggle('toggle-open', open);
             } else {
                 this._collapsed = !this._collapsed;
-                sidebar?.classList.toggle('sb-mini', this._collapsed);
-                dashboard?.classList.toggle('sidebar-is-collapsed', this._collapsed);
+                sidebar?.classList.toggle('sb-open', !this._collapsed);
+                dashboard?.classList.toggle('sb-exp', !this._collapsed);
                 localStorage.setItem('sidebarCollapsed', this._collapsed);
             }
         });
 
         backdrop.addEventListener('click', () => this._closeMobile());
 
-        // Apply collapsed state
-        if (this._collapsed) {
-            sidebar?.classList.add('sb-mini');
-            dashboard?.classList.add('sidebar-is-collapsed');
+        // Apply expanded state if not collapsed
+        if (!this._collapsed) {
+            sidebar?.classList.add('sb-open');
+            dashboard?.classList.add('sb-exp');
         }
 
         // Resize handler
