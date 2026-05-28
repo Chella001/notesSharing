@@ -704,20 +704,6 @@
                 .catch(error => console.log("Anonymous sign-in error:", error));
         }
 
-        // ==================== LOGOUT ====================
-        document.getElementById('logoutBtn').addEventListener('click', function () {
-            window.showLogoutConfirmation(() => {
-                auth.signOut().then(() => {
-                    sessionStorage.clear();
-                    showNotification("Logged out successfully");
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                }).catch(error => {
-                    showNotification("Error logging out: " + error.message, "error");
-                });
-            });
-        });
 
         // ==================== INITIAL LOAD ====================
         document.addEventListener('DOMContentLoaded', () => {

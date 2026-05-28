@@ -649,16 +649,6 @@
             }
         });
 
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', function () {
-            window.showLogoutConfirmation(() => {
-                sessionStorage.clear();
-                showNotification("Logged out successfully");
-                setTimeout(() => {
-                    window.location.href = 'index.html';
-                }, 1500);
-            });
-        });
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', async () => {
