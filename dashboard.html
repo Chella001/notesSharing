@@ -261,33 +261,42 @@
                     showNotification("Loading dashboard data...", "success");
                 }
                 
-                const { PatientModel } = await import('./js/models/Patient.js');
-                const { DoctorModel } = await import('./js/models/Doctor.js');
-                const { AppointmentModel } = await import('./js/models/Appointment.js');
+                const { PatientModel } = await import('./js/models/Patient.js?v=' + new Date().getTime());
+                const { DoctorModel } = await import('./js/models/Doctor.js?v=' + new Date().getTime());
+                const { AppointmentModel } = await import('./js/models/Appointment.js?v=' + new Date().getTime());
 
                 const patientModel = new PatientModel(db);
                 const doctorModel = new DoctorModel(db);
                 const appointmentModel = new AppointmentModel(db);
 
                 // Load Counts & Revenue
-                const totalPatients = await patientModel.getCount();
+                let totalPatients = 0;
+                try { totalPatients = await patientModel.getCount(); } catch (e) { console.error("Error fetching patients:", e); }
                 if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalPatients'), totalPatients);
                 else document.getElementById('totalPatients').textContent = totalPatients;
 
-                const totalDoctors = await doctorModel.getCount();
+                let totalDoctors = 0;
+                try { totalDoctors = await doctorModel.getCount(); } catch (e) { console.error("Error fetching doctors:", e); }
                 if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalDoctors'), totalDoctors);
                 else document.getElementById('totalDoctors').textContent = totalDoctors;
 
-                const totalAppointments = await appointmentModel.getCount();
+                let totalAppointments = 0;
+                try { totalAppointments = await appointmentModel.getCount(); } catch (e) { console.error("Error fetching appointments:", e); }
                 if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalAppointments'), totalAppointments);
                 else document.getElementById('totalAppointments').textContent = totalAppointments;
 
-                const totalRevenue = await appointmentModel.getRevenue();
+                let totalRevenue = 0;
+                try { totalRevenue = await appointmentModel.getRevenue(); } catch (e) { console.error("Error fetching revenue:", e); }
                 if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalRevenue'), totalRevenue, 2, "₹");
                 else document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
 
                 // Load Recent Appointments
-                loadedAppointments = await appointmentModel.getRecent(25);
+                try {
+                    loadedAppointments = await appointmentModel.getRecent(25);
+                } catch (e) {
+                    console.error("Error fetching recent appointments:", e);
+                    loadedAppointments = [];
+                }
                 
                 renderAppointments(loadedAppointments);
                 if (window.hideLoading) window.hideLoading();
