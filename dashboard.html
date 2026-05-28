@@ -272,23 +272,31 @@
                 // Load Counts & Revenue
                 let totalPatients = 0;
                 try { totalPatients = await patientModel.getCount(); } catch (e) { console.error("Error fetching patients:", e); }
-                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalPatients'), totalPatients);
-                else document.getElementById('totalPatients').textContent = totalPatients;
+                try {
+                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalPatients'), totalPatients || 0);
+                    else document.getElementById('totalPatients').textContent = totalPatients || 0;
+                } catch (e) { console.error("Error animating patients:", e); }
 
                 let totalDoctors = 0;
                 try { totalDoctors = await doctorModel.getCount(); } catch (e) { console.error("Error fetching doctors:", e); }
-                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalDoctors'), totalDoctors);
-                else document.getElementById('totalDoctors').textContent = totalDoctors;
+                try {
+                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalDoctors'), totalDoctors || 0);
+                    else document.getElementById('totalDoctors').textContent = totalDoctors || 0;
+                } catch (e) { console.error("Error animating doctors:", e); }
 
                 let totalAppointments = 0;
                 try { totalAppointments = await appointmentModel.getCount(); } catch (e) { console.error("Error fetching appointments:", e); }
-                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalAppointments'), totalAppointments);
-                else document.getElementById('totalAppointments').textContent = totalAppointments;
+                try {
+                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalAppointments'), totalAppointments || 0);
+                    else document.getElementById('totalAppointments').textContent = totalAppointments || 0;
+                } catch (e) { console.error("Error animating appointments:", e); }
 
                 let totalRevenue = 0;
                 try { totalRevenue = await appointmentModel.getRevenue(); } catch (e) { console.error("Error fetching revenue:", e); }
-                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalRevenue'), totalRevenue, 2, "₹");
-                else document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+                try {
+                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalRevenue'), totalRevenue || 0, 2, "₹");
+                    else document.getElementById('totalRevenue').textContent = `₹${(totalRevenue || 0).toLocaleString()}`;
+                } catch (e) { console.error("Error animating revenue:", e); }
 
                 // Load Recent Appointments
                 try {
@@ -298,8 +306,15 @@
                     loadedAppointments = [];
                 }
                 
-                renderAppointments(loadedAppointments);
-                if (window.hideLoading) window.hideLoading();
+                try {
+                    renderAppointments(loadedAppointments || []);
+                } catch (e) {
+                    console.error("Error rendering appointments:", e);
+                }
+                
+                try {
+                    if (window.hideLoading) window.hideLoading();
+                } catch (e) { console.error("Error hiding loading:", e); }
             } catch (error) {
                 if (window.hideLoading) window.hideLoading();
                 console.error("❌ Error loading data:", error);
