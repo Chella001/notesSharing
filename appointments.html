@@ -18,39 +18,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <!-- Include centralized Firebase config -->
     <script src="js/firebase-config.js" type="module"></script>
-    <link rel="stylesheet" href="css/theme.css">`n    <link rel="stylesheet" href="css/enterprise.css">
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/enterprise.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <script src="components/sidebar.js" defer></script>
+    <script src="components/header.js" defer></script>
     <script src="js/app.js" type="module"></script>
 </head>
 
 <body>
     <div class="dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="hospital-name">🏥 Hospital Name</div>
-            <div class="sidebar-menu">
-                <div class="menu-item" onclick="window.location.href='dashboard.html'">
-                    <i class="fas fa-chart-pie"></i> Dashboard
-                </div>
-                <div class="menu-item" onclick="window.location.href='newPatient.html'">
-                    <i class="fas fa-user-injured"></i> Patients
-                </div>
-                <div class="menu-item" onclick="window.location.href='newDoctor.html'">
-                    <i class="fas fa-user-md"></i> Doctors
-                </div>
-                <div class="menu-item active" onclick="window.location.href='appointments.html'">
-                    <i class="fas fa-calendar-check"></i> Appointments
-                </div>
-                <div class="menu-item" onclick="window.location.href='reports.html'">
-                    <i class="fas fa-chart-bar"></i> Reports
-                </div>
-                <div class="menu-item" onclick="window.location.href='settings.html'">
-                    <i class="fas fa-cog"></i> Settings
-                </div>
-                <div class="menu-item logout" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </div>
-            </div>
-        </div>
+        <app-sidebar></app-sidebar>
 
         <!-- Main Content -->
         <div class="main-content">
