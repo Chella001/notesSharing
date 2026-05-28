@@ -2464,11 +2464,37 @@ body.dark .info-note {
 .ds-label i,
 .input-group label i,
 .input-wrapper i:not(.password-toggle i) {
-    color: var(--primary) !important;
+    color: #16a34a !important; /* Green */
+    font-size: 18px !important;
 }
 
 .ds-label i,
 .input-group label i {
     margin-right: 8px !important;
+}
+
+/* Phone icon: orange, 20px */
+.ds-label i.fa-phone,
+.ds-label i.fa-phone-alt,
+.input-wrapper i.fa-phone,
+.input-wrapper i.fa-phone-alt {
+    color: #ea580c !important; /* Orange */
+    font-size: 20px !important;
+}
+
+/* Emergency icon: red, 26px */
+.ds-label i.fa-ambulance,
+.input-wrapper i.fa-ambulance,
+.ds-label i.fa-phone-volume,
+.input-wrapper i.fa-phone-volume {
+    color: #dc2626 !important; /* Red */
+    font-size: 26px !important;
+}
+
+/* Blood group icon: dark red, 24px */
+.ds-label i.fa-heart,
+.input-wrapper i.fa-heart {
+    color: #991b1b !important; /* Dark Red */
+    font-size: 24px !important;
 }
 
