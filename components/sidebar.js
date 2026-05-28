@@ -122,9 +122,6 @@ class AppSidebar extends HTMLElement {
                     <div class="brand-name">Akshaya Clinic</div>
                     <div class="brand-sub">Enterprise Suite</div>
                 </div>
-                <button class="sidebar-pin-btn" id="sidebarPinBtn" title="Toggle sidebar">
-                    <i class="fas fa-thumbtack"></i>
-                </button>
             </div>
 
             <!-- Search -->
