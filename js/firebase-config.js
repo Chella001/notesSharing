@@ -199,7 +199,8 @@ window.applyHospitalSettings = async function () {
 
 // Initialize settings application when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. Initialize Theme UI & Button click handler
+    // NOTE: Theme toggle click is handled by sidebar.js to avoid double-listeners.
+    // firebase-config.js only ensures the correct initial icon is shown.
     function updateThemeToggleUI() {
         const btn = document.getElementById('themeToggleBtn');
         if (!btn) return;
@@ -208,17 +209,8 @@ document.addEventListener('DOMContentLoaded', () => {
             ? `<i class="fas fa-sun"></i> <span>Light Mode</span>`
             : `<i class="fas fa-moon"></i> <span>Dark Mode</span>`;
     }
-
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', () => {
-            document.body.classList.toggle('dark');
-            const isDark = document.body.classList.contains('dark');
-            localStorage.setItem('theme', isDark ? 'dark' : 'light');
-            updateThemeToggleUI();
-        });
-    }
-    updateThemeToggleUI();
+    // Run after a short delay to let the sidebar custom element render
+    setTimeout(updateThemeToggleUI, 100);
 
     // 2. Initialize Sidebar Collapse button click handler
     const sidebar = document.querySelector('.sidebar');
