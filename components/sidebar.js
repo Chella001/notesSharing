@@ -133,31 +133,31 @@ class AppSidebar extends HTMLElement {
             <!-- Nav -->
             <nav class="sb-nav" id="sbNav">
                 ${this._sections.map(s => this._sectionHTML(s)).join('')}
+                
+                <!-- Divider inside scrollable area -->
+                <div class="sb-divider"></div>
+
+                <!-- System inside scrollable area -->
+                <div class="sb-system">
+                    <a class="sb-item${this._currentPath === 'settings.html' ? ' sb-active' : ''}"
+                       href="settings.html"
+                       data-label="Settings"
+                       onclick="event.preventDefault(); window.location.href='settings.html'">
+                        <span class="sb-item-icon"><i class="fas fa-cog"></i></span>
+                        <span class="sb-item-label">Settings</span>
+                    </a>
+
+                    <button class="sb-item sb-theme-btn" id="sbThemeBtn" data-label="${isDark ? 'Light Mode' : 'Dark Mode'}">
+                        <span class="sb-item-icon"><i class="fas fa-${isDark ? 'sun' : 'moon'}"></i></span>
+                        <span class="sb-item-label">${isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                    </button>
+
+                    <button class="sb-item sb-logout-btn" id="sbLogoutBtn" data-label="Logout">
+                        <span class="sb-item-icon"><i class="fas fa-sign-out-alt"></i></span>
+                        <span class="sb-item-label">Logout</span>
+                    </button>
+                </div>
             </nav>
-
-            <!-- Divider -->
-            <div class="sb-divider"></div>
-
-            <!-- System -->
-            <div class="sb-system">
-                <a class="sb-item${this._currentPath === 'settings.html' ? ' sb-active' : ''}"
-                   href="settings.html"
-                   data-label="Settings"
-                   onclick="event.preventDefault(); window.location.href='settings.html'">
-                    <span class="sb-item-icon"><i class="fas fa-cog"></i></span>
-                    <span class="sb-item-label">Settings</span>
-                </a>
-
-                <button class="sb-item sb-theme-btn" id="sbThemeBtn" data-label="${isDark ? 'Light Mode' : 'Dark Mode'}">
-                    <span class="sb-item-icon"><i class="fas fa-${isDark ? 'sun' : 'moon'}"></i></span>
-                    <span class="sb-item-label">${isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                </button>
-
-                <button class="sb-item sb-logout-btn" id="sbLogoutBtn" data-label="Logout">
-                    <span class="sb-item-icon"><i class="fas fa-sign-out-alt"></i></span>
-                    <span class="sb-item-label">Logout</span>
-                </button>
-            </div>
 
             <!-- Footer: User -->
             <div class="sb-footer">
