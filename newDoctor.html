@@ -16,13 +16,11 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <!-- Include centralized Firebase config -->
-    <script src="firebase-config.js" type="module"></script>
-    <link rel="stylesheet" href="theme.css">
+    <script src="js/firebase-config.js" type="module"></script>
+    <link rel="stylesheet" href="css/theme.css">
+    <script src="js/app.js" type="module"></script>
 </head>
 <body>
-    <!-- Notification Toast -->
-    <div id="notification" class="notification">Data loaded successfully</div>
-
     <div class="dashboard">
         <!-- Sidebar -->
         <div class="sidebar">
@@ -74,10 +72,7 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="main-header">
-                <h1>Add New Doctor</h1>
-                <div class="date-badge" id="currentDate"></div>
-            </div>
+            <app-header title="Add New Doctor"></app-header>
 
             <!-- Stats Cards -->
             <div class="stats-grid">
@@ -390,12 +385,7 @@
             }, 3000);
         }
 
-        // Set current date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+        
 
         // Load Stats
         async function loadStats() {

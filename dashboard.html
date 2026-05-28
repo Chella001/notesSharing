@@ -16,68 +16,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
     <!-- Include centralized Firebase config -->
-    <script src="firebase-config.js" type="module"></script>
-    <link rel="stylesheet" href="theme.css">
+    <script src="js/firebase-config.js" type="module"></script>
+    <link rel="stylesheet" href="css/theme.css">
+    <script src="js/app.js" type="module"></script>
 </head>
 <body>
-    <!-- Notification Toast -->
-    <div id="notification" class="notification">Data loaded successfully</div>
-
     <div class="dashboard">
-        <!-- Sidebar - with working links -->
-        <div class="sidebar">
-            <div class="hospital-brand">
-                <div class="hospital-logo"><i class="fas fa-heartbeat"></i></div>
-                <div class="hospital-name">🏥 Akshaya Clinic</div>
-            </div>
-            <div class="sidebar-menu">
-                <div class="menu-group">
-                    <div class="menu-group-title">Overview</div>
-                    <div class="menu-item active" onclick="window.location.href='dashboard.html'">
-                        <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
-                    </div>
-                </div>
-                <div class="menu-group">
-                    <div class="menu-group-title">Clinical Management</div>
-                    <div class="menu-item" onclick="window.location.href='newPatient.html'">
-                        <i class="fas fa-user-injured"></i> <span>Patients</span>
-                    </div>
-                    <div class="menu-item" onclick="window.location.href='newDoctor.html'">
-                        <i class="fas fa-user-md"></i> <span>Doctors</span>
-                    </div>
-                </div>
-                <div class="menu-group">
-                    <div class="menu-group-title">Operations</div>
-                    <div class="menu-item" onclick="window.location.href='appointments.html'">
-                        <i class="fas fa-calendar-check"></i> <span>Appointments</span>
-                    </div>
-                    <div class="menu-item" onclick="window.location.href='reports.html'">
-                        <i class="fas fa-chart-bar"></i> <span>Reports</span>
-                    </div>
-                </div>
-                <div class="menu-group">
-                    <div class="menu-group-title">System</div>
-                    <div class="menu-item" onclick="window.location.href='settings.html'">
-                        <i class="fas fa-cog"></i> <span>Settings</span>
-                    </div>
-                </div>
-                <div class="sidebar-footer">
-                    <button class="theme-toggle-btn" id="themeToggleBtn">
-                        <i class="fas fa-moon"></i> <span>Dark Mode</span>
-                    </button>
-                    <div class="menu-item logout" id="logoutBtn">
-                        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <app-sidebar></app-sidebar>
 
         <!-- Main Content -->
         <div class="main-content">
-            <div class="main-header">
-                <h1>Hospital Dashboard</h1>
-                <div class="date-badge" id="currentDate"></div>
-            </div>
+            <app-header title="Hospital Dashboard"></app-header>
 
             <!-- Stats Cards -->
             <div class="stats-grid">
@@ -232,21 +181,9 @@
             return date;
         }
 
-        function formatTime(date) {
-            if (!date) return 'N/A';
-            if (date.toDate) {
-                const d = date.toDate();
-                return d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-            }
-            return '--:--';
-        }
+        
 
-        // Set current date
-        document.getElementById('currentDate').textContent = new Date().toLocaleDateString('en-GB', {
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric'
-        });
+        
 
         // ==================== LOAD DASHBOARD DATA ====================
         async function loadDashboardData() {
@@ -268,45 +205,29 @@
                     showNotification("Loading dashboard data...", "success");
                 }
                 
-                // Load Patients Count
-                const patientsSnapshot = await db.collection('patients').get();
-                const totalPatients = patientsSnapshot.size;
+                const { PatientModel } = await import('./js/models/Patient.js');
+                const { DoctorModel } = await import('./js/models/Doctor.js');
+                const { AppointmentModel } = await import('./js/models/Appointment.js');
+
+                const patientModel = new PatientModel(db);
+                const doctorModel = new DoctorModel(db);
+                const appointmentModel = new AppointmentModel(db);
+
+                // Load Counts & Revenue
+                const totalPatients = await patientModel.getCount();
                 document.getElementById('totalPatients').textContent = totalPatients;
-                console.log("Total patients:", totalPatients);
 
-                // Load Doctors Count
-                const doctorsSnapshot = await db.collection('doctors').get();
-                const totalDoctors = doctorsSnapshot.size;
+                const totalDoctors = await doctorModel.getCount();
                 document.getElementById('totalDoctors').textContent = totalDoctors;
-                console.log("Total doctors:", totalDoctors);
 
-                // Load Appointments Count
-                const appointmentsSnapshot = await db.collection('appointments').get();
-                const totalAppointments = appointmentsSnapshot.size;
+                const totalAppointments = await appointmentModel.getCount();
                 document.getElementById('totalAppointments').textContent = totalAppointments;
-                console.log("Total appointments:", totalAppointments);
 
-                // Calculate Revenue
-                let totalRevenue = 0;
-                appointmentsSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    if (data.status === 'Completed' && data.fee) {
-                        totalRevenue += data.fee;
-                    }
-                });
+                const totalRevenue = await appointmentModel.getRevenue();
                 document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
 
-                // Load Recent Appointments (last 25)
-                const recentAppointmentsQuery = await db.collection('appointments')
-                    .orderBy('date', 'desc')
-                    .limit(25)
-                    .get();
-                
-                // Display Appointments
-                loadedAppointments = [];
-                recentAppointmentsQuery.forEach(doc => {
-                    loadedAppointments.push(doc.data());
-                });
+                // Load Recent Appointments
+                loadedAppointments = await appointmentModel.getRecent(25);
                 
                 renderAppointments(loadedAppointments);
             } catch (error) {
@@ -401,39 +322,6 @@
                     // Continue anyway - might be using public rules
                 });
         }
-
-        // ==================== MENU INTERACTIONS ====================
-        document.querySelectorAll('.menu-item:not(.logout)').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.menu-item').forEach(mi => {
-                    mi.classList.remove('active');
-                });
-                this.classList.add('active');
-                
-                // Don't show navigation notification for items with direct links
-                if (!this.hasAttribute('onclick')) {
-                    const section = this.getAttribute('data-section');
-                    if (section) {
-                        showNotification(`Navigating to ${section} section`, "success");
-                    }
-                }
-            });
-        });
-
-        // Logout
-        document.getElementById('logoutBtn').addEventListener('click', function() {
-            window.showLogoutConfirmation(() => {
-                auth.signOut().then(() => {
-                    sessionStorage.clear();
-                    showNotification("Logged out successfully");
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                }).catch(error => {
-                    showNotification("Error logging out: " + error.message, "error");
-                });
-            });
-        });
 
         // ==================== INITIAL LOAD ====================
         document.addEventListener('DOMContentLoaded', () => {
