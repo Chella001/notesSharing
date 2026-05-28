@@ -139,6 +139,7 @@ body.dark {
     transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     outline: none;
     white-space: nowrap;
+    text-decoration: none !important;
 }
 
 .ds-btn:focus-visible {
@@ -148,7 +149,7 @@ body.dark {
 /* Primary Button (Stripe inspired gradient) */
 .ds-btn-primary {
     background: linear-gradient(180deg, var(--brand-400) 0%, var(--brand-600) 100%);
-    color: white;
+    color: white !important;
     border: 1px solid var(--brand-600);
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
@@ -160,13 +161,15 @@ body.dark {
 /* Secondary Button (Vercel inspired neutral) */
 .ds-btn-secondary {
     background: var(--ds-bg-card);
-    color: var(--ds-text-primary);
+    color: var(--ds-text-secondary) !important;
     border: 1px solid var(--ds-border);
     box-shadow: var(--shadow-xs);
+    text-decoration: none !important;
 }
 .ds-btn-secondary:hover {
     background: var(--ds-bg-hover);
     border-color: var(--ds-border-hover);
+    color: var(--ds-text-primary) !important;
 }
 
 /* Ghost Button (Linear inspired minimal) */
