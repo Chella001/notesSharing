@@ -229,7 +229,6 @@ class AppSidebar extends HTMLElement {
                 localStorage.setItem('theme', dark ? 'dark' : 'light');
                 themeBtn.querySelector('.sb-item-icon i').className = `fas fa-${dark ? 'sun' : 'moon'}`;
                 themeBtn.querySelector('.sb-item-label').textContent = dark ? 'Light Mode' : 'Dark Mode';
-                themeBtn.querySelector('.sb-tooltip').textContent = dark ? 'Light Mode' : 'Dark Mode';
                 themeBtn.setAttribute('data-label', dark ? 'Light Mode' : 'Dark Mode');
             });
         }
