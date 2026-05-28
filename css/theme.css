@@ -10,11 +10,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
 :root {
-    /* Base Color Palette (Linear Indigo & Medical Accents) */
-    --primary: #6366f1;         /* Premium Indigo */
-    --primary-light: rgba(99, 102, 241, 0.08);
-    --primary-dark: #4f46e5;    /* Deep Indigo Accent */
-    --primary-glow: rgba(99, 102, 241, 0.16);
+    /* Base Color Palette (Linear Teal & Medical Accents) */
+    --primary: #0d9488;         /* Premium Teal */
+    --primary-light: rgba(13, 148, 136, 0.08);
+    --primary-dark: #0f766e;    /* Deep Teal Accent */
+    --primary-glow: rgba(13, 148, 136, 0.16);
     
     --secondary: #0ea5e9;       /* Medical Teal/Blue */
     --secondary-light: rgba(14, 165, 233, 0.08);
@@ -217,7 +217,7 @@ body {
     font-weight: 800;
     letter-spacing: -0.5px;
     color: var(--text-primary);
-    text-shadow: 0 2px 10px rgba(99, 102, 241, 0.08);
+    text-shadow: 0 2px 10px rgba(13, 148, 136, 0.08);
     white-space: nowrap;
     opacity: 1;
     transition: opacity var(--transition-fast);
@@ -753,7 +753,7 @@ body.dark .revenue-number {
 
 .appointments-table tbody tr:hover td, 
 .data-table tbody tr:hover td {
-    background-color: rgba(99, 102, 241, 0.02);
+    background-color: rgba(13, 148, 136, 0.02);
 }
 
 .amount {
@@ -1046,7 +1046,7 @@ body.dark .revenue-number {
 
 .save-btn:hover, .btn-save:hover, .apply-btn:hover, .export-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.3);
 }
 
 .save-btn:active, .btn-save:active {
@@ -1279,7 +1279,7 @@ body:has(.login-container), body:has(.register-container) {
 
 .login-btn:hover, .register-btn:hover {
     transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 6px 16px rgba(13, 148, 136, 0.3);
 }
 
 .register-section, .login-section {
@@ -1608,7 +1608,7 @@ input:checked + .slider:before {
     display: flex;
     align-items: center;
     gap: 10px;
-    border: 1px solid rgba(99, 102, 241, 0.15);
+    border: 1px solid rgba(13, 148, 136, 0.15);
 }
 
 body.dark .info-note {
@@ -2172,7 +2172,7 @@ body.dark .skeleton::after {
 .tab-btn.active {
     background: var(--primary);
     color: #fff;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 
 .tab-btn i {
@@ -2251,7 +2251,7 @@ body.dark .skeleton::after {
 }
 
 .toggle-switch:hover {
-    background: var(--bg-hover, rgba(99,102,241,0.04));
+    background: var(--bg-hover, rgba(13, 148, 136,0.04));
 }
 
 .toggle-label {
@@ -2326,7 +2326,7 @@ body.dark .skeleton::after {
     align-items: center;
     gap: 8px;
     padding: 10px 22px;
-    background: linear-gradient(135deg, var(--primary, #6366f1), #4f46e5);
+    background: linear-gradient(135deg, var(--primary, #0d9488), #0f766e);
     color: white;
     border: none;
     border-radius: 9999px;
@@ -2335,12 +2335,12 @@ body.dark .skeleton::after {
     font-family: var(--font-sans, 'Inter', sans-serif);
     cursor: pointer;
     transition: all 0.2s ease;
-    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+    box-shadow: 0 2px 8px rgba(13, 148, 136, 0.3);
 }
 
 .btn-save:hover {
     transform: translateY(-1px);
-    box-shadow: 0 4px 16px rgba(99, 102, 241, 0.4);
+    box-shadow: 0 4px 16px rgba(13, 148, 136, 0.4);
 }
 
 .btn-save:active {
@@ -2375,10 +2375,10 @@ body.dark .skeleton::after {
     align-items: center;
     gap: 10px;
     padding: 14px 18px;
-    background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(99,102,241,0.04));
-    border: 1px solid rgba(99,102,241,0.2);
+    background: linear-gradient(135deg, rgba(13, 148, 136,0.08), rgba(13, 148, 136,0.04));
+    border: 1px solid rgba(13, 148, 136,0.2);
     border-radius: 10px;
-    color: var(--primary, #6366f1);
+    color: var(--primary, #0d9488);
     font-size: 0.85rem;
     font-weight: 500;
     margin-top: 8px;
@@ -2433,8 +2433,8 @@ body.dark .btn-reset:hover {
 }
 
 body.dark .info-note {
-    background: rgba(99,102,241,0.12);
-    border-color: rgba(99,102,241,0.25);
+    background: rgba(13, 148, 136,0.12);
+    border-color: rgba(13, 148, 136,0.25);
 }
 
 /* Responsive: collapse tabs to 2-per-row on small screens */
@@ -2459,3 +2459,16 @@ body.dark .info-note {
         justify-content: center;
     }
 }
+
+/* --- Unified Medical Icon Styling --- */
+.ds-label i,
+.input-group label i,
+.input-wrapper i:not(.password-toggle i) {
+    color: var(--primary) !important;
+}
+
+.ds-label i,
+.input-group label i {
+    margin-right: 8px !important;
+}
+

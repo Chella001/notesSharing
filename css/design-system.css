@@ -8,16 +8,16 @@
 /* --- 1. Color Palette --- */
 :root {
     /* Brand Colors */
-    --brand-50: #eef2ff;
-    --brand-100: #e0e7ff;
-    --brand-200: #c7d2fe;
-    --brand-300: #a5b4fc;
-    --brand-400: #818cf8;
-    --brand-500: #6366f1; /* Primary */
-    --brand-600: #4f46e5;
-    --brand-700: #4338ca;
-    --brand-800: #3730a3;
-    --brand-900: #312e81;
+    --brand-50: #f0fdfa;
+    --brand-100: #ccfbf1;
+    --brand-200: #99f6e4;
+    --brand-300: #5eead4;
+    --brand-400: #2dd4bf;
+    --brand-500: #0d9488; /* Primary */
+    --brand-600: #0f766e;
+    --brand-700: #115e59;
+    --brand-800: #134e4a;
+    --brand-900: #042f2e;
 
     /* Surface & Background */
     --surface-50: #f8fafc;
