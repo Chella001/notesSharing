@@ -327,18 +327,15 @@
         const EMAILJS_TEMPLATE_ID = "template_xc4kvgi"; // Replace with your EmailJS Template ID
 
         let db;
-        // Helper Functions
+
         function showNotification(message, type = "success") {
-            const notification = document.getElementById('notification');
-            notification.textContent = message;
-            notification.style.background = type === "success" ? "var(--primary)" : "var(--danger)";
-            notification.classList.add('show');
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 3000);
+            if (window.showNotification) {
+                window.showNotification(message, type);
+            } else {
+                console.log(`[Notification] ${type}: ${message}`);
+            }
         }
 
-        
 
         // Load Stats
         async function loadStats() {

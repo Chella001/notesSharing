@@ -373,13 +373,12 @@
     </div>
 
     <script>
-        function showNotification(msg, type = "success") {
-            const notif = document.getElementById('notification');
-            if (!notif) return;
-            notif.textContent = msg;
-            notif.style.background = type === "success" ? "var(--primary)" : "var(--danger)";
-            notif.classList.add('show');
-            setTimeout(() => notif.classList.remove('show'), 2800);
+        function showNotification(message, type = "success") {
+            if (window.showNotification) {
+                window.showNotification(message, type);
+            } else {
+                console.log(`[Notification] ${type}: ${message}`);
+            }
         }
 
         // ---------- Default Settings ----------
