@@ -201,6 +201,10 @@
                                     <option value="AB-">AB-</option>
                                 </select>
                             </div>
+                            <div id="bloodGroupError" class="field-error">
+                                <i class="fas fa-exclamation-circle"></i>
+                                <span></span>
+                            </div>
                         </div>
 
                         <!-- Emergency Contact -->
@@ -276,7 +280,8 @@
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="patientSearch" class="search-input" placeholder="Search patients by name/phone/email..." oninput="filterPatients()">
+                            <input type="text" id="patientSearch" class="search-input"
+                                placeholder="Search patients by name/phone/email..." oninput="filterPatients()">
                         </div>
                         <select id="genderFilter" class="table-filter" onchange="filterPatients()">
                             <option value="">All Genders</option>
@@ -315,20 +320,44 @@
                         </thead>
                         <tbody id="patientsBody">
                             <tr class="skeleton-row">
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
                             </tr>
                             <tr class="skeleton-row">
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -430,6 +459,23 @@
             return true;
         }
 
+        function validateGender(gender) {
+            const genderError = document.getElementById('genderError');
+            const genderInput = document.getElementById('gender');
+            const errorSpan = genderError.querySelector('span');
+
+            if (!gender || gender === '') {
+                errorSpan.textContent = "Please select a gender";
+                genderError.classList.add('show');
+                genderInput.classList.add('error');
+                return false;
+            }
+
+            genderError.classList.remove('show');
+            genderInput.classList.remove('error');
+            return true;
+        }
+
         function validatePhone(phone) {
             const phoneError = document.getElementById('phoneError');
             const phoneInput = document.getElementById('phone');
@@ -481,14 +527,6 @@
         function validateBloodGroup(bloodGroup) {
             const bloodError = document.getElementById('bloodGroupError');
             const bloodInput = document.getElementById('bloodGroup');
-            const errorSpan = bloodError.querySelector('span');
-
-            if (!bloodGroup || bloodGroup === '') {
-                errorSpan.textContent = "Please select a blood group";
-                bloodError.classList.add('show');
-                bloodInput.classList.add('error');
-                return false;
-            }
 
             bloodError.classList.remove('show');
             bloodInput.classList.remove('error');
@@ -560,6 +598,10 @@
             validateEmail(this.value);
         });
 
+        document.getElementById('gender').addEventListener('change', function () {
+            validateGender(this.value);
+        });
+
         document.getElementById('bloodGroup').addEventListener('change', function () {
             validateBloodGroup(this.value);
         });
@@ -606,13 +648,14 @@
             // Run all validations
             const isNameValid = validateName(patientName);
             const isAgeValid = validateAge(age);
+            const isGenderValid = validateGender(gender);
             const isPhoneValid = validatePhone(phone);
             const isEmailValid = validateEmail(email);
             const isBloodGroupValid = validateBloodGroup(bloodGroup);
             const isEmergencyValid = validateEmergencyContact(emergencyContact);
             const isAddressValid = validateAddress(address);
 
-            if (!isNameValid || !isAgeValid || !isPhoneValid || !isEmailValid ||
+            if (!isNameValid || !isAgeValid || !isGenderValid || !isPhoneValid || !isEmailValid ||
                 !isBloodGroupValid || !isEmergencyValid || !isAddressValid) {
                 errorSpan.textContent = "Please fix the errors in the form";
                 errorDiv.classList.add('show');
@@ -779,13 +822,13 @@
             });
         }
 
-        window.filterPatients = function() {
+        window.filterPatients = function () {
             const searchVal = document.getElementById('patientSearch').value.toLowerCase().trim();
             const genderVal = document.getElementById('genderFilter').value;
             const bloodVal = document.getElementById('bloodGroupFilter').value;
 
             const filtered = loadedPatients.filter(p => {
-                const matchesSearch = !searchVal || 
+                const matchesSearch = !searchVal ||
                     (p.name && p.name.toLowerCase().includes(searchVal)) ||
                     (p.phone && p.phone.toLowerCase().includes(searchVal)) ||
                     (p.email && p.email.toLowerCase().includes(searchVal));
