@@ -2,367 +2,252 @@ class AppSidebar extends HTMLElement {
     constructor() { super(); }
 
     connectedCallback() {
-        this.render();
-        this.setupEventListeners();
-        this.setActiveLink();
-        this.restoreCollapsedState();
-        this.setUserInfo();
+        this._sections = this._buildSections();
+        this._collapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        this._expandedSections = new Set(
+            JSON.parse(localStorage.getItem('sidebarExpanded') || '["overview","clinical","operations"]')
+        );
+        this._currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
+
+        // Auto-expand section of active page
+        this._sections.forEach(s => {
+            if (s.items.some(i => i.path === this._currentPath || this._currentPath.startsWith(i.path.split('?')[0]))) {
+                this._expandedSections.add(s.id);
+            }
+        });
+
+        this._render();
+        this._bindEvents();
+        this._injectGlobalToggle();
     }
 
-    getSections() {
+    _buildSections() {
+        const cs = 'coming-soon.html?module=';
         return [
             {
-                id: 'overview', title: 'Overview', icon: 'fa-layer-group',
+                id: 'overview', label: 'Overview',
                 items: [
-                    { label: 'Dashboard',  icon: 'fa-chart-pie',   path: 'dashboard.html' },
-                    { label: 'Analytics',  icon: 'fa-chart-line',  path: 'analytics.html' }
+                    { label: 'Dashboard',  icon: 'chart-pie',     path: 'dashboard.html' },
+                    { label: 'Analytics',  icon: 'chart-line',    path: 'analytics.html' }
                 ]
             },
             {
-                id: 'clinical', title: 'Clinical Management', icon: 'fa-stethoscope',
+                id: 'clinical', label: 'Clinical Management',
                 items: [
-                    { label: 'Patients',       icon: 'fa-user-injured',    path: 'newPatient.html' },
-                    { label: 'Doctors',        icon: 'fa-user-md',         path: 'newDoctor.html' },
-                    { label: 'Nurses',         icon: 'fa-user-nurse',      path: 'coming-soon.html?module=Nurses' },
-                    { label: 'Medical Records',icon: 'fa-file-medical',    path: 'coming-soon.html?module=Medical+Records' },
-                    { label: 'Prescriptions',  icon: 'fa-prescription-bottle-alt', path: 'coming-soon.html?module=Prescriptions' },
-                    { label: 'Lab & Diagnostics', icon: 'fa-flask',       path: 'coming-soon.html?module=Lab+%26+Diagnostics' },
-                    { label: 'Pharmacy',       icon: 'fa-pills',           path: 'coming-soon.html?module=Pharmacy' },
-                    { label: 'Insurance',      icon: 'fa-file-contract',   path: 'coming-soon.html?module=Insurance' }
+                    { label: 'Patients',        icon: 'user-injured',    path: 'newPatient.html' },
+                    { label: 'Doctors',         icon: 'user-md',         path: 'newDoctor.html' },
+                    { label: 'Nurses',          icon: 'user-nurse',      path: cs + 'Nurses' },
+                    { label: 'Medical Records', icon: 'file-medical',    path: cs + 'Medical+Records' },
+                    { label: 'Prescriptions',   icon: 'prescription-bottle-alt', path: cs + 'Prescriptions' },
+                    { label: 'Lab & Diagnostics', icon: 'flask',         path: cs + 'Lab+%26+Diagnostics' },
+                    { label: 'Pharmacy',        icon: 'pills',           path: cs + 'Pharmacy' }
                 ]
             },
             {
-                id: 'operations', title: 'Operations', icon: 'fa-cogs',
+                id: 'operations', label: 'Operations',
                 items: [
-                    { label: 'Appointments',   icon: 'fa-calendar-check',       path: 'appointments.html' },
-                    { label: 'Queue Management',icon: 'fa-list-ol',             path: 'coming-soon.html?module=Queue+Management' },
-                    { label: 'Billing & Invoicing', icon: 'fa-file-invoice-dollar', path: 'coming-soon.html?module=Billing+%26+Invoicing' },
-                    { label: 'Payments',       icon: 'fa-credit-card',          path: 'coming-soon.html?module=Payments' },
-                    { label: 'Reports',        icon: 'fa-chart-bar',            path: 'reports.html' },
-                    { label: 'Inventory',      icon: 'fa-boxes',                path: 'coming-soon.html?module=Inventory' },
-                    { label: 'Room & Bed',     icon: 'fa-bed',                  path: 'coming-soon.html?module=Room+%26+Bed+Allocation' },
-                    { label: 'Emergency',      icon: 'fa-ambulance',            path: 'coming-soon.html?module=Emergency+Management' }
+                    { label: 'Appointments',    icon: 'calendar-check',      path: 'appointments.html' },
+                    { label: 'Queue Management',icon: 'list-ol',             path: cs + 'Queue+Management' },
+                    { label: 'Billing',         icon: 'file-invoice-dollar', path: cs + 'Billing' },
+                    { label: 'Payments',        icon: 'credit-card',         path: cs + 'Payments' },
+                    { label: 'Reports',         icon: 'chart-bar',           path: 'reports.html' },
+                    { label: 'Inventory',       icon: 'boxes',               path: cs + 'Inventory' }
                 ]
             },
             {
-                id: 'communication', title: 'Communication', icon: 'fa-comments',
+                id: 'communication', label: 'Communication',
                 items: [
-                    { label: 'Notifications',     icon: 'fa-bell',           path: 'coming-soon.html?module=Notifications' },
-                    { label: 'Email Management',  icon: 'fa-envelope',       path: 'coming-soon.html?module=Email+Management' },
-                    { label: 'SMS Reminders',     icon: 'fa-sms',            path: 'coming-soon.html?module=SMS+Reminders' },
-                    { label: 'Internal Messaging',icon: 'fa-comment-dots',   path: 'coming-soon.html?module=Internal+Messaging' },
-                    { label: 'Patient Alerts',    icon: 'fa-exclamation-circle', path: 'coming-soon.html?module=Patient+Alerts' }
+                    { label: 'Notifications',    icon: 'bell',         path: cs + 'Notifications', badge: '3' },
+                    { label: 'SMS Reminders',    icon: 'sms',          path: cs + 'SMS+Reminders' },
+                    { label: 'Email Management', icon: 'envelope',     path: cs + 'Email+Management' },
+                    { label: 'Internal Messages',icon: 'comment-dots', path: cs + 'Internal+Messaging', badge: '5' }
                 ]
             },
             {
-                id: 'admin', title: 'Administration', icon: 'fa-user-shield',
+                id: 'admin', label: 'Administration',
                 items: [
-                    { label: 'User Management',  icon: 'fa-users-cog',       path: 'coming-soon.html?module=User+Management' },
-                    { label: 'Roles & Permissions', icon: 'fa-key',          path: 'coming-soon.html?module=Roles+%26+Permissions' },
-                    { label: 'Branch Management',icon: 'fa-building',         path: 'coming-soon.html?module=Branch+Management' },
-                    { label: 'Departments',      icon: 'fa-sitemap',          path: 'coming-soon.html?module=Departments' },
-                    { label: 'Audit Logs',       icon: 'fa-clipboard-list',   path: 'coming-soon.html?module=Audit+Logs' },
-                    { label: 'Access Control',   icon: 'fa-lock',             path: 'coming-soon.html?module=Access+Control' }
+                    { label: 'User Management',    icon: 'users-cog',      path: cs + 'User+Management' },
+                    { label: 'Roles & Permissions',icon: 'key',            path: cs + 'Roles+%26+Permissions' },
+                    { label: 'Departments',        icon: 'sitemap',        path: cs + 'Departments' },
+                    { label: 'Audit Logs',         icon: 'clipboard-list', path: cs + 'Audit+Logs' }
                 ]
             }
         ];
     }
 
-    render() {
-        const sections = this.getSections();
-        const currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
+    _itemHTML(item) {
+        const isActive = item.path === this._currentPath ||
+            (item.path.split('?')[0] === 'coming-soon.html' && false);
+        return `
+        <a class="sb-item${isActive ? ' sb-active' : ''}"
+           href="${item.path}"
+           data-path="${item.path}"
+           data-label="${item.label}"
+           onclick="event.preventDefault(); window.location.href='${item.path}'">
+            <span class="sb-item-icon"><i class="fas fa-${item.icon}"></i></span>
+            <span class="sb-item-label">${item.label}</span>
+            ${item.badge ? `<span class="sb-badge">${item.badge}</span>` : ''}
+            <span class="sb-tooltip">${item.label}</span>
+        </a>`;
+    }
 
-        // Auto-expand section containing active page
-        const expandedSections = new Set(
-            JSON.parse(localStorage.getItem('sidebarExpanded') || '["overview","clinical","operations"]')
-        );
-
-        // Always expand section of current page
-        sections.forEach(section => {
-            if (section.items.some(item => item.path === currentPath || currentPath.includes(item.path.split('?')[0]))) {
-                expandedSections.add(section.id);
-            }
-        });
-
-        const sectionsHTML = sections.map(section => {
-            const isExpanded = expandedSections.has(section.id);
-            return `
-            <div class="menu-section ${isExpanded ? 'expanded' : ''}" data-section-id="${section.id}">
-                <button class="menu-section-header" data-section="${section.id}">
-                    <div class="section-header-left">
-                        <i class="fas ${section.icon} section-icon"></i>
-                        <span class="menu-group-title">${section.title}</span>
-                    </div>
-                    <i class="fas fa-chevron-down section-chevron"></i>
-                </button>
-                <div class="menu-items-wrapper" style="${isExpanded ? '' : 'max-height:0;'}">
-                    ${section.items.map(item => {
-                        const isActive = item.path === currentPath || 
-                            (item.path !== 'coming-soon.html' && currentPath === item.path.split('?')[0]);
-                        return `
-                        <div class="menu-item${isActive ? ' active' : ''}" 
-                             data-path="${item.path}" 
-                             onclick="window.location.href='${item.path}'"
-                             title="${item.label}">
-                            <i class="fas ${item.icon}"></i>
-                            <span>${item.label}</span>
-                            ${item.badge ? `<span class="menu-badge">${item.badge}</span>` : ''}
-                        </div>`;
-                    }).join('')}
-                </div>
-            </div>`;
-        }).join('');
-
-        this.innerHTML = `
-        <div class="sidebar" id="appSidebar">
-            <!-- Brand / Logo -->
-            <div class="sidebar-brand">
-                <div class="brand-logo"><i class="fas fa-heartbeat"></i></div>
-                <div class="brand-text">
-                    <div class="brand-name">Akshaya Clinic</div>
-                    <div class="brand-sub">Enterprise Suite</div>
-                </div>
-            </div>
-
-            <!-- Search -->
-            <div class="sidebar-search-wrap">
-                <div class="sidebar-search">
-                    <i class="fas fa-search"></i>
-                    <input type="text" id="sidebarSearch" placeholder="Search modules..." autocomplete="off">
-                </div>
-            </div>
-
-            <!-- Menu -->
-            <div class="sidebar-menu" id="sidebarMenu">
-                ${sectionsHTML}
-
-                <!-- System section (always visible, no collapse) -->
-                <div class="menu-section expanded" data-section-id="system">
-                    <button class="menu-section-header" data-section="system">
-                        <div class="section-header-left">
-                            <i class="fas fa-shield-alt section-icon"></i>
-                            <span class="menu-group-title">System</span>
-                        </div>
-                        <i class="fas fa-chevron-down section-chevron"></i>
-                    </button>
-                    <div class="menu-items-wrapper">
-                        <div class="menu-item${currentPath === 'settings.html' ? ' active' : ''}" 
-                             data-path="settings.html" 
-                             onclick="window.location.href='settings.html'">
-                            <i class="fas fa-cog"></i> <span>Settings</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Footer -->
-            <div class="sidebar-footer">
-                <!-- User Info -->
-                <div class="sidebar-user">
-                    <div class="sidebar-user-avatar">
-                        <i class="fas fa-user-circle"></i>
-                    </div>
-                    <div class="sidebar-user-info">
-                        <div class="sidebar-user-name" id="sidebarUserName">Admin</div>
-                        <div class="sidebar-user-role">Administrator</div>
-                    </div>
-                </div>
-
-                <!-- Theme Toggle -->
-                <button class="theme-toggle-btn" id="themeToggleBtn">
-                    <i class="fas fa-moon"></i> <span>Dark Mode</span>
-                </button>
-
-                <!-- Logout -->
-                <div class="menu-item logout" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
-                </div>
+    _sectionHTML(s) {
+        const isExp = this._expandedSections.has(s.id);
+        return `
+        <div class="sb-section${isExp ? ' sb-sec-open' : ''}" data-sec="${s.id}">
+            <button class="sb-sec-hdr" data-sec="${s.id}">
+                <span class="sb-sec-label">${s.label}</span>
+                <span class="sb-sec-chevron"><i class="fas fa-chevron-right"></i></span>
+            </button>
+            <div class="sb-sec-body">
+                ${s.items.map(i => this._itemHTML(i)).join('')}
             </div>
         </div>`;
     }
 
-    setUserInfo() {
-        const nameEl = this.querySelector('#sidebarUserName');
-        if (nameEl) {
-            const name = sessionStorage.getItem('userName') || 
-                         sessionStorage.getItem('userEmail')?.split('@')[0] || 'Admin';
-            nameEl.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-        }
+    _render() {
+        const userName = sessionStorage.getItem('userName') ||
+            sessionStorage.getItem('userEmail')?.split('@')[0] || 'Admin';
+        const isDark = localStorage.getItem('theme') === 'dark';
+
+        this.innerHTML = `
+        <aside class="sb${this._collapsed ? ' sb-mini' : ''}" id="appSidebar" role="navigation" aria-label="Main Navigation">
+
+            <!-- Brand -->
+            <div class="sb-brand">
+                <div class="sb-brand-logo"><i class="fas fa-heartbeat"></i></div>
+                <div class="sb-brand-text">
+                    <div class="sb-brand-name">Akshaya Clinic</div>
+                    <div class="sb-brand-sub">Enterprise Suite</div>
+                </div>
+            </div>
+
+            <!-- Search -->
+            <div class="sb-search-wrap">
+                <div class="sb-search">
+                    <i class="fas fa-search"></i>
+                    <input id="sbSearch" type="text" placeholder="Search modules..." autocomplete="off" spellcheck="false">
+                    <kbd class="sb-search-kbd">⌘K</kbd>
+                </div>
+            </div>
+
+            <!-- Nav -->
+            <nav class="sb-nav" id="sbNav">
+                ${this._sections.map(s => this._sectionHTML(s)).join('')}
+            </nav>
+
+            <!-- Divider -->
+            <div class="sb-divider"></div>
+
+            <!-- System -->
+            <div class="sb-system">
+                <a class="sb-item${this._currentPath === 'settings.html' ? ' sb-active' : ''}"
+                   href="settings.html"
+                   data-label="Settings"
+                   onclick="event.preventDefault(); window.location.href='settings.html'">
+                    <span class="sb-item-icon"><i class="fas fa-cog"></i></span>
+                    <span class="sb-item-label">Settings</span>
+                    <span class="sb-tooltip">Settings</span>
+                </a>
+
+                <button class="sb-item sb-theme-btn" id="sbThemeBtn" data-label="${isDark ? 'Light Mode' : 'Dark Mode'}">
+                    <span class="sb-item-icon"><i class="fas fa-${isDark ? 'sun' : 'moon'}"></i></span>
+                    <span class="sb-item-label">${isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                    <span class="sb-tooltip">${isDark ? 'Light Mode' : 'Dark Mode'}</span>
+                </button>
+
+                <button class="sb-item sb-logout-btn" id="sbLogoutBtn" data-label="Logout">
+                    <span class="sb-item-icon"><i class="fas fa-sign-out-alt"></i></span>
+                    <span class="sb-item-label">Logout</span>
+                    <span class="sb-tooltip">Logout</span>
+                </button>
+            </div>
+
+            <!-- Footer: User -->
+            <div class="sb-footer">
+                <div class="sb-user">
+                    <div class="sb-user-av">
+                        ${userName.charAt(0).toUpperCase()}
+                    </div>
+                    <div class="sb-user-info">
+                        <div class="sb-user-name">${userName.charAt(0).toUpperCase() + userName.slice(1)}</div>
+                        <div class="sb-user-role">Administrator</div>
+                    </div>
+                    <div class="sb-user-dot"></div>
+                </div>
+            </div>
+        </aside>`;
+
+        // Apply dark mode
+        if (isDark) document.body.classList.add('dark');
     }
 
-    setActiveLink() {
-        const currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
-        this.querySelectorAll('.menu-item[data-path]').forEach(item => {
-            const p = item.getAttribute('data-path');
-            item.classList.toggle('active', p === currentPath);
-        });
-    }
-
-    restoreCollapsedState() {
-        const dashboard = document.querySelector('.dashboard');
-        if (localStorage.getItem('sidebarCollapsed') === 'true' && dashboard) {
-            dashboard.classList.add('sidebar-is-collapsed');
-        }
-        // Inject the global floating toggle button into body (once)
-        this._injectToggleButton();
-    }
-
-    _injectToggleButton() {
-        if (document.getElementById('globalSidebarToggle')) return; // already exists
-
-        const isMobile = window.innerWidth < 768;
-
-        // Create floating toggle button
-        const btn = document.createElement('button');
-        btn.id = 'globalSidebarToggle';
-        btn.className = 'sidebar-toggle-btn';
-        btn.title = 'Toggle Sidebar';
-        btn.innerHTML = '<i class="fas fa-chevron-left"></i>';
-        document.body.appendChild(btn);
-
-        // Create mobile backdrop
-        const backdrop = document.createElement('div');
-        backdrop.id = 'sidebarBackdrop';
-        backdrop.className = 'sidebar-backdrop';
-        document.body.appendChild(backdrop);
-
-        const dashboard = document.querySelector('.dashboard');
-        const sidebar = this.querySelector('#appSidebar');
-
-        const toggle = () => {
-            if (isMobile || window.innerWidth < 768) {
-                // Mobile: drawer open/close
-                const isOpen = sidebar?.classList.toggle('mobile-open');
-                backdrop.classList.toggle('show', isOpen);
-                btn.style.left = isOpen ? (280 - 14) + 'px' : '12px';
-            } else {
-                // Desktop: collapse/expand
-                const isCollapsed = dashboard?.classList.toggle('sidebar-is-collapsed');
-                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
-            }
-        };
-
-        btn.addEventListener('click', toggle);
-
-        // Backdrop click closes mobile sidebar
-        backdrop.addEventListener('click', () => {
-            sidebar?.classList.remove('mobile-open');
-            backdrop.classList.remove('show');
-            btn.style.left = '12px';
-        });
-
-        // Responsive: reset on resize
-        window.addEventListener('resize', () => {
-            if (window.innerWidth >= 768) {
-                sidebar?.classList.remove('mobile-open');
-                backdrop.classList.remove('show');
-            }
-        });
-    }
-
-    setupEventListeners() {
-        // --- Section collapse/expand ---
-        this.querySelectorAll('.menu-section-header').forEach(header => {
-            header.addEventListener('click', (e) => {
-                e.stopPropagation();
-                const sectionId = header.getAttribute('data-section');
-                const section = this.querySelector(`.menu-section[data-section-id="${sectionId}"]`);
-                const wrapper = section?.querySelector('.menu-items-wrapper');
-                if (!section || !wrapper) return;
-
-                const isExpanding = !section.classList.contains('expanded');
-
-                // Animate height
-                if (isExpanding) {
-                    wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
-                    section.classList.add('expanded');
-                } else {
-                    wrapper.style.maxHeight = wrapper.scrollHeight + 'px';
-                    requestAnimationFrame(() => {
-                        wrapper.style.maxHeight = '0';
-                        section.classList.remove('expanded');
-                    });
-                }
-
-                // Persist expanded state
-                const expanded = JSON.parse(localStorage.getItem('sidebarExpanded') || '[]');
-                if (isExpanding) {
-                    if (!expanded.includes(sectionId)) expanded.push(sectionId);
-                } else {
-                    const idx = expanded.indexOf(sectionId);
-                    if (idx > -1) expanded.splice(idx, 1);
-                }
-                localStorage.setItem('sidebarExpanded', JSON.stringify(expanded));
+    _bindEvents() {
+        /* ---- Section headers ---- */
+        this.querySelectorAll('.sb-sec-hdr').forEach(hdr => {
+            hdr.addEventListener('click', () => {
+                const secId = hdr.getAttribute('data-sec');
+                const section = this.querySelector(`.sb-section[data-sec="${secId}"]`);
+                if (!section) return;
+                const opening = !section.classList.contains('sb-sec-open');
+                section.classList.toggle('sb-sec-open', opening);
+                if (opening) this._expandedSections.add(secId);
+                else this._expandedSections.delete(secId);
+                localStorage.setItem('sidebarExpanded', JSON.stringify([...this._expandedSections]));
             });
         });
 
-        // Set initial max-height for expanded sections (needed for transition)
-        this.querySelectorAll('.menu-section.expanded .menu-items-wrapper').forEach(w => {
-            // Allow CSS to handle it — set max-height to a large value
-            w.style.maxHeight = '500px';
-        });
-
-        // --- Pin button inside sidebar (desktop only) ---
-        const pinBtn = this.querySelector('#sidebarPinBtn');
-        if (pinBtn) {
-            pinBtn.addEventListener('click', () => {
-                const dashboard = document.querySelector('.dashboard');
-                const isCollapsed = dashboard?.classList.toggle('sidebar-is-collapsed');
-                localStorage.setItem('sidebarCollapsed', isCollapsed ? 'true' : 'false');
-            });
-        }
-
-        // --- Search filter ---
-        const searchInput = this.querySelector('#sidebarSearch');
+        /* ---- Search ---- */
+        const searchInput = this.querySelector('#sbSearch');
         if (searchInput) {
-            searchInput.addEventListener('input', (e) => {
-                const query = e.target.value.toLowerCase().trim();
-                this.querySelectorAll('.menu-item[data-path]').forEach(item => {
-                    const label = item.querySelector('span')?.textContent.toLowerCase() || '';
-                    const match = !query || label.includes(query);
-                    item.style.display = match ? '' : 'none';
+            searchInput.addEventListener('input', e => {
+                const q = e.target.value.toLowerCase().trim();
+                this.querySelectorAll('.sb-item[data-path]').forEach(item => {
+                    const lbl = item.getAttribute('data-label')?.toLowerCase() || '';
+                    item.style.display = (!q || lbl.includes(q)) ? '' : 'none';
                 });
-                // Expand all sections when searching
-                if (query) {
-                    this.querySelectorAll('.menu-section').forEach(s => {
-                        const wrapper = s.querySelector('.menu-items-wrapper');
-                        if (wrapper) wrapper.style.maxHeight = '500px';
-                        s.classList.add('expanded');
+                if (q) {
+                    this.querySelectorAll('.sb-section').forEach(s => s.classList.add('sb-sec-open'));
+                } else {
+                    this.querySelectorAll('.sb-section').forEach(s => {
+                        s.classList.toggle('sb-sec-open', this._expandedSections.has(s.getAttribute('data-sec')));
                     });
+                }
+            });
+
+            // Keyboard shortcut ⌘K / Ctrl+K
+            document.addEventListener('keydown', e => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+                    e.preventDefault();
+                    searchInput.focus();
+                    searchInput.select();
                 }
             });
         }
 
-        // --- Theme toggle ---
-        const themeBtn = this.querySelector('#themeToggleBtn');
+        /* ---- Theme ---- */
+        const themeBtn = this.querySelector('#sbThemeBtn');
         if (themeBtn) {
-            const isDark = localStorage.getItem('theme') === 'dark';
-            if (isDark) {
-                document.body.classList.add('dark');
-                themeBtn.innerHTML = '<i class="fas fa-sun"></i> <span>Light Mode</span>';
-            }
             themeBtn.addEventListener('click', () => {
-                document.body.classList.toggle('dark');
-                const dark = document.body.classList.contains('dark');
+                const dark = document.body.classList.toggle('dark');
                 localStorage.setItem('theme', dark ? 'dark' : 'light');
-                themeBtn.innerHTML = dark
-                    ? '<i class="fas fa-sun"></i> <span>Light Mode</span>'
-                    : '<i class="fas fa-moon"></i> <span>Dark Mode</span>';
+                themeBtn.querySelector('.sb-item-icon i').className = `fas fa-${dark ? 'sun' : 'moon'}`;
+                themeBtn.querySelector('.sb-item-label').textContent = dark ? 'Light Mode' : 'Dark Mode';
+                themeBtn.querySelector('.sb-tooltip').textContent = dark ? 'Light Mode' : 'Dark Mode';
+                themeBtn.setAttribute('data-label', dark ? 'Light Mode' : 'Dark Mode');
             });
         }
 
-        // --- Logout ---
-        const logoutBtn = this.querySelector('#logoutBtn');
+        /* ---- Logout ---- */
+        const logoutBtn = this.querySelector('#sbLogoutBtn');
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => {
                 const doLogout = () => {
-                    const auth = window.auth || firebase?.auth?.();
+                    const auth = window.auth;
                     if (auth) {
-                        auth.signOut().then(() => {
-                            sessionStorage.clear();
-                            if (window.showNotification) window.showNotification('Logged out successfully');
-                            setTimeout(() => window.location.href = 'index.html', 1200);
-                        }).catch(() => window.location.href = 'index.html');
+                        auth.signOut()
+                            .then(() => { sessionStorage.clear(); window.location.href = 'index.html'; })
+                            .catch(() => { sessionStorage.clear(); window.location.href = 'index.html'; });
                     } else {
                         sessionStorage.clear();
                         window.location.href = 'index.html';
@@ -376,13 +261,69 @@ class AppSidebar extends HTMLElement {
             });
         }
 
-        // --- Mobile: close sidebar on item click ---
-        this.querySelectorAll('.menu-item[data-path]').forEach(item => {
+        /* ---- Close mobile drawer on nav click ---- */
+        this.querySelectorAll('.sb-item[data-path]').forEach(item => {
             item.addEventListener('click', () => {
-                if (window.innerWidth < 768) {
-                    sidebar?.classList.remove('mobile-open');
-                }
+                if (window.innerWidth < 768) this._closeMobile();
             });
+        });
+    }
+
+    _closeMobile() {
+        this.querySelector('#appSidebar')?.classList.remove('sb-mobile-open');
+        document.getElementById('sbBackdrop')?.classList.remove('show');
+        document.getElementById('sbFloatToggle')?.classList.remove('toggle-open');
+    }
+
+    _injectGlobalToggle() {
+        // Avoid duplicate
+        if (document.getElementById('sbFloatToggle')) return;
+
+        // Floating toggle button
+        const btn = document.createElement('button');
+        btn.id = 'sbFloatToggle';
+        btn.className = 'sb-float-toggle';
+        btn.setAttribute('title', 'Toggle sidebar');
+        btn.innerHTML = '<i class="fas fa-bars"></i>';
+        document.body.appendChild(btn);
+
+        // Backdrop for mobile
+        const backdrop = document.createElement('div');
+        backdrop.id = 'sbBackdrop';
+        backdrop.className = 'sb-backdrop';
+        document.body.appendChild(backdrop);
+
+        const sidebar = this.querySelector('#appSidebar');
+        const dashboard = document.querySelector('.dashboard');
+
+        btn.addEventListener('click', () => {
+            if (window.innerWidth < 768) {
+                const open = sidebar?.classList.toggle('sb-mobile-open');
+                backdrop.classList.toggle('show', open);
+                btn.classList.toggle('toggle-open', open);
+            } else {
+                this._collapsed = !this._collapsed;
+                sidebar?.classList.toggle('sb-mini', this._collapsed);
+                dashboard?.classList.toggle('sidebar-is-collapsed', this._collapsed);
+                localStorage.setItem('sidebarCollapsed', this._collapsed);
+            }
+        });
+
+        backdrop.addEventListener('click', () => this._closeMobile());
+
+        // Apply collapsed state
+        if (this._collapsed) {
+            sidebar?.classList.add('sb-mini');
+            dashboard?.classList.add('sidebar-is-collapsed');
+        }
+
+        // Resize handler
+        window.addEventListener('resize', () => {
+            if (window.innerWidth >= 768) {
+                sidebar?.classList.remove('sb-mobile-open');
+                backdrop.classList.remove('show');
+                btn.classList.remove('toggle-open');
+            }
         });
     }
 }
