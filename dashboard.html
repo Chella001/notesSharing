@@ -37,6 +37,8 @@
         <div class="main-content">
             <app-header title="Hospital Dashboard v2.0"></app-header>
 
+            <div class="dash-body">
+
             <!-- Stats Cards -->
             <div class="stats-grid">
                 <div class="stat-card">
@@ -86,8 +88,7 @@
             </div>
 
             <!-- Advanced Analytics Cards -->
-            <div class="charts-grid"
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px;">
+            <div class="charts-grid">
                 <div class="ds-card">
                     <div class="ds-card-header">
                         <h3 class="text-h4">Revenue & Appointments</h3>
@@ -108,8 +109,7 @@
             </div>
 
             <!-- Activity Timeline & Departments -->
-            <div class="charts-grid"
-                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-top: 24px;">
+            <div class="charts-grid" style="margin-top: 0;">
                 <div class="ds-card">
                     <div class="ds-card-header">
                         <h3 class="text-h4">Department Performance</h3>
@@ -313,6 +313,7 @@
                     </table>
                 </div>
             </div>
+            </div> <!-- /.dash-body -->
         </div>
     </div>
 
