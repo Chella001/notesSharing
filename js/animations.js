@@ -60,5 +60,23 @@ document.addEventListener('DOMContentLoaded', () => {
 window.dsAnimate = {
     fadeInUp: (element) => animate(element, { opacity: [0, 1], y: [10, 0] }, { duration: 0.4, easing: "ease-out" }),
     springScale: (element) => animate(element, { scale: [0.9, 1], opacity: [0, 1] }, { easing: spring({ stiffness: 300, damping: 15 }) }),
-    popIn: (element) => animate(element, { scale: [0.5, 1], opacity: [0, 1] }, { easing: spring({ stiffness: 400, damping: 20 }) })
+    popIn: (element) => animate(element, { scale: [0.5, 1], opacity: [0, 1] }, { easing: spring({ stiffness: 400, damping: 20 }) }),
+    countUp: (element, endValue, duration = 1.5, prefix = "") => {
+        let startTime = null;
+        const startValue = 0;
+        const step = (currentTime) => {
+            if (!startTime) startTime = currentTime;
+            const progress = Math.min((currentTime - startTime) / (duration * 1000), 1);
+            // easeOutExpo formula for satisfying deceleration
+            const easeOutProgress = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+            const currentValue = Math.floor(easeOutProgress * (endValue - startValue) + startValue);
+            element.textContent = prefix + currentValue.toLocaleString();
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            } else {
+                element.textContent = prefix + endValue.toLocaleString();
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
 };

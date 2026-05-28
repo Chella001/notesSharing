@@ -11,6 +11,8 @@
     <title>Hospital Management Dashboard · Firebase</title>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- ApexCharts -->
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <!-- Firebase SDK -->
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
@@ -19,6 +21,7 @@
     <script src="js/firebase-config.js" type="module"></script>
     <link rel="stylesheet" href="css/theme.css">
     <script src="js/app.js" type="module"></script>
+    <script src="js/dashboard-charts.js"></script>
 </head>
 <body>
     <div class="dashboard">
@@ -52,39 +55,91 @@
                 </div>
             </div>
 
+            <!-- Quick Actions -->
+            <div class="quick-actions" style="display: flex; gap: 16px; margin-bottom: 8px; flex-wrap: wrap;">
+                <button class="ds-btn ds-btn-primary" onclick="window.location.href='newPatient.html'">
+                    <i class="fas fa-user-plus"></i> New Patient
+                </button>
+                <button class="ds-btn ds-btn-secondary" onclick="window.location.href='appointments.html'">
+                    <i class="fas fa-calendar-plus"></i> Schedule Appointment
+                </button>
+                <button class="ds-btn ds-btn-secondary" onclick="window.location.href='newDoctor.html'">
+                    <i class="fas fa-user-md"></i> Add Doctor
+                </button>
+                <button class="ds-btn ds-btn-ghost" onclick="window.location.href='reports.html'">
+                    <i class="fas fa-file-export"></i> Export Report
+                </button>
+            </div>
+
             <!-- Advanced Analytics Cards -->
-            <div class="analytics-grid">
-                <div class="analytics-card">
-                    <div class="card-header">
-                        <h3 class="text-h3">Patient Demographics</h3>
-                        <button class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
+            <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px;">
+                <div class="ds-card">
+                    <div class="ds-card-header">
+                        <h3 class="text-h4">Revenue & Appointments</h3>
+                        <button class="ds-btn ds-btn-ghost" style="padding: 4px 8px;"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
-                    <div class="chart-placeholder">
-                        <div class="bar-chart">
-                            <div class="bar-col"><div class="bar" style="height: 60%;"></div><span class="bar-lbl">18-30</span></div>
-                            <div class="bar-col"><div class="bar" style="height: 85%;"></div><span class="bar-lbl">31-45</span></div>
-                            <div class="bar-col"><div class="bar" style="height: 45%;"></div><span class="bar-lbl">46-60</span></div>
-                            <div class="bar-col"><div class="bar" style="height: 25%;"></div><span class="bar-lbl">60+</span></div>
+                    <div id="trendChart" style="min-height: 280px; width: 100%;"></div>
+                </div>
+                
+                <div class="ds-card">
+                    <div class="ds-card-header">
+                        <h3 class="text-h4">Patient Demographics</h3>
+                    </div>
+                    <div id="demographicsChart" style="min-height: 280px; width: 100%; display: flex; align-items: center; justify-content: center;"></div>
+                </div>
+            </div>
+
+            <!-- Activity Timeline & Departments -->
+            <div class="charts-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(380px, 1fr)); gap: 24px; margin-top: 24px;">
+                <div class="ds-card">
+                    <div class="ds-card-header">
+                        <h3 class="text-h4">Department Performance</h3>
+                    </div>
+                    <div class="department-list" style="display: flex; flex-direction: column; gap: 20px; margin-top: 16px;">
+                        <div class="progress-item">
+                            <div class="progress-info" style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-bottom: 8px;"><span>Cardiology</span><span style="color: var(--brand-500);">85%</span></div>
+                            <div class="progress-bar" style="height: 6px; background: var(--ds-bg-hover); border-radius: 999px; overflow: hidden;"><div class="progress-fill" style="width: 85%; height: 100%; background: var(--brand-500); border-radius: 999px;"></div></div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-info" style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-bottom: 8px;"><span>Neurology</span><span style="color: var(--color-info);">62%</span></div>
+                            <div class="progress-bar" style="height: 6px; background: var(--ds-bg-hover); border-radius: 999px; overflow: hidden;"><div class="progress-fill" style="width: 62%; height: 100%; background: var(--color-info); border-radius: 999px;"></div></div>
+                        </div>
+                        <div class="progress-item">
+                            <div class="progress-info" style="display: flex; justify-content: space-between; font-size: 13px; font-weight: 500; margin-bottom: 8px;"><span>Pediatrics</span><span style="color: var(--color-success);">94%</span></div>
+                            <div class="progress-bar" style="height: 6px; background: var(--ds-bg-hover); border-radius: 999px; overflow: hidden;"><div class="progress-fill" style="width: 94%; height: 100%; background: var(--color-success); border-radius: 999px;"></div></div>
                         </div>
                     </div>
                 </div>
-                <div class="analytics-card">
-                    <div class="card-header">
-                        <h3 class="text-h3">Department Performance</h3>
-                        <button class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
+
+                <div class="ds-card">
+                    <div class="ds-card-header">
+                        <h3 class="text-h4">Live Activity</h3>
+                        <span style="background: var(--color-success-bg); color: var(--color-success); padding: 4px 8px; border-radius: 999px; font-size: 11px; font-weight: 700; display: flex; align-items: center; gap: 4px;"><i class="fas fa-circle" style="font-size: 6px; animation: ds-pulse 1.5s infinite;"></i> Live</span>
                     </div>
-                    <div class="department-list">
-                        <div class="progress-item">
-                            <div class="progress-info"><span>Cardiology</span><span>85%</span></div>
-                            <div class="progress-bar"><div class="progress-fill" style="width: 85%"></div></div>
+                    <div class="timeline" style="display: flex; flex-direction: column; gap: 16px; margin-top: 12px; position: relative;">
+                        <!-- Timeline track -->
+                        <div style="position: absolute; left: 16px; top: 8px; bottom: 8px; width: 2px; background: var(--ds-border);"></div>
+                        
+                        <div class="timeline-item" style="display: flex; gap: 16px; position: relative; z-index: 1;">
+                            <div class="timeline-icon" style="width: 34px; height: 34px; border-radius: 50%; background: var(--color-success-bg); color: var(--color-success); display: flex; align-items: center; justify-content: center; border: 4px solid var(--ds-bg-card);"><i class="fas fa-check"></i></div>
+                            <div class="timeline-content" style="padding-top: 6px;">
+                                <div class="text-body-sm" style="font-weight: 600; color: var(--ds-text-primary);">Appointment Completed</div>
+                                <div class="text-caption" style="color: var(--ds-text-tertiary); margin-top: 2px;">Dr. Sharma • 5 mins ago</div>
+                            </div>
                         </div>
-                        <div class="progress-item">
-                            <div class="progress-info"><span>Neurology</span><span>62%</span></div>
-                            <div class="progress-bar"><div class="progress-fill" style="width: 62%; background: var(--secondary)"></div></div>
+                        <div class="timeline-item" style="display: flex; gap: 16px; position: relative; z-index: 1;">
+                            <div class="timeline-icon" style="width: 34px; height: 34px; border-radius: 50%; background: var(--brand-100); color: var(--brand-600); display: flex; align-items: center; justify-content: center; border: 4px solid var(--ds-bg-card);"><i class="fas fa-user-plus"></i></div>
+                            <div class="timeline-content" style="padding-top: 6px;">
+                                <div class="text-body-sm" style="font-weight: 600; color: var(--ds-text-primary);">New Patient Registered</div>
+                                <div class="text-caption" style="color: var(--ds-text-tertiary); margin-top: 2px;">Front Desk • 12 mins ago</div>
+                            </div>
                         </div>
-                        <div class="progress-item">
-                            <div class="progress-info"><span>Pediatrics</span><span>94%</span></div>
-                            <div class="progress-bar"><div class="progress-fill" style="width: 94%; background: var(--success)"></div></div>
+                        <div class="timeline-item" style="display: flex; gap: 16px; position: relative; z-index: 1;">
+                            <div class="timeline-icon" style="width: 34px; height: 34px; border-radius: 50%; background: var(--color-warning-bg); color: var(--color-warning); display: flex; align-items: center; justify-content: center; border: 4px solid var(--ds-bg-card);"><i class="fas fa-flask"></i></div>
+                            <div class="timeline-content" style="padding-top: 6px;">
+                                <div class="text-body-sm" style="font-weight: 600; color: var(--ds-text-primary);">Lab Results Uploaded</div>
+                                <div class="text-caption" style="color: var(--ds-text-tertiary); margin-top: 2px;">Pathology • 1 hour ago</div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -216,16 +271,20 @@
 
                 // Load Counts & Revenue
                 const totalPatients = await patientModel.getCount();
-                document.getElementById('totalPatients').textContent = totalPatients;
+                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalPatients'), totalPatients);
+                else document.getElementById('totalPatients').textContent = totalPatients;
 
                 const totalDoctors = await doctorModel.getCount();
-                document.getElementById('totalDoctors').textContent = totalDoctors;
+                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalDoctors'), totalDoctors);
+                else document.getElementById('totalDoctors').textContent = totalDoctors;
 
                 const totalAppointments = await appointmentModel.getCount();
-                document.getElementById('totalAppointments').textContent = totalAppointments;
+                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalAppointments'), totalAppointments);
+                else document.getElementById('totalAppointments').textContent = totalAppointments;
 
                 const totalRevenue = await appointmentModel.getRevenue();
-                document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
+                if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalRevenue'), totalRevenue, 2, "₹");
+                else document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
 
                 // Load Recent Appointments
                 loadedAppointments = await appointmentModel.getRecent(25);
