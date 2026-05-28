@@ -317,7 +317,7 @@
                 } catch (e) { console.error("Error hiding loading:", e); }
             } catch (error) {
                 if (window.hideLoading) window.hideLoading();
-                console.error("❌ Error loading data:", error);
+                console.error("❌ CRITICAL DASHBOARD CRASH:", error);
                 
                 // Show error but keep existing values if any
                 if (document.getElementById('totalPatients').textContent === '0') {
@@ -333,7 +333,7 @@
                 document.getElementById('appointmentsBody').innerHTML = 
                     `<tr><td colspan="6" class="error"><div style="text-align: center; padding: 24px; color: var(--color-danger);"><i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 12px; display: block;"></i>Error loading appointments. Please check your connection.</div></td></tr>`;
                 
-                showNotification("Error loading data: " + error.message, "error");
+                showNotification("DEBUG_CODE_200: " + error.message, "error");
             }
         }
 
