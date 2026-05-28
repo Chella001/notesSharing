@@ -199,61 +199,25 @@ window.applyHospitalSettings = async function () {
 
 // Initialize settings application when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
-    // NOTE: Theme toggle click is handled by sidebar.js to avoid double-listeners.
-    // firebase-config.js only ensures the correct initial icon is shown.
-    function updateThemeToggleUI() {
-        const btn = document.getElementById('themeToggleBtn');
-        if (!btn) return;
-        const isDark = document.body.classList.contains('dark');
-        btn.innerHTML = isDark 
-            ? `<i class="fas fa-sun"></i> <span>Light Mode</span>`
-            : `<i class="fas fa-moon"></i> <span>Dark Mode</span>`;
-    }
-    // Run after a short delay to let the sidebar custom element render
-    setTimeout(updateThemeToggleUI, 100);
+    // NOTE: Theme toggle + sidebar collapse are handled by components/sidebar.js only.
+    // firebase-config.js only applies initial dark class (done at file top) and settings.
 
-    // 2. Initialize Sidebar Collapse button click handler
-    const sidebar = document.querySelector('.sidebar');
-    const dashboard = document.querySelector('.dashboard');
-    if (sidebar && dashboard) {
-        let collapseBtn = document.getElementById('sidebarCollapseBtn');
-        if (!collapseBtn) {
-            collapseBtn = document.createElement('button');
-            collapseBtn.id = 'sidebarCollapseBtn';
-            collapseBtn.className = 'sidebar-collapse-btn';
-            collapseBtn.title = 'Toggle Sidebar';
-            collapseBtn.innerHTML = `<i class="fas fa-chevron-left"></i>`;
-            sidebar.appendChild(collapseBtn);
-        }
-        
-        // Initial collapsed state check from localStorage
-        const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
-        if (isCollapsed) {
-            dashboard.classList.add('sidebar-collapsed');
-        }
-        
-        collapseBtn.addEventListener('click', () => {
-            dashboard.classList.toggle('sidebar-collapsed');
-            const nowCollapsed = dashboard.classList.contains('sidebar-collapsed');
-            localStorage.setItem('sidebarCollapsed', nowCollapsed ? 'true' : 'false');
-        });
-    }
-
-    // 3. Auto Highlight active link based on current path
+    // Apply active highlight for current page (sidebar.js also does this, belt+suspenders)
     const path = window.location.pathname.split('/').pop() || 'dashboard.html';
-    document.querySelectorAll('.menu-item').forEach(item => {
-        const onClickAttr = item.getAttribute('onclick') || '';
-        if (onClickAttr.includes(path)) {
-            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-        }
-    });
+    setTimeout(() => {
+        document.querySelectorAll('.menu-item[data-path]').forEach(item => {
+            if (item.getAttribute('data-path') === path) {
+                item.classList.add('active');
+            }
+        });
+    }, 200);
 
-    // Give it a tiny delay to ensure page scripts initialized and Firestore ready
+    // Apply hospital settings from Firestore
     setTimeout(() => {
         window.applyHospitalSettings();
     }, 300);
 });
+
 
 // Custom Logout Modal popup builder
 window.showLogoutConfirmation = function(onConfirm) {
