@@ -1,5 +1,13 @@
 // firebase-config.js
 
+// Immediate Theme Application to prevent flashing
+(function() {
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.body.classList.add('dark');
+    }
+})();
+
 // Real Firebase Configuration matching other files
 const firebaseConfig = {
     apiKey: "AIzaSyCMmDlzMavatvqE9-gKW4V6nPAV4U5CzDo",
@@ -191,6 +199,64 @@ window.applyHospitalSettings = async function () {
 
 // Initialize settings application when DOM loads
 document.addEventListener('DOMContentLoaded', () => {
+    // 1. Initialize Theme UI & Button click handler
+    function updateThemeToggleUI() {
+        const btn = document.getElementById('themeToggleBtn');
+        if (!btn) return;
+        const isDark = document.body.classList.contains('dark');
+        btn.innerHTML = isDark 
+            ? `<i class="fas fa-sun"></i> <span>Light Mode</span>`
+            : `<i class="fas fa-moon"></i> <span>Dark Mode</span>`;
+    }
+
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeToggleUI();
+        });
+    }
+    updateThemeToggleUI();
+
+    // 2. Initialize Sidebar Collapse button click handler
+    const sidebar = document.querySelector('.sidebar');
+    const dashboard = document.querySelector('.dashboard');
+    if (sidebar && dashboard) {
+        let collapseBtn = document.getElementById('sidebarCollapseBtn');
+        if (!collapseBtn) {
+            collapseBtn = document.createElement('button');
+            collapseBtn.id = 'sidebarCollapseBtn';
+            collapseBtn.className = 'sidebar-collapse-btn';
+            collapseBtn.title = 'Toggle Sidebar';
+            collapseBtn.innerHTML = `<i class="fas fa-chevron-left"></i>`;
+            sidebar.appendChild(collapseBtn);
+        }
+        
+        // Initial collapsed state check from localStorage
+        const isCollapsed = localStorage.getItem('sidebarCollapsed') === 'true';
+        if (isCollapsed) {
+            dashboard.classList.add('sidebar-collapsed');
+        }
+        
+        collapseBtn.addEventListener('click', () => {
+            dashboard.classList.toggle('sidebar-collapsed');
+            const nowCollapsed = dashboard.classList.contains('sidebar-collapsed');
+            localStorage.setItem('sidebarCollapsed', nowCollapsed ? 'true' : 'false');
+        });
+    }
+
+    // 3. Auto Highlight active link based on current path
+    const path = window.location.pathname.split('/').pop() || 'dashboard.html';
+    document.querySelectorAll('.menu-item').forEach(item => {
+        const onClickAttr = item.getAttribute('onclick') || '';
+        if (onClickAttr.includes(path)) {
+            document.querySelectorAll('.menu-item').forEach(i => i.classList.remove('active'));
+            item.classList.add('active');
+        }
+    });
+
     // Give it a tiny delay to ensure page scripts initialized and Firestore ready
     setTimeout(() => {
         window.applyHospitalSettings();

@@ -26,28 +26,48 @@
     <div class="dashboard">
         <!-- Sidebar - with working links -->
         <div class="sidebar">
-            <div class="hospital-name">🏥Akshaya Clinic</div>
+            <div class="hospital-brand">
+                <div class="hospital-logo"><i class="fas fa-heartbeat"></i></div>
+                <div class="hospital-name">🏥 Akshaya Clinic</div>
+            </div>
             <div class="sidebar-menu">
-                <div class="menu-item active" data-section="dashboard">
-                    <i class="fas fa-chart-pie"></i> Dashboard
+                <div class="menu-group">
+                    <div class="menu-group-title">Overview</div>
+                    <div class="menu-item active" onclick="window.location.href='dashboard.html'">
+                        <i class="fas fa-chart-pie"></i> <span>Dashboard</span>
+                    </div>
                 </div>
-                <div class="menu-item" onclick="window.location.href='newPatient.html'">
-                    <i class="fas fa-user-injured"></i> Patients
+                <div class="menu-group">
+                    <div class="menu-group-title">Clinical Management</div>
+                    <div class="menu-item" onclick="window.location.href='newPatient.html'">
+                        <i class="fas fa-user-injured"></i> <span>Patients</span>
+                    </div>
+                    <div class="menu-item" onclick="window.location.href='newDoctor.html'">
+                        <i class="fas fa-user-md"></i> <span>Doctors</span>
+                    </div>
                 </div>
-                <div class="menu-item" onclick="window.location.href='newDoctor.html'">
-                    <i class="fas fa-user-md"></i> Doctors
+                <div class="menu-group">
+                    <div class="menu-group-title">Operations</div>
+                    <div class="menu-item" onclick="window.location.href='appointments.html'">
+                        <i class="fas fa-calendar-check"></i> <span>Appointments</span>
+                    </div>
+                    <div class="menu-item" onclick="window.location.href='reports.html'">
+                        <i class="fas fa-chart-bar"></i> <span>Reports</span>
+                    </div>
                 </div>
-                <div class="menu-item" onclick="window.location.href='appointments.html'">
-                    <i class="fas fa-calendar-check"></i> Appointments
+                <div class="menu-group">
+                    <div class="menu-group-title">System</div>
+                    <div class="menu-item" onclick="window.location.href='settings.html'">
+                        <i class="fas fa-cog"></i> <span>Settings</span>
+                    </div>
                 </div>
-               <div class="menu-item" onclick="window.location.href='reports.html'">
-    <i class="fas fa-chart-bar"></i> Reports
-</div>
-                 <div class="menu-item" onclick="window.location.href='settings.html'">
-                    <i class="fas fa-cog"></i> Settings
-                </div>
-                <div class="menu-item logout" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> Logout
+                <div class="sidebar-footer">
+                    <button class="theme-toggle-btn" id="themeToggleBtn">
+                        <i class="fas fa-moon"></i> <span>Dark Mode</span>
+                    </button>
+                    <div class="menu-item logout" id="logoutBtn">
+                        <i class="fas fa-sign-out-alt"></i> <span>Logout</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -80,36 +100,70 @@
             </div>
 
             <!-- Recent Appointments Section -->
-            <div class="section-header">
-                <div class="recent-title">📋 Recent Appointments</div>
-                <div>
-                    <span class="view-all" onclick="loadDashboardData()">
-                        <i class="fas fa-sync-alt"></i> Refresh
-                    </span>
+            <div class="table-container">
+                <div class="table-header">
+                    <h3>📋 Recent Appointments</h3>
+                    <div class="table-controls">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="appointmentSearch" class="search-input" placeholder="Search patients/doctors..." oninput="filterRecentAppointments()">
+                        </div>
+                        <select id="statusFilter" class="table-filter" onchange="filterRecentAppointments()">
+                            <option value="">All Statuses</option>
+                            <option value="Scheduled">Scheduled</option>
+                            <option value="Confirmed">Confirmed</option>
+                            <option value="In Progress">In Progress</option>
+                            <option value="Completed">Completed</option>
+                            <option value="Cancelled">Cancelled</option>
+                            <option value="No Show">No Show</option>
+                        </select>
+                        <button class="view-all" onclick="loadDashboardData()" style="border: none;">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Appointments Table -->
-            <div id="appointmentsTableContainer">
-                <table class="appointments-table">
-                    <thead>
-                        <tr>
-                            <th>Patient Name</th>
-                            <th>Doctor</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Status</th>
-                            <th>Fee</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointmentsBody">
-                        <tr>
-                            <td colspan="6" class="loading">
-                                <i class="fas fa-spinner fa-spin"></i> Loading appointments...
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <!-- Appointments Table -->
+                <div id="appointmentsTableContainer">
+                    <table class="appointments-table">
+                        <thead>
+                            <tr>
+                                <th>Patient Name</th>
+                                <th>Doctor</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Status</th>
+                                <th>Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsBody">
+                            <tr class="skeleton-row">
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-badge"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                            </tr>
+                            <tr class="skeleton-row">
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-badge"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                            </tr>
+                            <tr class="skeleton-row">
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-badge"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -200,53 +254,19 @@
                 });
                 document.getElementById('totalRevenue').textContent = `₹${totalRevenue.toLocaleString()}`;
 
-                // Load Recent Appointments (last 5)
+                // Load Recent Appointments (last 25)
                 const recentAppointmentsQuery = await db.collection('appointments')
                     .orderBy('date', 'desc')
-                    .limit(5)
+                    .limit(25)
                     .get();
                 
                 // Display Appointments
-                const appointmentsBody = document.getElementById('appointmentsBody');
-                appointmentsBody.innerHTML = '';
-
-                if (recentAppointmentsQuery.empty) {
-                    appointmentsBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 No appointments found.</td></tr>';
-                } else {
-                    recentAppointmentsQuery.forEach(doc => {
-                        const apt = doc.data();
-                        const row = document.createElement('tr');
-                        
-                        // Format date properly
-                        let dateStr = 'N/A';
-                        if (apt.date) {
-                            if (apt.date.toDate) {
-                                dateStr = apt.date.toDate().toLocaleDateString('en-GB');
-                            } else if (apt.date instanceof Date) {
-                                dateStr = apt.date.toLocaleDateString('en-GB');
-                            } else {
-                                dateStr = apt.date;
-                            }
-                        }
-                        
-                        // Determine status class
-                        let statusClass = 'pending';
-                        if (apt.status) {
-                            statusClass = apt.status.toLowerCase().replace(' ', '-');
-                        }
-                        
-                        row.innerHTML = `
-                            <td><strong>${apt.patientName || 'Unknown'}</strong></td>
-                            <td>${apt.doctorName || 'Unknown'}</td>
-                            <td>${dateStr}</td>
-                            <td>${apt.time || '10:00 AM'}</td>
-                            <td><span class="status ${statusClass}">${apt.status || 'Pending'}</span></td>
-                            <td><strong>${window.currencySymbol || '₹'}${apt.fee?.toLocaleString() || '0'}</strong></td>
-                        `;
-                        appointmentsBody.appendChild(row);
-                    });
-                }
-
+                loadedAppointments = [];
+                recentAppointmentsQuery.forEach(doc => {
+                    loadedAppointments.push(doc.data());
+                });
+                
+                renderAppointments(loadedAppointments);
             } catch (error) {
                 console.error("❌ Error loading data:", error);
                 
@@ -267,6 +287,66 @@
                 showNotification("Error loading data: " + error.message, "error");
             }
         }
+
+        let loadedAppointments = [];
+
+        function renderAppointments(list) {
+            const appointmentsBody = document.getElementById('appointmentsBody');
+            appointmentsBody.innerHTML = '';
+
+            if (list.length === 0) {
+                appointmentsBody.innerHTML = '<tr><td colspan="6" class="no-data">📭 No matching appointments found.</td></tr>';
+            } else {
+                list.forEach(apt => {
+                    const row = document.createElement('tr');
+                    
+                    // Format date properly
+                    let dateStr = 'N/A';
+                    if (apt.date) {
+                        if (apt.date.toDate) {
+                            dateStr = apt.date.toDate().toLocaleDateString('en-GB');
+                        } else if (apt.date instanceof Date) {
+                            dateStr = apt.date.toLocaleDateString('en-GB');
+                        } else {
+                            dateStr = apt.date;
+                        }
+                    }
+                    
+                    // Determine status class
+                    let statusClass = 'pending';
+                    if (apt.status) {
+                        statusClass = apt.status.toLowerCase().replace(' ', '-');
+                    }
+                    
+                    row.innerHTML = `
+                        <td><strong>${apt.patientName || 'Unknown'}</strong></td>
+                        <td>${apt.doctorName || 'Unknown'}</td>
+                        <td>${dateStr}</td>
+                        <td>${apt.time || '10:00 AM'}</td>
+                        <td><span class="status ${statusClass}">${apt.status || 'Pending'}</span></td>
+                        <td><strong>${window.currencySymbol || '₹'}${apt.fee?.toLocaleString() || '0'}</strong></td>
+                    `;
+                    appointmentsBody.appendChild(row);
+                });
+            }
+        }
+
+        window.filterRecentAppointments = function() {
+            const searchVal = document.getElementById('appointmentSearch').value.toLowerCase().trim();
+            const statusVal = document.getElementById('statusFilter').value;
+
+            const filtered = loadedAppointments.filter(apt => {
+                const matchesSearch = !searchVal || 
+                    (apt.patientName && apt.patientName.toLowerCase().includes(searchVal)) ||
+                    (apt.doctorName && apt.doctorName.toLowerCase().includes(searchVal));
+                
+                const matchesStatus = !statusVal || apt.status === statusVal;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            renderAppointments(filtered);
+        };
 
         // ==================== AUTO-LOGIN ANONYMOUSLY ====================
         function autoLogin() {

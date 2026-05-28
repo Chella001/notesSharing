@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
         if (!sessionStorage.getItem('currentUser')) {
@@ -19,6 +20,7 @@
     <script src="firebase-config.js" type="module"></script>
     <link rel="stylesheet" href="theme.css">
 </head>
+
 <body>
     <!-- Notification Toast -->
     <div id="notification" class="notification">Data loaded successfully</div>
@@ -208,7 +210,8 @@
                             <label class="input-label"><i class="fas fa-rupee-sign"></i>Consultation Fee *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-money-bill"></i>
-                                <input type="number" id="consultationFee" placeholder="Fee amount" min="0" step="100" required>
+                                <input type="number" id="consultationFee" placeholder="Fee amount" min="0" step="100"
+                                    required>
                             </div>
                             <div id="feeError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -231,10 +234,12 @@
 
                         <!-- Symptoms / Reason -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-notes-medical"></i>Reason for Visit / Symptoms *</label>
+                            <label class="input-label"><i class="fas fa-notes-medical"></i>Reason for Visit / Symptoms
+                                *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-file-medical"></i>
-                                <textarea id="symptoms" placeholder="Describe the reason for appointment or symptoms" rows="3" required></textarea>
+                                <textarea id="symptoms" placeholder="Describe the reason for appointment or symptoms"
+                                    rows="3" required></textarea>
                             </div>
                             <div id="symptomsError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -247,7 +252,9 @@
                             <label class="input-label"><i class="fas fa-comment-medical"></i>Additional Notes</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-pen"></i>
-                                <textarea id="additionalNotes" placeholder="Any additional information or special instructions" rows="2"></textarea>
+                                <textarea id="additionalNotes"
+                                    placeholder="Any additional information or special instructions"
+                                    rows="2"></textarea>
                             </div>
                         </div>
                     </div>
@@ -311,7 +318,7 @@
         // Load Stats
         async function loadStats() {
             if (!db) return;
-            
+
             try {
                 const patientsSnapshot = await db.collection('patients').get();
                 document.getElementById('totalPatients').textContent = patientsSnapshot.size;
@@ -321,7 +328,7 @@
 
                 const appointmentsSnapshot = await db.collection('appointments').get();
                 document.getElementById('totalAppointments').textContent = appointmentsSnapshot.size;
-                
+
                 // Count today's appointments
                 const todayStr = new Date().toISOString().split('T')[0];
                 let todayCount = 0;
@@ -333,7 +340,7 @@
                     }
                 });
                 document.getElementById('todayAppointments').textContent = todayCount;
-                
+
             } catch (error) {
                 console.error("Error loading stats:", error);
             }
@@ -343,7 +350,7 @@
         async function loadPatients() {
             const patientSelect = document.getElementById('patientSelect');
             patientSelect.innerHTML = '<option value="">-- Select Patient --</option>';
-            
+
             try {
                 const snapshot = await db.collection('patients').orderBy('name').get();
                 snapshot.forEach(doc => {
@@ -362,7 +369,7 @@
         async function loadDoctors() {
             const doctorSelect = document.getElementById('doctorSelect');
             doctorSelect.innerHTML = '<option value="">-- Select Doctor --</option>';
-            
+
             try {
                 const snapshot = await db.collection('doctors').orderBy('name').get();
                 snapshot.forEach(doc => {
@@ -379,7 +386,7 @@
         }
 
         // Auto-fill fee when doctor is selected
-        document.getElementById('doctorSelect').addEventListener('change', function() {
+        document.getElementById('doctorSelect').addEventListener('change', function () {
             const selectedOption = this.options[this.selectedIndex];
             const fee = selectedOption.getAttribute('data-fee');
             if (fee) {
@@ -392,14 +399,14 @@
             const patientError = document.getElementById('patientError');
             const patientInput = document.getElementById('patientSelect');
             const errorSpan = patientError.querySelector('span');
-            
+
             if (!patientId || patientId === '') {
                 errorSpan.textContent = "Please select a patient";
                 patientError.classList.add('show');
                 patientInput.classList.add('error');
                 return false;
             }
-            
+
             patientError.classList.remove('show');
             patientInput.classList.remove('error');
             return true;
@@ -409,14 +416,14 @@
             const doctorError = document.getElementById('doctorError');
             const doctorInput = document.getElementById('doctorSelect');
             const errorSpan = doctorError.querySelector('span');
-            
+
             if (!doctorId || doctorId === '') {
                 errorSpan.textContent = "Please select a doctor";
                 doctorError.classList.add('show');
                 doctorInput.classList.add('error');
                 return false;
             }
-            
+
             doctorError.classList.remove('show');
             doctorInput.classList.remove('error');
             return true;
@@ -426,25 +433,25 @@
             const dateError = document.getElementById('dateError');
             const dateInput = document.getElementById('appointmentDate');
             const errorSpan = dateError.querySelector('span');
-            
+
             if (!date || date === '') {
                 errorSpan.textContent = "Please select appointment date";
                 dateError.classList.add('show');
                 dateInput.classList.add('error');
                 return false;
             }
-            
+
             const selectedDate = new Date(date);
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             if (selectedDate < today) {
                 errorSpan.textContent = "Appointment date cannot be in the past";
                 dateError.classList.add('show');
                 dateInput.classList.add('error');
                 return false;
             }
-            
+
             dateError.classList.remove('show');
             dateInput.classList.remove('error');
             return true;
@@ -454,14 +461,14 @@
             const timeError = document.getElementById('timeError');
             const timeInput = document.getElementById('appointmentTime');
             const errorSpan = timeError.querySelector('span');
-            
+
             if (!time || time === '') {
                 errorSpan.textContent = "Please select appointment time";
                 timeError.classList.add('show');
                 timeInput.classList.add('error');
                 return false;
             }
-            
+
             timeError.classList.remove('show');
             timeInput.classList.remove('error');
             return true;
@@ -471,14 +478,14 @@
             const typeError = document.getElementById('typeError');
             const typeInput = document.getElementById('appointmentType');
             const errorSpan = typeError.querySelector('span');
-            
+
             if (!type || type === '') {
                 errorSpan.textContent = "Please select appointment type";
                 typeError.classList.add('show');
                 typeInput.classList.add('error');
                 return false;
             }
-            
+
             typeError.classList.remove('show');
             typeInput.classList.remove('error');
             return true;
@@ -488,21 +495,21 @@
             const symptomsError = document.getElementById('symptomsError');
             const symptomsInput = document.getElementById('symptoms');
             const errorSpan = symptomsError.querySelector('span');
-            
+
             if (!symptoms || symptoms.trim() === '') {
                 errorSpan.textContent = "Please describe the reason for visit";
                 symptomsError.classList.add('show');
                 symptomsInput.classList.add('error');
                 return false;
             }
-            
+
             if (symptoms.length < 5) {
                 errorSpan.textContent = "Please provide more details (at least 5 characters)";
                 symptomsError.classList.add('show');
                 symptomsInput.classList.add('error');
                 return false;
             }
-            
+
             symptomsError.classList.remove('show');
             symptomsInput.classList.remove('error');
             return true;
@@ -512,14 +519,14 @@
             const feeError = document.getElementById('feeError');
             const feeInput = document.getElementById('consultationFee');
             const errorSpan = feeError.querySelector('span');
-            
+
             if (!fee && fee !== 0) {
                 errorSpan.textContent = "Consultation fee is required";
                 feeError.classList.add('show');
                 feeInput.classList.add('error');
                 return false;
             }
-            
+
             const feeNum = parseInt(fee);
             if (isNaN(feeNum) || feeNum < 0) {
                 errorSpan.textContent = "Please enter a valid fee amount";
@@ -527,14 +534,14 @@
                 feeInput.classList.add('error');
                 return false;
             }
-            
+
             feeError.classList.remove('show');
             feeInput.classList.remove('error');
             return true;
         }
 
         // Handle Form Submit
-        document.getElementById('appointmentForm').addEventListener('submit', async function(event) {
+        document.getElementById('appointmentForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             if (!db) {
@@ -576,7 +583,7 @@
             const isSymptomsValid = validateSymptoms(symptoms);
             const isFeeValid = validateFee(consultationFee);
 
-            if (!isPatientValid || !isDoctorValid || !isDateValid || !isTimeValid || 
+            if (!isPatientValid || !isDoctorValid || !isDateValid || !isTimeValid ||
                 !isTypeValid || !isSymptomsValid || !isFeeValid) {
                 errorSpan.textContent = "Please fix the errors in the form";
                 errorDiv.classList.add('show');
@@ -596,7 +603,7 @@
                 // Create date object
                 const [year, month, day] = appointmentDate.split('-');
                 const dateObj = new Date(year, month - 1, day);
-                
+
                 // Prepare appointment data
                 const appointmentData = {
                     patientId: patientId,
@@ -618,7 +625,7 @@
 
                 // Save to Firestore
                 const docRef = await db.collection('appointments').add(appointmentData);
-                
+
                 console.log("Appointment saved with ID:", docRef.id);
 
                 // Clear timeout warning
@@ -653,9 +660,9 @@
             } catch (error) {
                 clearTimeout(timeoutId);
                 timeoutWarning.classList.remove('show');
-                
+
                 console.error("❌ Error scheduling appointment:", error);
-                
+
                 let errorMsg = "Failed to schedule appointment. ";
                 if (error.code === 'permission-denied') {
                     errorMsg = "Permission denied! Please check Firestore Security Rules.";
@@ -664,18 +671,18 @@
                 } else {
                     errorMsg += error.message;
                 }
-                
+
                 errorSpan.textContent = errorMsg;
                 errorDiv.classList.add('show');
                 showNotification("Error scheduling appointment", "error");
-                
+
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Schedule Appointment';
             }
         });
 
         // Logout
-        document.getElementById('logoutBtn').addEventListener('click', function() {
+        document.getElementById('logoutBtn').addEventListener('click', function () {
             window.showLogoutConfirmation(() => {
                 sessionStorage.clear();
                 showNotification("Logged out successfully");
@@ -695,4 +702,5 @@
         });
     </script>
 </body>
+
 </html>
