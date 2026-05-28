@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>if (!sessionStorage.getItem('currentUser')) window.location.href = 'index.html';</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management · Module</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js" type="module"></script>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/enterprise.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <script src="js/app.js" type="module"></script>
+</head>
+<body>
+<div id="notification" class="notification"></div>
+
+<div class="dashboard">
+    <app-sidebar></app-sidebar>
+
+    <div class="main-content">
+        <app-header id="pageHeader" title="Module"></app-header>
+
+        <div style="padding: 0 28px;">
+            <div class="coming-soon-page">
+                <div class="coming-soon-card">
+                    <div class="coming-soon-icon" id="moduleIcon">
+                        <i class="fas fa-layer-group"></i>
+                    </div>
+                    <div class="coming-soon-tag">
+                        <i class="fas fa-rocket"></i> Coming Soon
+                    </div>
+                    <h2 class="coming-soon-title" id="moduleTitle">Module</h2>
+                    <p class="coming-soon-sub" id="moduleDesc">
+                        This module is currently under active development and will be available in the next release. 
+                        Our team is working hard to bring you a premium enterprise experience.
+                    </p>
+                    <div class="coming-soon-actions">
+                        <button class="ds-btn ds-btn-primary" onclick="window.history.back()">
+                            <i class="fas fa-arrow-left"></i> Go Back
+                        </button>
+                        <button class="ds-btn ds-btn-secondary" onclick="window.location.href='dashboard.html'">
+                            <i class="fas fa-chart-pie"></i> Dashboard
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const moduleIconMap = {
+        'Nurses': 'fa-user-nurse',
+        'Medical Records': 'fa-file-medical',
+        'Prescriptions': 'fa-prescription-bottle-alt',
+        'Lab & Diagnostics': 'fa-flask',
+        'Pharmacy': 'fa-pills',
+        'Insurance': 'fa-file-contract',
+        'Queue Management': 'fa-list-ol',
+        'Billing & Invoicing': 'fa-file-invoice-dollar',
+        'Payments': 'fa-credit-card',
+        'Inventory': 'fa-boxes',
+        'Room & Bed Allocation': 'fa-bed',
+        'Emergency Management': 'fa-ambulance',
+        'Notifications': 'fa-bell',
+        'Email Management': 'fa-envelope',
+        'SMS Reminders': 'fa-sms',
+        'Internal Messaging': 'fa-comment-dots',
+        'Patient Alerts': 'fa-exclamation-circle',
+        'User Management': 'fa-users-cog',
+        'Roles & Permissions': 'fa-key',
+        'Branch Management': 'fa-building',
+        'Departments': 'fa-sitemap',
+        'Audit Logs': 'fa-clipboard-list',
+        'Access Control': 'fa-lock'
+    };
+
+    document.addEventListener('DOMContentLoaded', () => {
+        const params = new URLSearchParams(window.location.search);
+        const module = decodeURIComponent(params.get('module') || 'Module');
+        
+        // Update title
+        document.title = `Hospital Management · ${module}`;
+        document.getElementById('moduleTitle').textContent = module;
+
+        // Update icon
+        const icon = moduleIconMap[module] || 'fa-layer-group';
+        document.getElementById('moduleIcon').innerHTML = `<i class="fas ${icon}"></i>`;
+
+        // Update header - wait for component
+        setTimeout(() => {
+            const header = document.querySelector('app-header');
+            if (header) {
+                header.setAttribute('title', module);
+                header.connectedCallback();
+            }
+        }, 100);
+    });
+</script>
+</body>
+</html>

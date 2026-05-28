@@ -1,42 +1,68 @@
 class AppHeader extends HTMLElement {
-    constructor() {
-        super();
-    }
+    constructor() { super(); }
 
     connectedCallback() {
         const title = this.getAttribute('title') || 'Dashboard';
         const currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
-        
-        let breadcrumbLabel = 'Overview';
-        if (['newPatient.html', 'newDoctor.html'].includes(currentPath)) breadcrumbLabel = 'Clinical Management';
-        if (['appointments.html', 'reports.html'].includes(currentPath)) breadcrumbLabel = 'Operations';
-        if (['settings.html'].includes(currentPath)) breadcrumbLabel = 'System';
+
+        const breadcrumbMap = {
+            'dashboard.html':   ['Overview', 'Dashboard'],
+            'analytics.html':   ['Overview', 'Analytics'],
+            'newPatient.html':  ['Clinical Management', 'Patients'],
+            'newDoctor.html':   ['Clinical Management', 'Doctors'],
+            'appointments.html':['Operations', 'Appointments'],
+            'reports.html':     ['Operations', 'Reports'],
+            'settings.html':    ['System', 'Settings'],
+            'coming-soon.html': ['Modules', decodeURIComponent(new URLSearchParams(window.location.search).get('module') || 'Module')]
+        };
+
+        const crumbs = breadcrumbMap[currentPath] || ['Overview', title];
 
         this.innerHTML = `
-            <div class="main-header" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px;">
-                <div>
-                    <div class="breadcrumbs" style="display: flex; gap: 8px; align-items: center; color: var(--ds-text-tertiary); font-size: 0.875rem; margin-bottom: 8px; font-weight: 500;">
-                        <span><i class="fas fa-home"></i></span>
-                        <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
-                        <span>${breadcrumbLabel}</span>
-                        <i class="fas fa-chevron-right" style="font-size: 10px;"></i>
-                        <span style="color: var(--brand-500);">${title}</span>
-                    </div>
-                    <h1 class="text-h1">${title}</h1>
+        <div class="main-header">
+            <div class="header-left">
+                <div class="breadcrumbs">
+                    <span class="breadcrumb-home"><i class="fas fa-home"></i></span>
+                    <i class="fas fa-chevron-right breadcrumb-sep"></i>
+                    <span class="breadcrumb-parent">${crumbs[0]}</span>
+                    <i class="fas fa-chevron-right breadcrumb-sep"></i>
+                    <span class="breadcrumb-current">${crumbs[1]}</span>
                 </div>
-                <div class="date-badge" id="currentDate" style="background: var(--ds-bg-card); padding: 8px 16px; border-radius: 999px; border: 1px solid var(--ds-border); box-shadow: var(--shadow-sm); font-size: 0.875rem; font-weight: 500;"></div>
+                <h1 class="page-title">${title}</h1>
             </div>
-        `;
-        
-        // Set current date
-        const dateElement = this.querySelector('#currentDate');
-        if (dateElement) {
-            dateElement.textContent = new Date().toLocaleDateString('en-GB', {
-                day: 'numeric',
-                month: 'long',
-                year: 'numeric'
+            <div class="header-right">
+                <button class="header-icon-btn" id="headerSearchBtn" title="Search">
+                    <i class="fas fa-search"></i>
+                </button>
+                <button class="header-icon-btn" id="headerNotifBtn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-dot"></span>
+                </button>
+                <div class="header-date-badge" id="currentDate"></div>
+                <div class="header-avatar" title="Profile">
+                    <i class="fas fa-user-circle"></i>
+                </div>
+            </div>
+        </div>`;
+
+        // Set date
+        const dateEl = this.querySelector('#currentDate');
+        if (dateEl) {
+            dateEl.textContent = new Date().toLocaleDateString('en-GB', {
+                day: 'numeric', month: 'short', year: 'numeric'
             });
         }
+
+        // Mobile sidebar toggle button
+        const mobileBtn = document.createElement('button');
+        mobileBtn.className = 'mobile-menu-btn';
+        mobileBtn.id = 'mobileMenuBtn';
+        mobileBtn.innerHTML = '<i class="fas fa-bars"></i>';
+        mobileBtn.addEventListener('click', () => {
+            const sidebar = document.querySelector('#appSidebar');
+            sidebar?.classList.toggle('mobile-open');
+        });
+        this.querySelector('.header-left')?.prepend(mobileBtn);
     }
 }
 

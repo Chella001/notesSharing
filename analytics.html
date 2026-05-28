@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>if (!sessionStorage.getItem('currentUser')) window.location.href = 'index.html';</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management · Analytics</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="js/firebase-config.js" type="module"></script>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/enterprise.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <script src="js/app.js" type="module"></script>
+</head>
+<body>
+<div id="notification" class="notification"></div>
+
+<div class="dashboard">
+    <app-sidebar></app-sidebar>
+
+    <div class="main-content">
+        <app-header title="Analytics"></app-header>
+
+        <div style="padding: 0 28px; display:flex; flex-direction:column; gap:24px;">
+
+            <!-- KPI Row -->
+            <div style="display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:16px;">
+                <div class="ds-card" style="padding:20px; display:flex; gap:14px; align-items:center;">
+                    <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(99,102,241,.15),rgba(99,102,241,.05));display:flex;align-items:center;justify-content:center;color:#6366f1;font-size:20px;flex-shrink:0;"><i class="fas fa-users"></i></div>
+                    <div><div style="font-size:1.6rem;font-weight:800;color:var(--text-primary)" id="kpiPatients">—</div><div style="font-size:.78rem;color:var(--text-muted);font-weight:500">Total Patients</div></div>
+                </div>
+                <div class="ds-card" style="padding:20px; display:flex; gap:14px; align-items:center;">
+                    <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(16,185,129,.15),rgba(16,185,129,.05));display:flex;align-items:center;justify-content:center;color:#10b981;font-size:20px;flex-shrink:0;"><i class="fas fa-user-md"></i></div>
+                    <div><div style="font-size:1.6rem;font-weight:800;color:var(--text-primary)" id="kpiDoctors">—</div><div style="font-size:.78rem;color:var(--text-muted);font-weight:500">Active Doctors</div></div>
+                </div>
+                <div class="ds-card" style="padding:20px; display:flex; gap:14px; align-items:center;">
+                    <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(245,158,11,.15),rgba(245,158,11,.05));display:flex;align-items:center;justify-content:center;color:#f59e0b;font-size:20px;flex-shrink:0;"><i class="fas fa-calendar-check"></i></div>
+                    <div><div style="font-size:1.6rem;font-weight:800;color:var(--text-primary)" id="kpiAppointments">—</div><div style="font-size:.78rem;color:var(--text-muted);font-weight:500">Total Appointments</div></div>
+                </div>
+                <div class="ds-card" style="padding:20px; display:flex; gap:14px; align-items:center;">
+                    <div style="width:48px;height:48px;border-radius:14px;background:linear-gradient(135deg,rgba(239,68,68,.15),rgba(239,68,68,.05));display:flex;align-items:center;justify-content:center;color:#ef4444;font-size:20px;flex-shrink:0;"><i class="fas fa-rupee-sign"></i></div>
+                    <div><div style="font-size:1.6rem;font-weight:800;color:var(--text-primary)" id="kpiRevenue">—</div><div style="font-size:.78rem;color:var(--text-muted);font-weight:500">Total Revenue</div></div>
+                </div>
+            </div>
+
+            <!-- Charts Row -->
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+                <div class="ds-card">
+                    <div class="ds-card-header"><h3 class="text-h4">Appointment Trend (Last 7 Days)</h3></div>
+                    <div id="trendChart" style="min-height:260px;"></div>
+                </div>
+                <div class="ds-card">
+                    <div class="ds-card-header"><h3 class="text-h4">Appointment Status</h3></div>
+                    <div id="statusChart" style="min-height:260px;display:flex;align-items:center;justify-content:center;"></div>
+                </div>
+            </div>
+
+            <!-- Appointment Status Table -->
+            <div class="ds-card">
+                <div class="ds-card-header">
+                    <h3 class="text-h4">Recent Appointments</h3>
+                    <button class="ds-btn ds-btn-secondary" onclick="window.location.href='appointments.html'">
+                        <i class="fas fa-external-link-alt"></i> View All
+                    </button>
+                </div>
+                <div class="ds-table-wrapper">
+                    <table class="ds-table">
+                        <thead><tr><th>Patient</th><th>Doctor</th><th>Date</th><th>Status</th></tr></thead>
+                        <tbody id="analyticsTable">
+                            <tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted);">
+                                <i class="fas fa-spinner fa-spin" style="margin-right:8px;"></i>Loading...
+                            </td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div><!-- /padding -->
+    </div><!-- /main-content -->
+</div>
+
+<script>
+    let db;
+
+    function waitForDb(cb, n=0) {
+        if (window.db) { db = window.db; cb(); }
+        else if (n < 20) setTimeout(() => waitForDb(cb, n+1), 150);
+        else { db = firebase.firestore(); cb(); }
+    }
+
+    function isDark() { return document.body.classList.contains('dark'); }
+
+    function chartColors() {
+        return { text: isDark() ? '#94a3b8' : '#64748b', grid: isDark() ? '#1e293b' : '#f1f5f9' };
+    }
+
+    async function loadAnalytics() {
+        try {
+            // Counts
+            const [pSnap, dSnap, aSnap] = await Promise.all([
+                db.collection('patients').get(),
+                db.collection('doctors').get(),
+                db.collection('appointments').get()
+            ]);
+
+            document.getElementById('kpiPatients').textContent = pSnap.size;
+            document.getElementById('kpiDoctors').textContent = dSnap.size;
+            document.getElementById('kpiAppointments').textContent = aSnap.size;
+
+            // Revenue
+            let rev = 0;
+            const appointments = [];
+            aSnap.forEach(doc => {
+                const d = doc.data();
+                appointments.push(d);
+                if (d.status === 'Completed' && d.fee) rev += Number(d.fee);
+            });
+            document.getElementById('kpiRevenue').textContent = '₹' + rev.toLocaleString();
+
+            // Status breakdown
+            const statusCount = {};
+            appointments.forEach(a => {
+                const s = a.status || 'Pending';
+                statusCount[s] = (statusCount[s] || 0) + 1;
+            });
+
+            // Trend (last 7 days)
+            const days = [];
+            const counts = [];
+            for (let i = 6; i >= 0; i--) {
+                const d = new Date(); d.setDate(d.getDate() - i);
+                const label = d.toLocaleDateString('en-GB', { day: '2-digit', month: 'short' });
+                days.push(label);
+                const dayStr = d.toISOString().slice(0, 10);
+                const c = appointments.filter(a => {
+                    if (!a.date) return false;
+                    const ad = a.date.toDate ? a.date.toDate() : new Date(a.date);
+                    return ad.toISOString().slice(0, 10) === dayStr;
+                }).length;
+                counts.push(c);
+            }
+
+            // Render trend chart
+            const c = chartColors();
+            new ApexCharts(document.getElementById('trendChart'), {
+                chart: { type: 'area', height: 260, toolbar: { show: false }, background: 'transparent', animations: { enabled: true, easing: 'easeinout', speed: 600 } },
+                dataLabels: { enabled: false },
+                stroke: { curve: 'smooth', width: 2 },
+                fill: { type: 'gradient', gradient: { shadeIntensity: 1, opacityFrom: 0.25, opacityTo: 0.02 } },
+                series: [{ name: 'Appointments', data: counts }],
+                xaxis: { categories: days, labels: { style: { colors: c.text, fontSize: '12px' } }, axisBorder: { show: false }, axisTicks: { show: false } },
+                yaxis: { labels: { style: { colors: c.text }, formatter: v => Math.round(v) }, min: 0 },
+                grid: { borderColor: c.grid, strokeDashArray: 4 },
+                colors: ['#6366f1'],
+                theme: { mode: isDark() ? 'dark' : 'light' },
+                tooltip: { theme: isDark() ? 'dark' : 'light' }
+            }).render();
+
+            // Status donut
+            const statusLabels = Object.keys(statusCount);
+            const statusData = Object.values(statusCount);
+            if (statusLabels.length === 0) {
+                document.getElementById('statusChart').innerHTML = '<p style="color:var(--text-muted);font-size:.85rem;">No data</p>';
+            } else {
+                new ApexCharts(document.getElementById('statusChart'), {
+                    chart: { type: 'donut', height: 260, background: 'transparent' },
+                    series: statusData,
+                    labels: statusLabels,
+                    colors: ['#6366f1','#10b981','#f59e0b','#ef4444','#06b6d4'],
+                    legend: { position: 'bottom', labels: { colors: c.text } },
+                    dataLabels: { enabled: false },
+                    theme: { mode: isDark() ? 'dark' : 'light' },
+                    tooltip: { theme: isDark() ? 'dark' : 'light' }
+                }).render();
+            }
+
+            // Recent table
+            const sorted = appointments
+                .sort((a, b) => {
+                    const da = a.date?.toDate ? a.date.toDate() : new Date(a.date || 0);
+                    const db2 = b.date?.toDate ? b.date.toDate() : new Date(b.date || 0);
+                    return db2 - da;
+                }).slice(0, 8);
+
+            const tbody = document.getElementById('analyticsTable');
+            if (sorted.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:32px;color:var(--text-muted);">No appointments found</td></tr>';
+            } else {
+                tbody.innerHTML = sorted.map(a => {
+                    const dateStr = a.date ? (a.date.toDate ? a.date.toDate().toLocaleDateString('en-GB') : a.date) : 'N/A';
+                    const s = (a.status || 'Pending').toLowerCase().replace(/\s/g, '-');
+                    return `<tr>
+                        <td><strong>${a.patientName || 'Unknown'}</strong></td>
+                        <td>${a.doctorName || 'Unknown'}</td>
+                        <td>${dateStr}</td>
+                        <td><span class="status ${s}">${a.status || 'Pending'}</span></td>
+                    </tr>`;
+                }).join('');
+            }
+
+        } catch (err) {
+            console.error('Analytics error:', err);
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        waitForDb(loadAnalytics);
+    });
+</script>
+</body>
+</html>
