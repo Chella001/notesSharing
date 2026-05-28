@@ -89,17 +89,20 @@
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.7} }
 .sb-mini .sb-badge { display:none; }
 
-/* Tooltip in mini mode */
-.sb-tooltip { display:none; }
-.sb-mini .sb-item { justify-content:center; padding:9px 0; }
-.sb-mini .sb-item:hover .sb-tooltip {
-    display:flex; position:absolute; left:calc(100% + 10px); top:50%; transform:translateY(-50%);
+/* Tooltip in mini mode - CSS only, no DOM element needed */
+.sb-mini .sb-item { justify-content:center; padding:9px 0; position:relative; }
+.sb-mini .sb-item:hover::after {
+    content: attr(data-label);
+    position:absolute; left:calc(100% + 12px); top:50%; transform:translateY(-50%);
     background:#1e293b; color:#f1f5f9; font-size:.75rem; font-weight:500;
     padding:5px 10px; border-radius:7px; white-space:nowrap;
-    box-shadow:0 4px 16px rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.08);
-    z-index:999; pointer-events:none;
+    box-shadow:0 4px 16px rgba(0,0,0,.4); border:1px solid rgba(255,255,255,.1);
+    z-index:9999; pointer-events:none;
 }
-.sb-mini .sb-item:hover .sb-tooltip::before { content:''; position:absolute; right:100%; top:50%; transform:translateY(-50%); border:5px solid transparent; border-right-color:#1e293b; }
+.sb-mini .sb-item:hover::before {
+    content:''; position:absolute; left:calc(100% + 4px); top:50%; transform:translateY(-50%);
+    border:5px solid transparent; border-right-color:#1e293b; z-index:9999;
+}
 
 /* ---- Divider ---- */
 .sb-divider { height:1px; background:rgba(255,255,255,.06); margin:4px 8px; flex-shrink:0; }

@@ -87,7 +87,6 @@ class AppSidebar extends HTMLElement {
             <span class="sb-item-icon"><i class="fas fa-${item.icon}"></i></span>
             <span class="sb-item-label">${item.label}</span>
             ${item.badge ? `<span class="sb-badge">${item.badge}</span>` : ''}
-            <span class="sb-tooltip">${item.label}</span>
         </a>`;
     }
 
@@ -147,19 +146,16 @@ class AppSidebar extends HTMLElement {
                    onclick="event.preventDefault(); window.location.href='settings.html'">
                     <span class="sb-item-icon"><i class="fas fa-cog"></i></span>
                     <span class="sb-item-label">Settings</span>
-                    <span class="sb-tooltip">Settings</span>
                 </a>
 
                 <button class="sb-item sb-theme-btn" id="sbThemeBtn" data-label="${isDark ? 'Light Mode' : 'Dark Mode'}">
                     <span class="sb-item-icon"><i class="fas fa-${isDark ? 'sun' : 'moon'}"></i></span>
                     <span class="sb-item-label">${isDark ? 'Light Mode' : 'Dark Mode'}</span>
-                    <span class="sb-tooltip">${isDark ? 'Light Mode' : 'Dark Mode'}</span>
                 </button>
 
                 <button class="sb-item sb-logout-btn" id="sbLogoutBtn" data-label="Logout">
                     <span class="sb-item-icon"><i class="fas fa-sign-out-alt"></i></span>
                     <span class="sb-item-label">Logout</span>
-                    <span class="sb-tooltip">Logout</span>
                 </button>
             </div>
 
