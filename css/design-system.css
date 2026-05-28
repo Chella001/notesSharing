@@ -1,0 +1,301 @@
+/* 
+   =========================================
+   🏥 Premium Enterprise Design System
+   SaaS Styling (Linear, Stripe, Vercel inspired)
+   =========================================
+*/
+
+/* --- 1. Color Palette --- */
+:root {
+    /* Brand Colors */
+    --brand-50: #eef2ff;
+    --brand-100: #e0e7ff;
+    --brand-200: #c7d2fe;
+    --brand-300: #a5b4fc;
+    --brand-400: #818cf8;
+    --brand-500: #6366f1; /* Primary */
+    --brand-600: #4f46e5;
+    --brand-700: #4338ca;
+    --brand-800: #3730a3;
+    --brand-900: #312e81;
+
+    /* Surface & Background */
+    --surface-50: #f8fafc;
+    --surface-100: #f1f5f9;
+    --surface-200: #e2e8f0;
+    --surface-300: #cbd5e1;
+    --surface-400: #94a3b8;
+    --surface-500: #64748b;
+    --surface-600: #475569;
+    --surface-700: #334155;
+    --surface-800: #1e293b;
+    --surface-900: #0f172a;
+    
+    /* Semantic Colors */
+    --color-success: #10b981;
+    --color-success-bg: rgba(16, 185, 129, 0.1);
+    --color-warning: #f59e0b;
+    --color-warning-bg: rgba(245, 158, 11, 0.1);
+    --color-danger: #ef4444;
+    --color-danger-bg: rgba(239, 68, 68, 0.1);
+    --color-info: #0ea5e9;
+    --color-info-bg: rgba(14, 165, 233, 0.1);
+
+    /* Theming Variables (Light Default) */
+    --ds-bg-app: var(--surface-50);
+    --ds-bg-card: #ffffff;
+    --ds-bg-hover: var(--surface-100);
+    --ds-text-primary: var(--surface-900);
+    --ds-text-secondary: var(--surface-600);
+    --ds-text-tertiary: var(--surface-400);
+    --ds-border: var(--surface-200);
+    --ds-border-hover: var(--surface-300);
+}
+
+/* Dark Theme Compatibility */
+body.dark {
+    --ds-bg-app: #09090b;
+    --ds-bg-card: #18181b;
+    --ds-bg-hover: #27272a;
+    --ds-text-primary: #fafafa;
+    --ds-text-secondary: #a1a1aa;
+    --ds-text-tertiary: #52525b;
+    --ds-border: #27272a;
+    --ds-border-hover: #3f3f46;
+}
+
+/* --- 2. Typography Hierarchy --- */
+:root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-display: 'Plus Jakarta Sans', var(--font-sans);
+    --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+.text-d1 { font-family: var(--font-display); font-size: 3.5rem; font-weight: 800; line-height: 1.1; letter-spacing: -0.02em; }
+.text-h1 { font-family: var(--font-display); font-size: 2.25rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+.text-h2 { font-family: var(--font-display); font-size: 1.875rem; font-weight: 700; line-height: 1.2; letter-spacing: -0.01em; }
+.text-h3 { font-family: var(--font-display); font-size: 1.5rem; font-weight: 600; line-height: 1.3; }
+.text-h4 { font-family: var(--font-display); font-size: 1.25rem; font-weight: 600; line-height: 1.4; }
+.text-body-lg { font-family: var(--font-sans); font-size: 1.125rem; font-weight: 400; line-height: 1.5; }
+.text-body { font-family: var(--font-sans); font-size: 1rem; font-weight: 400; line-height: 1.5; }
+.text-body-sm { font-family: var(--font-sans); font-size: 0.875rem; font-weight: 400; line-height: 1.5; }
+.text-caption { font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; line-height: 1.5; text-transform: uppercase; letter-spacing: 0.05em; }
+
+/* --- 3. Spacing System --- */
+:root {
+    --space-1: 0.25rem; /* 4px */
+    --space-2: 0.5rem;  /* 8px */
+    --space-3: 0.75rem; /* 12px */
+    --space-4: 1rem;    /* 16px */
+    --space-5: 1.5rem;  /* 24px */
+    --space-6: 2rem;    /* 32px */
+    --space-8: 3rem;    /* 48px */
+    --space-10: 4rem;   /* 64px */
+}
+
+/* --- 4. Shadows, Borders, Radius, Elevation --- */
+:root {
+    --radius-sm: 6px;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-full: 9999px;
+
+    /* Premium Linear/Vercel inspired shadows */
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --shadow-glow: 0 0 0 2px var(--ds-bg-app), 0 0 0 4px var(--brand-500);
+}
+
+body.dark {
+    --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.5);
+    --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.5), 0 1px 2px -1px rgba(0, 0, 0, 0.5);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.6), 0 2px 4px -2px rgba(0, 0, 0, 0.6);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.7), 0 4px 6px -4px rgba(0, 0, 0, 0.7);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.8), 0 8px 10px -6px rgba(0, 0, 0, 0.8);
+}
+
+/* Elevation Classes */
+.elevation-1 { box-shadow: var(--shadow-sm); }
+.elevation-2 { box-shadow: var(--shadow-md); }
+.elevation-3 { box-shadow: var(--shadow-lg); }
+
+/* --- 5. Component Variants: Buttons --- */
+.ds-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    font-family: var(--font-sans);
+    font-weight: 500;
+    font-size: 0.875rem;
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    outline: none;
+}
+
+.ds-btn:focus-visible {
+    box-shadow: var(--shadow-glow);
+}
+
+/* Primary Button (Stripe inspired gradient) */
+.ds-btn-primary {
+    background: linear-gradient(180deg, var(--brand-400) 0%, var(--brand-600) 100%);
+    color: white;
+    border: 1px solid var(--brand-600);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+.ds-btn-primary:hover {
+    background: linear-gradient(180deg, var(--brand-500) 0%, var(--brand-700) 100%);
+    transform: translateY(-1px);
+}
+
+/* Secondary Button (Vercel inspired neutral) */
+.ds-btn-secondary {
+    background: var(--ds-bg-card);
+    color: var(--ds-text-primary);
+    border: 1px solid var(--ds-border);
+    box-shadow: var(--shadow-xs);
+}
+.ds-btn-secondary:hover {
+    background: var(--ds-bg-hover);
+    border-color: var(--ds-border-hover);
+}
+
+/* Ghost Button (Linear inspired minimal) */
+.ds-btn-ghost {
+    background: transparent;
+    color: var(--ds-text-secondary);
+}
+.ds-btn-ghost:hover {
+    background: var(--ds-bg-hover);
+    color: var(--ds-text-primary);
+}
+
+/* Danger Button */
+.ds-btn-danger {
+    background: var(--color-danger);
+    color: white;
+    box-shadow: var(--shadow-xs);
+}
+.ds-btn-danger:hover {
+    background: #dc2626;
+}
+
+/* --- 6. Modern Form Styles --- */
+.ds-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    margin-bottom: var(--space-4);
+}
+
+.ds-label {
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ds-text-primary);
+}
+
+.ds-input, .ds-select, .ds-textarea {
+    width: 100%;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    padding: var(--space-2) var(--space-3);
+    background: var(--ds-bg-app);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-md);
+    color: var(--ds-text-primary);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ds-input::placeholder, .ds-textarea::placeholder {
+    color: var(--ds-text-tertiary);
+}
+
+.ds-input:focus, .ds-select:focus, .ds-textarea:focus {
+    outline: none;
+    border-color: var(--brand-500);
+    box-shadow: var(--shadow-glow);
+    background: var(--ds-bg-card);
+}
+
+.ds-input.error {
+    border-color: var(--color-danger);
+}
+.ds-input.error:focus {
+    box-shadow: 0 0 0 4px var(--color-danger-bg);
+}
+
+/* --- 7. Premium Table Styles --- */
+.ds-table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--ds-border);
+    background: var(--ds-bg-card);
+    box-shadow: var(--shadow-sm);
+}
+
+.ds-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-family: var(--font-sans);
+    text-align: left;
+}
+
+.ds-table th {
+    background: var(--ds-bg-app);
+    color: var(--ds-text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--space-3) var(--space-4);
+    border-bottom: 1px solid var(--ds-border);
+}
+
+.ds-table td {
+    padding: var(--space-3) var(--space-4);
+    font-size: 0.875rem;
+    color: var(--ds-text-primary);
+    border-bottom: 1px solid var(--ds-border);
+    transition: background 0.15s ease;
+}
+
+.ds-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.ds-table tbody tr:hover td {
+    background: var(--ds-bg-hover);
+}
+
+/* --- 8. Card Variations --- */
+.ds-card {
+    background: var(--ds-bg-card);
+    border: 1px solid var(--ds-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.ds-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--ds-border-hover);
+}
+
+.ds-card-header {
+    margin-bottom: var(--space-4);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

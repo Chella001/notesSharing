@@ -56,7 +56,7 @@
             <div class="analytics-grid">
                 <div class="analytics-card">
                     <div class="card-header">
-                        <h3>Patient Demographics</h3>
+                        <h3 class="text-h3">Patient Demographics</h3>
                         <button class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
                     <div class="chart-placeholder">
@@ -70,7 +70,7 @@
                 </div>
                 <div class="analytics-card">
                     <div class="card-header">
-                        <h3>Department Performance</h3>
+                        <h3 class="text-h3">Department Performance</h3>
                         <button class="icon-btn"><i class="fas fa-ellipsis-h"></i></button>
                     </div>
                     <div class="department-list">
@@ -91,15 +91,15 @@
             </div>
 
             <!-- Recent Appointments Section -->
-            <div class="table-container">
+            <div class="ds-table-container">
                 <div class="table-header">
-                    <h3>📋 Recent Appointments</h3>
+                    <h3 class="text-h3">📋 Recent Appointments</h3>
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="appointmentSearch" class="search-input" placeholder="Search patients/doctors..." oninput="filterRecentAppointments()">
+                            <input type="text" id="appointmentSearch" class="search-input ds-input ds-input"  placeholder="Search patients/doctors..." oninput="filterRecentAppointments()" >
                         </div>
-                        <select id="statusFilter" class="table-filter" onchange="filterRecentAppointments()">
+                        <select id="statusFilter" class="table-filter ds-select ds-select"  onchange="filterRecentAppointments()" >
                             <option value="">All Statuses</option>
                             <option value="Scheduled">Scheduled</option>
                             <option value="Confirmed">Confirmed</option>
@@ -116,7 +116,7 @@
 
                 <!-- Appointments Table -->
                 <div id="appointmentsTableContainer">
-                    <table class="appointments-table">
+                    <table class="ds-table">
                         <thead>
                             <tr>
                                 <th>Patient Name</th>

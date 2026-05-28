@@ -95,11 +95,11 @@
             </div>
 
             <!-- Doctor Form -->
-            <div class="form-container">
+            <div class="ds-card">
                 <div class="form-header">
                     <i class="fas fa-user-md"></i>
                     <div>
-                        <h2>Doctor Registration Form</h2>
+                        <h2 class="text-h2">Doctor Registration Form</h2>
                         <p>Enter doctor details below. Fields marked with * are required.</p>
                     </div>
                 </div>
@@ -108,11 +108,11 @@
                     <div class="form-grid">
                         <!-- Full Name - Only Alphabets -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-user-md"></i>Full Name *</label>
+                            <label class="ds-label"><i class="fas fa-user-md"></i>Full Name *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-user-md"></i>
                                 <input type="text" id="doctorName" placeholder="Enter doctor's full name (letters only)" 
-                                       onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode == 32" 
+                                       onkeypress="return (event.charCode  class="ds-input">= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode == 32" 
                                        required>
                             </div>
                             <div id="nameError" class="field-error">
@@ -123,10 +123,10 @@
 
                         <!-- Specialization -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-stethoscope"></i>Specialization *</label>
+                            <label class="ds-label"><i class="fas fa-stethoscope"></i>Specialization *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-chevron-down"></i>
-                                <select id="specialization" required style="cursor: pointer;">
+                                <select id="specialization" required style="cursor: pointer;" class="ds-select">
                                     <option value="" disabled selected>Select Specialization</option>
                                     <option value="General Medicine">General Medicine</option>
                                     <option value="Pediatrics">Pediatrics</option>
@@ -146,10 +146,10 @@
 
                         <!-- Experience (in Years) -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-briefcase"></i>Experience (Years) *</label>
+                            <label class="ds-label"><i class="fas fa-briefcase"></i>Experience (Years) *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-hashtag"></i>
-                                <input type="number" id="experience" placeholder="e.g. 5" min="0" max="60" required>
+                                <input type="number" id="experience" placeholder="e.g. 5" min="0" max="60" required class="ds-input">
                             </div>
                             <div id="experienceError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -159,10 +159,10 @@
 
                         <!-- Qualification -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-graduation-cap"></i>Qualification *</label>
+                            <label class="ds-label"><i class="fas fa-graduation-cap"></i>Qualification *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-award"></i>
-                                <input type="text" id="qualification" placeholder="e.g. MBBS, MD" required>
+                                <input type="text" id="qualification" placeholder="e.g. MBBS, MD" required class="ds-input">
                             </div>
                             <div id="qualificationError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -172,10 +172,10 @@
 
                         <!-- Consultation Fee -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-indian-rupee-sign"></i>Consultation Fee *</label>
+                            <label class="ds-label"><i class="fas fa-indian-rupee-sign"></i>Consultation Fee *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-coins"></i>
-                                <input type="number" id="fee" placeholder="Consultation fee amount" min="0" required>
+                                <input type="number" id="fee" placeholder="Consultation fee amount" min="0" required class="ds-input">
                             </div>
                             <div id="feeError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -185,10 +185,10 @@
 
                         <!-- Phone Number - 10 digits -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-phone"></i>Phone Number *</label>
+                            <label class="ds-label"><i class="fas fa-phone"></i>Phone Number *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-alt"></i>
-                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" required>
+                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" required class="ds-input">
                             </div>
                             <div id="phoneError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -198,10 +198,10 @@
 
                         <!-- Email Address -->
                         <div class="input-group">
-                            <label class="input-label"><i class="far fa-envelope"></i>Email Address *</label>
+                            <label class="ds-label"><i class="far fa-envelope"></i>Email Address *</label>
                             <div class="input-wrapper">
                                 <i class="far fa-envelope"></i>
-                                <input type="email" id="email" placeholder="doctor@clinic.com" required>
+                                <input type="email" id="email" placeholder="doctor@clinic.com" required class="ds-input">
                             </div>
                             <div id="emailError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -211,9 +211,9 @@
 
                         <!-- Available Days (Multi-select dropdown) -->
                         <div class="input-group">
-                            <label class="input-label"><i class="far fa-calendar-alt"></i>Available Days *</label>
+                            <label class="ds-label"><i class="far fa-calendar-alt"></i>Available Days *</label>
                             <div class="input-wrapper">
-                                <select id="availableDays" multiple required style="height: 100px; padding: 8px;">
+                                <select id="availableDays" multiple required style="height: 100px; padding: 8px;" class="ds-select">
                                     <option value="Monday">Monday</option>
                                     <option value="Tuesday">Tuesday</option>
                                     <option value="Wednesday">Wednesday</option>
@@ -232,10 +232,10 @@
 
                         <!-- Address -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-map-marker-alt"></i>Address *</label>
+                            <label class="ds-label"><i class="fas fa-map-marker-alt"></i>Address *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-map-pin"></i>
-                                <textarea id="address" placeholder="Enter residential or clinic address" rows="2" required></textarea>
+                                <textarea id="address" placeholder="Enter residential or clinic address" rows="2" required class="ds-textarea"></textarea>
                             </div>
                             <div id="addressError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -245,10 +245,10 @@
 
                         <!-- Additional Notes -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-notes-medical"></i>Additional Notes</label>
+                            <label class="ds-label"><i class="fas fa-notes-medical"></i>Additional Notes</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-sticky-note"></i>
-                                <textarea id="additionalNotes" placeholder="Special achievements, biography, or specific timing rules" rows="2"></textarea>
+                                <textarea id="additionalNotes" placeholder="Special achievements, biography, or specific timing rules" rows="2" class="ds-textarea"></textarea>
                             </div>
                         </div>
                     </div>
@@ -261,10 +261,10 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <a href="dashboard.html" class="cancel-btn">
+                        <a href="dashboard.html" class="ds-btn ds-btn-secondary">
                             <i class="fas fa-times"></i> Cancel
                         </a>
-                        <button type="submit" class="save-btn" id="submitBtn">
+                        <button type="submit" class="ds-btn ds-btn-primary" id="submitBtn">
                             <i class="fas fa-save"></i> Save Doctor
                         </button>
                     </div>
@@ -283,15 +283,15 @@
             </div>
 
             <!-- Doctors List Section -->
-            <div class="table-container" style="margin-top: 32px;">
+            <div class="ds-table-container" style="margin-top: 32px;">
                 <div class="table-header">
-                    <h3>📋 Registered Doctors</h3>
+                    <h3 class="text-h3">📋 Registered Doctors</h3>
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="doctorSearch" class="search-input" placeholder="Search doctors by name/specialization..." oninput="filterDoctors()">
+                            <input type="text" id="doctorSearch" class="search-input ds-input ds-input"  placeholder="Search doctors by name/specialization..." oninput="filterDoctors()" >
                         </div>
-                        <select id="specializationFilter" class="table-filter" onchange="filterDoctors()">
+                        <select id="specializationFilter" class="table-filter ds-select ds-select"  onchange="filterDoctors()" >
                             <option value="">All Specializations</option>
                             <option value="General Medicine">General Medicine</option>
                             <option value="Pediatrics">Pediatrics</option>
@@ -302,7 +302,7 @@
                             <option value="Neurology">Neurology</option>
                             <option value="Ophthalmology">Ophthalmology</option>
                         </select>
-                        <select id="experienceFilter" class="table-filter" onchange="filterDoctors()">
+                        <select id="experienceFilter" class="table-filter ds-select ds-select"  onchange="filterDoctors()" >
                             <option value="">All Experience levels</option>
                             <option value="1-5">1 - 5 Years</option>
                             <option value="6-10">6 - 10 Years</option>
@@ -315,7 +315,7 @@
                 </div>
 
                 <div id="doctorsTableContainer">
-                    <table class="appointments-table">
+                    <table class="ds-table">
                         <thead>
                             <tr>
                                 <th>Name</th>

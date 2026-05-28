@@ -75,7 +75,7 @@
         <!-- Main Content -->
         <div class="main-content">
             <div class="main-header">
-                <h1>
+                <h1 class="text-h1">
                     Reports & Analytics
                     <span class="live-badge">
                         <i class="fas fa-circle"></i> LIVE
@@ -88,11 +88,11 @@
             <div class="date-range">
                 <div class="date-input">
                     <i class="fas fa-calendar-alt"></i>
-                    <input type="date" id="startDate">
+                    <input type="date" id="startDate" class="ds-input">
                 </div>
                 <div class="date-input">
                     <i class="fas fa-calendar-alt"></i>
-                    <input type="date" id="endDate">
+                    <input type="date" id="endDate" class="ds-input">
                 </div>
                 <button class="apply-btn" onclick="loadReports()">
                     <i class="fas fa-filter"></i> Apply Filter
@@ -140,7 +140,7 @@
                 <!-- Revenue by Day Chart -->
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="fas fa-chart-line" style="margin-right: 8px;"></i> Revenue Trend</h3>
+                        <h3 class="text-h3"><i class="fas fa-chart-line" style="margin-right: 8px;"></i> Revenue Trend</h3>
                         <i class="fas fa-chevron-right"></i>
                     </div>
                     <div class="chart-container">
@@ -151,7 +151,7 @@
                 <!-- Appointment Status Distribution -->
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="fas fa-chart-pie" style="margin-right: 8px;"></i> Appointment Status</h3>
+                        <h3 class="text-h3"><i class="fas fa-chart-pie" style="margin-right: 8px;"></i> Appointment Status</h3>
                         <i class="fas fa-chevron-right"></i>
                     </div>
                     <div class="chart-container">
@@ -162,7 +162,7 @@
                 <!-- Top Doctors by Revenue -->
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="fas fa-user-md" style="margin-right: 8px;"></i> Top Doctors by Revenue</h3>
+                        <h3 class="text-h3"><i class="fas fa-user-md" style="margin-right: 8px;"></i> Top Doctors by Revenue</h3>
                         <i class="fas fa-chevron-right"></i>
                     </div>
                     <div class="chart-container">
@@ -173,7 +173,7 @@
                 <!-- Appointments by Type -->
                 <div class="chart-card">
                     <div class="chart-header">
-                        <h3><i class="fas fa-stethoscope" style="margin-right: 8px;"></i> Appointments by Type</h3>
+                        <h3 class="text-h3"><i class="fas fa-stethoscope" style="margin-right: 8px;"></i> Appointments by Type</h3>
                         <i class="fas fa-chevron-right"></i>
                     </div>
                     <div class="chart-container">
@@ -183,14 +183,14 @@
             </div>
 
             <!-- Detailed Tables -->
-            <div class="table-container">
+            <div class="ds-table-container">
                 <div class="table-header">
-                    <h3><i class="fas fa-list" style="margin-right: 8px;"></i> Recent Transactions</h3>
+                    <h3 class="text-h3"><i class="fas fa-list" style="margin-right: 8px;"></i> Recent Transactions</h3>
                     <button class="export-btn" onclick="exportToCSV()">
                         <i class="fas fa-download"></i> Export CSV
                     </button>
                 </div>
-                <table class="data-table">
+                <table class="ds-table">
                     <thead>
                         <tr>
                             <th>Date</th>
@@ -212,11 +212,11 @@
             </div>
 
             <!-- Doctor Performance Table -->
-            <div class="table-container">
+            <div class="ds-table-container">
                 <div class="table-header">
-                    <h3><i class="fas fa-chart-simple" style="margin-right: 8px;"></i> Doctor Performance</h3>
+                    <h3 class="text-h3"><i class="fas fa-chart-simple" style="margin-right: 8px;"></i> Doctor Performance</h3>
                 </div>
-                <table class="data-table">
+                <table class="ds-table">
                     <thead>
                         <tr>
                             <th>Doctor</th>

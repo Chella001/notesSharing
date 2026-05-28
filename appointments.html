@@ -77,11 +77,11 @@
             </div>
 
             <!-- Appointment Form -->
-            <div class="form-container">
+            <div class="ds-card">
                 <div class="form-header">
                     <i class="fas fa-calendar-plus"></i>
                     <div>
-                        <h2>Appointment Scheduling Form</h2>
+                        <h2 class="text-h2">Appointment Scheduling Form</h2>
                         <p>Enter appointment details below. Fields marked with * are required.</p>
                     </div>
                 </div>
@@ -90,10 +90,10 @@
                     <div class="form-grid">
                         <!-- Patient Selection -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-user-injured"></i>Select Patient *</label>
+                            <label class="ds-label"><i class="fas fa-user-injured"></i>Select Patient *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-user"></i>
-                                <select id="patientSelect" required>
+                                <select id="patientSelect" required class="ds-select">
                                     <option value="">-- Select Patient --</option>
                                 </select>
                             </div>
@@ -105,10 +105,10 @@
 
                         <!-- Doctor Selection -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-user-md"></i>Select Doctor *</label>
+                            <label class="ds-label"><i class="fas fa-user-md"></i>Select Doctor *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-stethoscope"></i>
-                                <select id="doctorSelect" required>
+                                <select id="doctorSelect" required class="ds-select">
                                     <option value="">-- Select Doctor --</option>
                                 </select>
                             </div>
@@ -120,10 +120,10 @@
 
                         <!-- Appointment Date and Time -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-calendar-alt"></i>Appointment Date *</label>
+                            <label class="ds-label"><i class="fas fa-calendar-alt"></i>Appointment Date *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-calendar-day"></i>
-                                <input type="date" id="appointmentDate" min="" required>
+                                <input type="date" id="appointmentDate" min="" required class="ds-input">
                             </div>
                             <div id="dateError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -132,10 +132,10 @@
                         </div>
 
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-clock"></i>Appointment Time *</label>
+                            <label class="ds-label"><i class="fas fa-clock"></i>Appointment Time *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-clock"></i>
-                                <select id="appointmentTime" required>
+                                <select id="appointmentTime" required class="ds-select">
                                     <option value="">Select Time</option>
                                     <option value="09:00 AM">09:00 AM</option>
                                     <option value="09:30 AM">09:30 AM</option>
@@ -162,10 +162,10 @@
 
                         <!-- Appointment Type and Status -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-stethoscope"></i>Appointment Type *</label>
+                            <label class="ds-label"><i class="fas fa-stethoscope"></i>Appointment Type *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-notes-medical"></i>
-                                <select id="appointmentType" required>
+                                <select id="appointmentType" required class="ds-select">
                                     <option value="">Select Type</option>
                                     <option value="Consultation">Consultation</option>
                                     <option value="Follow-up">Follow-up</option>
@@ -182,10 +182,10 @@
                         </div>
 
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-circle"></i>Status *</label>
+                            <label class="ds-label"><i class="fas fa-circle"></i>Status *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-tag"></i>
-                                <select id="appointmentStatus" required>
+                                <select id="appointmentStatus" required class="ds-select">
                                     <option value="Scheduled">Scheduled</option>
                                     <option value="Confirmed">Confirmed</option>
                                     <option value="In Progress">In Progress</option>
@@ -202,11 +202,11 @@
 
                         <!-- Fee and Payment -->
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-rupee-sign"></i>Consultation Fee *</label>
+                            <label class="ds-label"><i class="fas fa-rupee-sign"></i>Consultation Fee *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-money-bill"></i>
                                 <input type="number" id="consultationFee" placeholder="Fee amount" min="0" step="100"
-                                    required>
+                                    required class="ds-input">
                             </div>
                             <div id="feeError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -215,10 +215,10 @@
                         </div>
 
                         <div class="input-group">
-                            <label class="input-label"><i class="fas fa-credit-card"></i>Payment Status</label>
+                            <label class="ds-label"><i class="fas fa-credit-card"></i>Payment Status</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-coins"></i>
-                                <select id="paymentStatus">
+                                <select id="paymentStatus" class="ds-select">
                                     <option value="Pending">Pending</option>
                                     <option value="Paid">Paid</option>
                                     <option value="Insurance">Insurance</option>
@@ -229,12 +229,12 @@
 
                         <!-- Symptoms / Reason -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-notes-medical"></i>Reason for Visit / Symptoms
+                            <label class="ds-label"><i class="fas fa-notes-medical"></i>Reason for Visit / Symptoms
                                 *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-file-medical"></i>
                                 <textarea id="symptoms" placeholder="Describe the reason for appointment or symptoms"
-                                    rows="3" required></textarea>
+                                    rows="3" required class="ds-textarea"></textarea>
                             </div>
                             <div id="symptomsError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -244,12 +244,12 @@
 
                         <!-- Notes -->
                         <div class="input-group full-width">
-                            <label class="input-label"><i class="fas fa-comment-medical"></i>Additional Notes</label>
+                            <label class="ds-label"><i class="fas fa-comment-medical"></i>Additional Notes</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-pen"></i>
                                 <textarea id="additionalNotes"
                                     placeholder="Any additional information or special instructions"
-                                    rows="2"></textarea>
+                                    rows="2" class="ds-textarea"></textarea>
                             </div>
                         </div>
                     </div>
@@ -262,10 +262,10 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <a href="dashboard.html" class="cancel-btn">
+                        <a href="dashboard.html" class="ds-btn ds-btn-secondary">
                             <i class="fas fa-times"></i> Cancel
                         </a>
-                        <button type="submit" class="save-btn" id="submitBtn">
+                        <button type="submit" class="ds-btn ds-btn-primary" id="submitBtn">
                             <i class="fas fa-save"></i> Schedule Appointment
                         </button>
                     </div>

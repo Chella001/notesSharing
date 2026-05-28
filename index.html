@@ -12,24 +12,24 @@
     <div class="login-card">
       <div class="hospital-badge">
         <i class="fas fa-hospital-user"></i>
-        <h1>🏥 Akshaya Clinic</h1>
+        <h1 class="text-h1">🏥 Akshaya Clinic</h1>
         <p>Management System</p>
       </div>
 
       <form onsubmit="return handleLogin(event)">
         <div class="input-group">
-          <label class="input-label">Email Address</label>
+          <label class="ds-label">Email Address</label>
           <div class="input-wrapper">
             <i class="far fa-envelope"></i>
-            <input type="email" id="email" placeholder="doctor@hospital.com" value="">
+            <input type="email" id="email" placeholder="doctor@hospital.com" value="" class="ds-input">
           </div>
         </div>
 
         <div class="input-group">
-          <label class="input-label">Password</label>
+          <label class="ds-label">Password</label>
           <div class="input-wrapper">
             <i class="fas fa-lock"></i>
-            <input type="password" id="password" placeholder="Enter password" value="">
+            <input type="password" id="password" placeholder="Enter password" value="" class="ds-input">
             <button type="button" class="password-toggle" id="togglePassword" onclick="togglePasswordVisibility()" tabindex="-1">
               <i class="far fa-eye" id="toggleIcon"></i>
             </button>
@@ -42,7 +42,7 @@
           </a>
         </div>
 
-        <button type="submit" class="login-btn">
+        <button type="submit" class="ds-btn ds-btn-primary full-width">
           <i class="fas fa-sign-in-alt"></i>
           Sign In
         </button>
