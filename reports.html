@@ -205,7 +205,7 @@
         let db;
         let revenueChartInstance, statusChartInstance, doctorRevenueInstance, typeChartInstance;
         function showNotification(message, type = "success") {
-            if (window.showNotification) {
+            if (typeof window.showNotification === 'function' && window.showNotification !== showNotification) {
                 window.showNotification(message, type);
             } else {
                 console.log(`[Notification] ${type}: ${message}`);
