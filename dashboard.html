@@ -241,100 +241,46 @@
         
 
         // ==================== LOAD DASHBOARD DATA ====================
+        // Uses direct Firestore calls - no dynamic imports to avoid cache/race issues
         async function loadDashboardData() {
-            try {
-                if (window.showLoading) window.showLoading("Syncing Dashboard Data...");
-                // Check if we came from any of the add pages
-                const urlParams = new URLSearchParams(window.location.search);
-                
-                // Show appropriate notification
-                if (urlParams.get('newPatient') === 'success') {
-                    showNotification("✅ New patient added successfully! Count updated.", "success");
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                } else if (urlParams.get('newDoctor') === 'success') {
-                    showNotification("✅ New doctor added successfully! Count updated.", "success");
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                } else if (urlParams.get('newAppointment') === 'success') {
-                    showNotification("✅ New appointment scheduled successfully! Count updated.", "success");
-                    window.history.replaceState({}, document.title, window.location.pathname);
-                } else {
-                    showNotification("Loading dashboard data...", "success");
-                }
-                
-                const { PatientModel } = await import('./js/models/Patient.js?v=' + new Date().getTime());
-                const { DoctorModel } = await import('./js/models/Doctor.js?v=' + new Date().getTime());
-                const { AppointmentModel } = await import('./js/models/Appointment.js?v=' + new Date().getTime());
-
-                const patientModel = new PatientModel(db);
-                const doctorModel = new DoctorModel(db);
-                const appointmentModel = new AppointmentModel(db);
-
-                // Load Counts & Revenue
-                let totalPatients = 0;
-                try { totalPatients = await patientModel.getCount(); } catch (e) { console.error("Error fetching patients:", e); }
-                try {
-                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalPatients'), totalPatients || 0);
-                    else document.getElementById('totalPatients').textContent = totalPatients || 0;
-                } catch (e) { console.error("Error animating patients:", e); }
-
-                let totalDoctors = 0;
-                try { totalDoctors = await doctorModel.getCount(); } catch (e) { console.error("Error fetching doctors:", e); }
-                try {
-                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalDoctors'), totalDoctors || 0);
-                    else document.getElementById('totalDoctors').textContent = totalDoctors || 0;
-                } catch (e) { console.error("Error animating doctors:", e); }
-
-                let totalAppointments = 0;
-                try { totalAppointments = await appointmentModel.getCount(); } catch (e) { console.error("Error fetching appointments:", e); }
-                try {
-                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalAppointments'), totalAppointments || 0);
-                    else document.getElementById('totalAppointments').textContent = totalAppointments || 0;
-                } catch (e) { console.error("Error animating appointments:", e); }
-
-                let totalRevenue = 0;
-                try { totalRevenue = await appointmentModel.getRevenue(); } catch (e) { console.error("Error fetching revenue:", e); }
-                try {
-                    if (window.dsAnimate) window.dsAnimate.countUp(document.getElementById('totalRevenue'), totalRevenue || 0, 2, "₹");
-                    else document.getElementById('totalRevenue').textContent = `₹${(totalRevenue || 0).toLocaleString()}`;
-                } catch (e) { console.error("Error animating revenue:", e); }
-
-                // Load Recent Appointments
-                try {
-                    loadedAppointments = await appointmentModel.getRecent(25);
-                } catch (e) {
-                    console.error("Error fetching recent appointments:", e);
-                    loadedAppointments = [];
-                }
-                
-                try {
-                    renderAppointments(loadedAppointments || []);
-                } catch (e) {
-                    console.error("Error rendering appointments:", e);
-                }
-                
-                try {
-                    if (window.hideLoading) window.hideLoading();
-                } catch (e) { console.error("Error hiding loading:", e); }
-            } catch (error) {
-                if (window.hideLoading) window.hideLoading();
-                console.error("❌ CRITICAL DASHBOARD CRASH:", error);
-                
-                // Show error but keep existing values if any
-                if (document.getElementById('totalPatients').textContent === '0') {
-                    document.getElementById('totalPatients').textContent = '⚠️';
-                }
-                if (document.getElementById('totalDoctors').textContent === '0') {
-                    document.getElementById('totalDoctors').textContent = '⚠️';
-                }
-                if (document.getElementById('totalAppointments').textContent === '0') {
-                    document.getElementById('totalAppointments').textContent = '⚠️';
-                }
-                
-                document.getElementById('appointmentsBody').innerHTML = 
-                    `<tr><td colspan="6" class="error"><div style="text-align: center; padding: 24px; color: var(--color-danger);"><i class="fas fa-exclamation-triangle" style="font-size: 24px; margin-bottom: 12px; display: block;"></i>Error loading appointments. Please check your connection.</div></td></tr>`;
-                
-                showNotification("DEBUG_CODE_200: " + error.message, "error");
+            if (!db) {
+                console.warn("db not ready yet, retrying in 500ms...");
+                setTimeout(loadDashboardData, 500);
+                return;
             }
+
+            // Handle success redirects from other pages
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('newPatient') === 'success') {
+                showNotification("✅ New patient added successfully!", "success");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (urlParams.get('newDoctor') === 'success') {
+                showNotification("✅ New doctor added successfully!", "success");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            } else if (urlParams.get('newAppointment') === 'success') {
+                showNotification("✅ New appointment scheduled!", "success");
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+
+            // Load recent appointments table directly
+            try {
+                const snapshot = await db.collection('appointments').get();
+                const appointments = [];
+                snapshot.forEach(doc => appointments.push({ id: doc.id, ...doc.data() }));
+                // Sort in memory — avoids Firestore index errors
+                appointments.sort((a, b) => {
+                    const dA = a.date ? (a.date.toDate ? a.date.toDate() : new Date(a.date)) : new Date(0);
+                    const dB = b.date ? (b.date.toDate ? b.date.toDate() : new Date(b.date)) : new Date(0);
+                    return dB - dA;
+                });
+                loadedAppointments = appointments.slice(0, 25);
+                renderAppointments(loadedAppointments);
+            } catch (e) {
+                console.error("Error loading appointments table:", e);
+                renderAppointments([]);
+            }
+
+            if (window.hideLoading) window.hideLoading();
         }
 
         let loadedAppointments = [];
@@ -397,67 +343,43 @@
             renderAppointments(filtered);
         };
 
-        // ==================== AUTO-LOGIN ANONYMOUSLY ====================
-        function autoLogin() {
-            auth.signInAnonymously()
-                .then(() => {
-                    console.log("✅ Signed in anonymously");
-                })
-                .catch(error => {
-                    console.log("Anonymous sign-in error:", error);
-                    // Continue anyway - might be using public rules
-                });
-        }
-
         // ==================== INITIAL LOAD ====================
         document.addEventListener('DOMContentLoaded', () => {
             db = window.db;
             auth = window.auth;
-            // Try anonymous login (won't break if it fails)
-            autoLogin();
-            
-            // Load dashboard data
+
+            // Load the appointments table once
             loadDashboardData();
-            
-            // Set up real-time listeners for auto-update
+
+            // Use real-time onSnapshot for the 4 stat cards
+            // This is the ONLY place that updates the numbers - no conflicts
             if (db) {
-                // Listen for patients changes
-                db.collection('patients').onSnapshot((snapshot) => {
-                    console.log("Patients collection changed, updating count...");
-                    document.getElementById('totalPatients').textContent = snapshot.size;
-                }, (error) => {
-                    console.log("Patient listener error (ignored):", error);
-                });
-                
-                // Listen for doctors changes
-                db.collection('doctors').onSnapshot((snapshot) => {
-                    console.log("Doctors collection changed, updating count...");
-                    document.getElementById('totalDoctors').textContent = snapshot.size;
-                }, (error) => {
-                    console.log("Doctor listener error (ignored):", error);
-                });
-                
-                // Listen for appointments changes
-                db.collection('appointments').onSnapshot((snapshot) => {
-                    console.log("Appointments collection changed, updating count...");
-                    document.getElementById('totalAppointments').textContent = snapshot.size;
-                    
-                    // Also update revenue when appointments change
-                    let totalRevenue = 0;
-                    snapshot.forEach(doc => {
-                        const data = doc.data();
-                        if (data.status === 'Completed' && data.fee) {
-                            totalRevenue += data.fee;
-                        }
+                db.collection('patients').onSnapshot((snap) => {
+                    const el = document.getElementById('totalPatients');
+                    if (el) el.textContent = snap.size;
+                }, (e) => console.warn("Patient listener:", e));
+
+                db.collection('doctors').onSnapshot((snap) => {
+                    const el = document.getElementById('totalDoctors');
+                    if (el) el.textContent = snap.size;
+                }, (e) => console.warn("Doctor listener:", e));
+
+                db.collection('appointments').onSnapshot((snap) => {
+                    const el = document.getElementById('totalAppointments');
+                    if (el) el.textContent = snap.size;
+
+                    let revenue = 0;
+                    snap.forEach(doc => {
+                        const d = doc.data();
+                        if (d.status === 'Completed' && d.fee) revenue += Number(d.fee);
                     });
+                    const revenueEl = document.getElementById('totalRevenue');
                     const symbol = window.currencySymbol || '₹';
-                    document.getElementById('totalRevenue').textContent = `${symbol}${totalRevenue.toLocaleString()}`;
-                    
-                    // Refresh the recent appointments table
+                    if (revenueEl) revenueEl.textContent = symbol + revenue.toLocaleString();
+
+                    // Refresh table when appointments change
                     loadDashboardData();
-                }, (error) => {
-                    console.log("Appointment listener error (ignored):", error);
-                });
+                }, (e) => console.warn("Appointment listener:", e));
             }
         });
     </script>
