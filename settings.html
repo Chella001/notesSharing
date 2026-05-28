@@ -374,23 +374,14 @@
     <script>
         function showNotification(msg, type = "success") {
             const notif = document.getElementById('notification');
+            if (!notif) return;
             notif.textContent = msg;
             notif.style.background = type === "success" ? "var(--primary)" : "var(--danger)";
             notif.classList.add('show');
             setTimeout(() => notif.classList.remove('show'), 2800);
         }
 
-        // Current date display
-        const dateEl = document.getElementById('currentDate');
-        if (dateEl) dateEl.innerText = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
-
-        let db = window.db || firebase.firestore();
-        let auth = window.auth || firebase.auth();
-
-        // Anonymous sign-in fallback
-        if (auth) auth.signInAnonymously().catch(e => console.log("Anon sign-in optional", e));
-
-        // ---------- Default Settings (initial fallback) ----------
+        // ---------- Default Settings ----------
         const defaultSettings = {
             general: { hospitalName: "Akshaya Clinic", regCode: "HOS-101", timezone: "Asia/Kolkata", dateFormat: "DD/MM/YYYY", language: "en", autoArchive: false },
             appointments: { defaultDuration: 30, bufferBetween: 15, maxAdvanceDays: 60, workStart: "09:00", workEnd: "18:00", onlineBooking: true, requirePrepay: false },
@@ -400,8 +391,22 @@
             integrations: { ehrSync: true, ehrProvider: "Epic", labIntegration: false, webhookUrl: "https://api.akshaya.com/hook" }
         };
 
-        // Global state to hold current loaded settings from Firestore
+        // Global state
         let currentSettings = JSON.parse(JSON.stringify(defaultSettings));
+        let db;
+
+        // Wait for window.db (set by firebase-config.js module) then run callback
+        function waitForDb(callback, attempts = 0) {
+            if (window.db) {
+                db = window.db;
+                callback();
+            } else if (attempts < 20) {
+                setTimeout(() => waitForDb(callback, attempts + 1), 150);
+            } else {
+                db = firebase.firestore();
+                callback();
+            }
+        }
 
         // Load settings from Firestore (document ID: "hospital_settings")
         async function loadSettingsFromFirestore() {
@@ -578,51 +583,35 @@
             saveCategory(category);
         }
 
-        // Tab switching logic
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.getAttribute('data-tab');
-                document.querySelectorAll('.settings-panel').forEach(panel => panel.classList.remove('active-panel'));
-                document.getElementById(`${tabId}Panel`).classList.add('active-panel');
-                document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
-                btn.classList.add('active');
+        // ==================== INIT on DOMContentLoaded ====================
+        document.addEventListener('DOMContentLoaded', () => {
+            // Tab switching
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    document.querySelectorAll('.settings-panel').forEach(p => p.classList.remove('active-panel'));
+                    document.getElementById(`${tabId}Panel`).classList.add('active-panel');
+                    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                });
             });
-        });
 
-        // Save buttons event listeners
-        document.querySelectorAll('.btn-save').forEach(btn => {
-            const category = btn.getAttribute('data-category');
-            btn.addEventListener('click', () => saveCategory(category));
-        });
-        document.querySelectorAll('.btn-reset').forEach(btn => {
-            const category = btn.getAttribute('data-reset');
-            btn.addEventListener('click', () => resetCategory(category));
-        });
+            // Save buttons
+            document.querySelectorAll('.btn-save').forEach(btn => {
+                const category = btn.getAttribute('data-category');
+                btn.addEventListener('click', () => saveCategory(category));
+            });
 
-        // Logout functionality - use app.js showLogoutConfirmation after module loads
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            const doLogout = () => {
-                const a = window.auth || auth;
-                if (a) {
-                    a.signOut().then(() => {
-                        sessionStorage.clear();
-                        showNotification("Logged out", "success");
-                        setTimeout(() => window.location.href = 'index.html', 1200);
-                    }).catch(() => showNotification("Logout error", "error"));
-                } else {
-                    sessionStorage.clear();
-                    window.location.href = 'index.html';
-                }
-            };
-            if (typeof window.showLogoutConfirmation === 'function') {
-                window.showLogoutConfirmation(doLogout);
-            } else {
-                doLogout();
-            }
-        });
+            // Reset buttons
+            document.querySelectorAll('.btn-reset').forEach(btn => {
+                const category = btn.getAttribute('data-reset');
+                btn.addEventListener('click', () => resetCategory(category));
+            });
 
-        // Initialize: load settings from Firebase
-        loadSettingsFromFirestore();
+            // NOTE: Logout is handled by sidebar.js (app-sidebar component).
+            // Wait for Firebase db, then load settings
+            waitForDb(() => loadSettingsFromFirestore());
+        });
     </script>
 </body>
 </html>
