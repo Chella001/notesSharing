@@ -1,6 +1,7 @@
 // Import all components
 import '../components/sidebar.js';
 import '../components/header.js';
+import './animations.js';
 
 // Global Utilities
 
@@ -78,13 +79,33 @@ window.showLoading = function(message = "Loading...") {
             </div>
         `;
         document.body.appendChild(loader);
+        if (window.dsAnimate && window.dsAnimate.popIn) {
+            window.dsAnimate.popIn(loader.firstElementChild);
+            if (window.animate) {
+                window.animate(loader, { opacity: [0, 1] }, { duration: 0.3 });
+            }
+        }
     } else {
         document.getElementById('global-loader-msg').textContent = message;
         loader.style.display = 'flex';
+        if (window.dsAnimate && window.dsAnimate.popIn) {
+            window.dsAnimate.popIn(loader.firstElementChild);
+            if (window.animate) {
+                window.animate(loader, { opacity: [0, 1] }, { duration: 0.3 });
+            }
+        }
     }
 };
 
 window.hideLoading = function() {
     const loader = document.getElementById('global-loader');
-    if (loader) loader.style.display = 'none';
+    if (loader) {
+        if (window.animate) {
+            window.animate(loader, { opacity: [1, 0] }, { duration: 0.2 }).finished.then(() => {
+                loader.style.display = 'none';
+            });
+        } else {
+            loader.style.display = 'none';
+        }
+    }
 };
