@@ -119,9 +119,6 @@ class AppSidebar extends HTMLElement {
                     <div class="sb-brand-name">Akshaya Clinic</div>
                     <div class="sb-brand-sub">Enterprise Suite</div>
                 </div>
-                <button class="sb-toggle-btn" id="sbInlineToggle" title="Toggle sidebar">
-                    <i class="fas fa-chevron-left"></i>
-                </button>
             </div>
 
             <!-- Search -->
@@ -232,6 +229,7 @@ class AppSidebar extends HTMLElement {
                 localStorage.setItem('theme', dark ? 'dark' : 'light');
                 themeBtn.querySelector('.sb-item-icon i').className = `fas fa-${dark ? 'sun' : 'moon'}`;
                 themeBtn.querySelector('.sb-item-label').textContent = dark ? 'Light Mode' : 'Dark Mode';
+                themeBtn.querySelector('.sb-tooltip').textContent = dark ? 'Light Mode' : 'Dark Mode';
                 themeBtn.setAttribute('data-label', dark ? 'Light Mode' : 'Dark Mode');
             });
         }
@@ -294,22 +292,17 @@ class AppSidebar extends HTMLElement {
         const sidebar = this.querySelector('#appSidebar');
         const dashboard = document.querySelector('.dashboard');
 
-        // Inline toggle (inside brand bar) — desktop only
-        const inlineBtn = this.querySelector('#sbInlineToggle');
-        if (inlineBtn) {
-            inlineBtn.addEventListener('click', () => {
+        btn.addEventListener('click', () => {
+            if (window.innerWidth < 768) {
+                const open = sidebar?.classList.toggle('sb-mobile-open');
+                backdrop.classList.toggle('show', open);
+                btn.classList.toggle('toggle-open', open);
+            } else {
                 this._collapsed = !this._collapsed;
                 sidebar?.classList.toggle('sb-mini', this._collapsed);
                 dashboard?.classList.toggle('sidebar-is-collapsed', this._collapsed);
                 localStorage.setItem('sidebarCollapsed', this._collapsed);
-            });
-        }
-
-        // Floating toggle — mobile only
-        btn.addEventListener('click', () => {
-            const open = sidebar?.classList.toggle('sb-mobile-open');
-            backdrop.classList.toggle('show', open);
-            btn.classList.toggle('toggle-open', open);
+            }
         });
 
         backdrop.addEventListener('click', () => this._closeMobile());
