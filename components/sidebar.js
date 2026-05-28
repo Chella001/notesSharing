@@ -36,7 +36,7 @@ class AppSidebar extends HTMLElement {
                 items: [
                     { label: 'Patients',        icon: 'user-injured',    path: 'newPatient.html' },
                     { label: 'Doctors',         icon: 'user-md',         path: 'newDoctor.html' },
-                    { label: 'Nurses',          icon: 'user-nurse',      path: cs + 'Nurses' },
+                    { label: 'Nurses',          icon: 'user-nurse',      path: 'nurses.html' },
                     { label: 'Medical Records', icon: 'file-medical',    path: cs + 'Medical+Records' },
                     { label: 'Prescriptions',   icon: 'prescription-bottle-alt', path: cs + 'Prescriptions' },
                     { label: 'Lab & Diagnostics', icon: 'flask',         path: cs + 'Lab+%26+Diagnostics' },

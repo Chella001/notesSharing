@@ -1,0 +1,1810 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+        if (!sessionStorage.getItem('currentUser')) {
+            window.location.href = 'index.html';
+        }
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hospital Management · Nurse Suite</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="js/firebase-config.js" type="module"></script>
+    <link rel="stylesheet" href="css/theme.css">
+    <link rel="stylesheet" href="css/enterprise.css">
+    <link rel="stylesheet" href="css/design-system.css">
+    <script src="components/sidebar.js" defer></script>
+    <script src="components/header.js" defer></script>
+    <script src="js/app.js" type="module"></script>
+    
+    <style>
+        /* --- Local Custom styles for advanced Nurse Management --- */
+        .tabs-container {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 24px;
+            border-bottom: 1px solid var(--ds-border);
+            padding-bottom: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+        .tabs-container::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .tab-panel {
+            display: none;
+            animation: panelFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        .tab-panel.active-panel {
+            display: block;
+        }
+
+        @keyframes panelFadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Shift Schedule Calendar Grid --- */
+        .roster-grid {
+            display: grid;
+            grid-template-columns: 180px repeat(7, 1fr);
+            gap: 1px;
+            background: var(--ds-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--ds-border);
+        }
+        .roster-hdr {
+            background: var(--ds-bg-app);
+            padding: 14px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            color: var(--ds-text-secondary);
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        .roster-hdr:first-child {
+            text-align: left;
+        }
+        .roster-cell {
+            background: var(--ds-bg-card);
+            padding: 12px;
+            min-height: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            align-items: center;
+            justify-content: center;
+            transition: background var(--transition-fast);
+        }
+        .roster-cell:hover {
+            background: var(--ds-bg-hover);
+        }
+        .roster-nurse-name {
+            font-weight: 600;
+            color: var(--ds-text-primary);
+            padding: 12px;
+            background: var(--ds-bg-card);
+            display: flex;
+            align-items: center;
+            border-right: 1px solid var(--ds-border);
+        }
+        .shift-badge {
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            display: inline-block;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 1px solid transparent;
+        }
+        .shift-badge:hover {
+            transform: scale(1.05);
+        }
+        .shift-m { background: rgba(14, 165, 233, 0.12); color: #0ea5e9; border-color: rgba(14, 165, 233, 0.2); }
+        .shift-e { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
+        .shift-n { background: rgba(99, 102, 241, 0.12); color: #818cf8; border-color: rgba(99, 102, 241, 0.2); }
+        .shift-off { background: rgba(113, 113, 122, 0.1); color: var(--ds-text-secondary); }
+
+        /* --- Alert Card --- */
+        .alert-card {
+            background: rgba(239, 68, 68, 0.04);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            border-radius: var(--radius-lg);
+            padding: 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 18px;
+            animation: pulseAlert 2s infinite ease-in-out;
+        }
+        @keyframes pulseAlert {
+            0% { border-color: rgba(239, 68, 68, 0.15); }
+            50% { border-color: rgba(239, 68, 68, 0.45); }
+            100% { border-color: rgba(239, 68, 68, 0.15); }
+        }
+        .alert-card i {
+            color: var(--danger);
+            font-size: 1.2rem;
+            margin-top: 2px;
+        }
+        .alert-title {
+            font-weight: 700;
+            color: var(--danger);
+            margin-bottom: 4px;
+        }
+        .alert-desc {
+            font-size: 0.82rem;
+            color: var(--ds-text-secondary);
+        }
+
+        /* --- Modal Backdrop & Overlay --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(9, 9, 11, 0.7);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .modal-overlay.show {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .ds-modal {
+            background: var(--ds-bg-card);
+            border: 1px solid var(--ds-border);
+            border-radius: var(--radius-xl);
+            width: 100%;
+            max-width: 580px;
+            padding: 28px;
+            box-shadow: var(--shadow-xl);
+            transform: translateY(20px);
+            transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-overlay.show .ds-modal {
+            transform: translateY(0);
+        }
+        .modal-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .modal-title {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--ds-text-primary);
+        }
+        .modal-close {
+            background: transparent;
+            border: none;
+            color: var(--ds-text-secondary);
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .modal-close:hover {
+            color: var(--ds-text-primary);
+        }
+
+        /* --- Task Cards --- */
+        .task-card {
+            background: var(--ds-bg-card);
+            border: 1px solid var(--ds-border);
+            border-radius: var(--radius-md);
+            padding: 14px 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: transform 0.2s, border-color 0.2s;
+        }
+        .task-card:hover {
+            transform: translateY(-1px);
+            border-color: var(--ds-border-hover);
+        }
+        .task-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .task-checkbox {
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            accent-color: var(--primary);
+        }
+        .task-info h4 {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: var(--ds-text-primary);
+            margin: 0 0 2px;
+        }
+        .task-info p {
+            font-size: 0.76rem;
+            color: var(--ds-text-secondary);
+            margin: 0;
+        }
+        .task-prio {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 999px;
+            letter-spacing: 0.05em;
+        }
+        .prio-high { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+        .prio-med { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .prio-low { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; }
+
+        /* --- Communication Chat Mockup --- */
+        .chat-container {
+            display: grid;
+            grid-template-columns: 240px 1fr;
+            height: 480px;
+            border: 1px solid var(--ds-border);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            background: var(--ds-bg-card);
+        }
+        .chat-sidebar {
+            border-right: 1px solid var(--ds-border);
+            background: var(--ds-bg-app);
+            overflow-y: auto;
+        }
+        .chat-user-item {
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--ds-border);
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .chat-user-item:hover {
+            background: var(--ds-bg-hover);
+        }
+        .chat-user-item.active {
+            background: rgba(13, 148, 136, 0.08);
+            border-left: 3px solid var(--primary);
+        }
+        .chat-user-av {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+        .chat-user-info h5 {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--ds-text-primary);
+            margin: 0;
+        }
+        .chat-user-info p {
+            font-size: 0.72rem;
+            color: var(--ds-text-secondary);
+            margin: 0;
+        }
+        .chat-main {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .chat-hdr {
+            padding: 14px 20px;
+            border-bottom: 1px solid var(--ds-border);
+            background: var(--ds-bg-card);
+            font-weight: 600;
+            color: var(--ds-text-primary);
+        }
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--ds-bg-app);
+        }
+        .msg-bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        .msg-received {
+            background: var(--ds-bg-card);
+            color: var(--ds-text-primary);
+            align-self: flex-start;
+            border-top-left-radius: 2px;
+            border: 1px solid var(--ds-border);
+        }
+        .msg-sent {
+            background: var(--primary);
+            color: white;
+            align-self: flex-end;
+            border-top-right-radius: 2px;
+        }
+        .chat-input-wrap {
+            padding: 12px 20px;
+            border-top: 1px solid var(--ds-border);
+            display: flex;
+            gap: 10px;
+            background: var(--ds-bg-card);
+        }
+        .chat-input {
+            flex: 1;
+            background: var(--ds-bg-app);
+            border: 1px solid var(--ds-border);
+            border-radius: 999px;
+            padding: 8px 16px;
+            outline: none;
+            color: var(--ds-text-primary);
+            font-size: 0.85rem;
+        }
+
+        /* --- Nurse Profile Badge Popups --- */
+        .profile-badge-card {
+            background: linear-gradient(135deg, var(--ds-bg-card) 0%, var(--ds-bg-app) 100%);
+            border: 1px solid var(--ds-border);
+            border-radius: var(--radius-xl);
+            padding: 24px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        .profile-badge-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 4px;
+            background: var(--primary);
+        }
+        .profile-badge-av {
+            width: 90px;
+            height: 90px;
+            border-radius: 50%;
+            border: 3px solid var(--ds-border);
+            background: var(--primary);
+            color: white;
+            font-size: 2.2rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+        }
+        
+        /* Grid controls */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        
+        .flex-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .alert-tag {
+            background: rgba(239, 68, 68, 0.12);
+            color: var(--danger);
+            font-size: 0.72rem;
+            font-weight: 700;
+            padding: 2px 8px;
+            border-radius: 999px;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            text-transform: uppercase;
+        }
+
+        /* Live patient cards */
+        .patient-mon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+        }
+        .patient-mon-card {
+            background: var(--ds-bg-card);
+            border: 1px solid var(--ds-border);
+            border-radius: var(--radius-lg);
+            padding: 18px;
+            transition: all 0.25s;
+        }
+        .patient-mon-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--ds-border-hover);
+        }
+        .mon-hdr {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+        .mon-vitals {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+        }
+        .vital-box {
+            background: var(--ds-bg-app);
+            padding: 8px 10px;
+            border-radius: 6px;
+            font-size: 0.78rem;
+            border: 1px solid var(--ds-border);
+        }
+        .vital-lbl {
+            color: var(--ds-text-secondary);
+            font-size: 0.68rem;
+            margin-bottom: 2px;
+        }
+        .vital-val {
+            font-weight: 700;
+            color: var(--ds-text-primary);
+        }
+        .vital-critical {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.2);
+        }
+        .vital-critical .vital-val {
+            color: var(--danger);
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard">
+        <app-sidebar></app-sidebar>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <app-header title="Nurse Operations Suite"></app-header>
+
+            <div style="padding: 0 28px;">
+                <!-- Stats Summary Cards -->
+                <div class="stats-grid" style="margin-bottom: 24px;">
+                    <div class="stat-card">
+                        <div class="stat-label">Total Nurses <span><i class="fas fa-user-nurse"></i></span></div>
+                        <div class="stat-number" id="statsTotalNurses">14</div>
+                        <div class="stat-trend" style="color: var(--success);"><i class="fas fa-arrow-up"></i> 1 new registered</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Active Shifts <span><i class="fas fa-calendar-check"></i></span></div>
+                        <div class="stat-number" id="statsActiveShifts">8</div>
+                        <div class="stat-trend"><i class="fas fa-check-circle"></i> Morning duty assigned</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Assigned Patients <span><i class="fas fa-user-injured"></i></span></div>
+                        <div class="stat-number" id="statsAssignedPatients">22</div>
+                        <div class="stat-trend" style="color: var(--warning);"><i class="fas fa-bed"></i> 4 in ICU units</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-label">Urgent Alerts <span><i class="fas fa-exclamation-triangle"></i></span></div>
+                        <div class="stat-number" id="statsUrgentAlerts" style="color: var(--danger);">1</div>
+                        <div class="stat-trend" style="color: var(--danger);"><i class="fas fa-bell"></i> Critical Vitals Triggered</div>
+                    </div>
+                </div>
+
+                <!-- Emergency Alert Broadcast Feed -->
+                <div class="alert-card" id="alertBroadcastCard">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <div class="alert-title">CRITICAL ALERT: ICU Bed 3 (Ramesh Kumar) SpO2 Dropped to 90%</div>
+                        <div class="alert-desc">Assigned Nurse: Sneha Nair is on her way. Doctor alerted. Updated 2 mins ago.</div>
+                    </div>
+                </div>
+
+                <!-- Tabs Container -->
+                <div class="tabs-container">
+                    <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Nurse Dashboard</button>
+                    <button class="tab-btn" data-tab="roster"><i class="fas fa-address-book"></i> Nurse Roster</button>
+                    <button class="tab-btn" data-tab="shifts"><i class="fas fa-calendar-alt"></i> Shift Scheduler</button>
+                    <button class="tab-btn" data-tab="assignments"><i class="fas fa-link"></i> Patient Care Allocation</button>
+                    <button class="tab-btn" data-tab="tasks"><i class="fas fa-tasks"></i> Daily Care Tasks</button>
+                    <button class="tab-btn" data-tab="monitoring"><i class="fas fa-heartbeat"></i> Vitals Monitoring</button>
+                    <button class="tab-btn" data-tab="comm"><i class="fas fa-comments"></i> Handovers & Chat</button>
+                    <button class="tab-btn" data-tab="reports"><i class="fas fa-chart-bar"></i> Performance Logs</button>
+                </div>
+
+                <!-- 1. DASHBOARD OVERVIEW PANEL -->
+                <div id="dashboardPanel" class="tab-panel active-panel">
+                    <div class="ds-card" style="margin-bottom: 24px;">
+                        <h3 class="text-h3" style="margin-bottom: 12px;">Nurse Quick Controls</h3>
+                        <div class="flex-actions" style="margin-bottom: 16px;">
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i class="fas fa-user-plus"></i> Register New Nurse</button>
+                            <button class="ds-btn ds-btn-secondary" onclick="openModal('swapShiftModal')"><i class="fas fa-exchange-alt"></i> Request Shift Swap</button>
+                            <button class="ds-btn ds-btn-secondary" onclick="openModal('addVitalsModal')"><i class="fas fa-plus"></i> Log Patient Vitals</button>
+                            <button class="ds-btn ds-btn-secondary" onclick="openModal('assignPatientModal')"><i class="fas fa-link"></i> Assign Nurse to Patient</button>
+                        </div>
+                    </div>
+
+                    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
+                        <!-- Ongoing Shift Roster -->
+                        <div class="ds-card">
+                            <h3 class="text-h3" style="margin-bottom: 16px;">Current Shift Duty Roster</h3>
+                            <div class="table-container">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Nurse Name</th>
+                                            <th>Department</th>
+                                            <th>Shift Schedule</th>
+                                            <th>Duty Location</th>
+                                            <th>Assigned Patient</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dashboardDutyBody">
+                                        <!-- Will load dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Real-time Alerts & Handover Announcements -->
+                        <div class="ds-card">
+                            <h3 class="text-h3" style="margin-bottom: 16px;">Recent Nurse Board Notes</h3>
+                            <div style="display: flex; flex-direction: column; gap: 12px;" id="dashboardAnnouncements">
+                                <div style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                        <strong>Shift Handover Note</strong>
+                                        <small style="color:var(--ds-text-secondary)">Today, 08:00 AM</small>
+                                    </div>
+                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">ICU Bed 2 patient needs medication dosage checked by noon. Handed over from Night Shift Team.</p>
+                                </div>
+                                <div style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
+                                    <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
+                                        <strong>Duty Announcement</strong>
+                                        <small style="color:var(--ds-text-secondary)">Yesterday</small>
+                                    </div>
+                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">Emergency ward sanitation scheduled for Thursday evening. Morning shifts remain unaffected.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. NURSE ROSTER (DIRECTORY) PANEL -->
+                <div id="rosterPanel" class="tab-panel">
+                    <div class="ds-card">
+                        <div class="controls-row">
+                            <div class="search-wrapper">
+                                <i class="fas fa-search"></i>
+                                <input type="text" id="rosterSearch" placeholder="Search by name, ID or specialization..." oninput="filterRoster()" class="search-input">
+                            </div>
+                            <div class="table-controls">
+                                <select id="rosterDeptFilter" class="table-filter" onchange="filterRoster()">
+                                    <option value="">All Departments</option>
+                                    <option value="General Ward">General Ward</option>
+                                    <option value="ICU">ICU</option>
+                                    <option value="OPD">OPD</option>
+                                    <option value="Emergency">Emergency</option>
+                                    <option value="Pediatrics">Pediatrics</option>
+                                </select>
+                                <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i class="fas fa-user-plus"></i> Add Nurse</button>
+                            </div>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Nurse ID</th>
+                                        <th>Nurse Name</th>
+                                        <th>Department</th>
+                                        <th>Specialization</th>
+                                        <th>Contact Details</th>
+                                        <th>Experience</th>
+                                        <th>Status</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="rosterTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. SHIFT SCHEDULER PANEL -->
+                <div id="shiftsPanel" class="tab-panel">
+                    <div class="ds-card">
+                        <div class="controls-row">
+                            <h3 class="text-h3">Weekly Shifts Allocation & Calendar</h3>
+                            <div class="table-controls">
+                                <button class="ds-btn ds-btn-secondary" onclick="openModal('swapShiftModal')"><i class="fas fa-exchange-alt"></i> Swap Requests</button>
+                            </div>
+                        </div>
+                        
+                        <div style="margin-bottom: 16px; display: flex; gap: 20px; font-size: 0.82rem;">
+                            <div><span class="shift-badge shift-m">M</span> Morning Shift (06:00 AM - 02:00 PM)</div>
+                            <div><span class="shift-badge shift-e">E</span> Evening Shift (02:00 PM - 10:00 PM)</div>
+                            <div><span class="shift-badge shift-n">N</span> Night Shift (10:00 PM - 06:00 AM)</div>
+                            <div><span class="shift-badge shift-off">OFF</span> Weekly Off</div>
+                        </div>
+
+                        <div class="roster-grid" id="rosterGridCalendar">
+                            <!-- Header days row -->
+                            <div class="roster-hdr">Nurse Profile</div>
+                            <div class="roster-hdr">Mon</div>
+                            <div class="roster-hdr">Tue</div>
+                            <div class="roster-hdr">Wed</div>
+                            <div class="roster-hdr">Thu</div>
+                            <div class="roster-hdr">Fri</div>
+                            <div class="roster-hdr">Sat</div>
+                            <div class="roster-hdr">Sun</div>
+
+                            <!-- Row templates will load dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4. PATIENT CARE ALLOCATION PANEL -->
+                <div id="assignmentsPanel" class="tab-panel">
+                    <div class="ds-card">
+                        <div class="controls-row">
+                            <h3 class="text-h3">Active Patient Duty Allocations</h3>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('assignPatientModal')"><i class="fas fa-link"></i> New Allocation</button>
+                        </div>
+
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Patient Name</th>
+                                        <th>Ward / Bed No.</th>
+                                        <th>Assigned Nurse</th>
+                                        <th>Assignment Date</th>
+                                        <th>Care Type</th>
+                                        <th>Condition</th>
+                                        <th>Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="assignmentsTableBody">
+                                    <!-- Dynamic content -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 5. DAILY CARE TASKS PANEL -->
+                <div id="tasksPanel" class="tab-panel">
+                    <div class="ds-card">
+                        <div class="controls-row">
+                            <h3 class="text-h3">Nurse Task List & Medication Checklist</h3>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('addTaskModal')"><i class="fas fa-plus"></i> Add Daily Task</button>
+                        </div>
+
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                            <!-- Pending Tasks -->
+                            <div>
+                                <h4 class="text-h4" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-clock" style="color: var(--warning)"></i> Active/Pending Tasks
+                                </h4>
+                                <div id="pendingTasksContainer">
+                                    <!-- Dynamic pending tasks -->
+                                </div>
+                            </div>
+
+                            <!-- Completed Tasks -->
+                            <div>
+                                <h4 class="text-h4" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                    <i class="fas fa-check-circle" style="color: var(--success)"></i> Completed Tasks
+                                </h4>
+                                <div id="completedTasksContainer">
+                                    <!-- Dynamic completed tasks -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 6. VITALS MONITORING PANEL -->
+                <div id="monitoringPanel" class="tab-panel">
+                    <div class="ds-card">
+                        <div class="controls-row">
+                            <h3 class="text-h3">Live Patient Vitals Tracker</h3>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('addVitalsModal')"><i class="fas fa-plus"></i> Add Vitals Log</button>
+                        </div>
+
+                        <div class="patient-mon-grid" id="vitalsGrid">
+                            <!-- Dynamic vitals cards -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 7. HANDOVERS & COMMUNICATION PANEL -->
+                <div id="commPanel" class="tab-panel">
+                    <div class="chat-container">
+                        <!-- Chat Contacts Sidebar -->
+                        <div class="chat-sidebar" id="chatContacts">
+                            <!-- Contacts will load dynamically -->
+                        </div>
+
+                        <!-- Chat Screen -->
+                        <div class="chat-main">
+                            <div class="chat-hdr" id="chatHeaderName">General Handover Chat</div>
+                            <div class="chat-messages" id="chatMessageFlow">
+                                <!-- Messages will load dynamically -->
+                            </div>
+                            <div class="chat-input-wrap">
+                                <input type="text" id="chatInputMessage" placeholder="Type a message or shift handover note..." class="chat-input" onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                                <button class="ds-btn ds-btn-primary" onclick="sendChatMessage()" style="padding: 8px 16px;"><i class="fas fa-paper-plane"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 8. PERFORMANCE LOGS & REPORTS PANEL -->
+                <div id="reportsPanel" class="tab-panel">
+                    <div class="ds-card" style="margin-bottom: 24px;">
+                        <h3 class="text-h3" style="margin-bottom: 16px;">Nurse Performance Analytics & Workload</h3>
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                            <div style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
+                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">Average Workload Index</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">74%</div>
+                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i class="fas fa-check"></i> Balanced allocation</div>
+                            </div>
+                            <div style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
+                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">On-Time Shift Attendance</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: var(--success);">98.2%</div>
+                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i class="fas fa-chevron-up"></i> Over industry average</div>
+                            </div>
+                            <div style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
+                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">Total Shifts Conducted (This Month)</div>
+                                <div style="font-size: 1.8rem; font-weight: 800; color: #0ea5e9;">240</div>
+                                <div style="font-size: 0.72rem; color: var(--ds-text-secondary); margin-top: 4px;">42 hours overtime logs</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="ds-card">
+                        <h3 class="text-h3" style="margin-bottom: 16px;">Nurse Activity Logs</h3>
+                        <div class="table-container">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Timestamp</th>
+                                        <th>Operator</th>
+                                        <th>Category</th>
+                                        <th>Action Description</th>
+                                        <th>ID Reference</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activityLogTableBody">
+                                    <!-- Dynamic logs -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== MODALS SECTION ==================== -->
+
+    <!-- Modal 1: Register Nurse -->
+    <div class="modal-overlay" id="addNurseModal">
+        <div class="ds-modal">
+            <div class="modal-hdr">
+                <span class="modal-title">Register New Staff Nurse</span>
+                <button class="modal-close" onclick="closeModal('addNurseModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addNurseForm" class="ds-form">
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-id-badge"></i>Full Name *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-id-badge"></i>
+                            <input type="text" id="nurseName" placeholder="Enter nurse full name" required class="ds-input">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-sitemap"></i>Department *</label>
+                        <div class="input-wrapper">
+                            <select id="nurseDept" class="ds-select" required>
+                                <option value="General Ward">General Ward</option>
+                                <option value="ICU">ICU</option>
+                                <option value="OPD">OPD</option>
+                                <option value="Emergency">Emergency</option>
+                                <option value="Pediatrics">Pediatrics</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-briefcase"></i>Experience (Years) *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-hashtag"></i>
+                            <input type="number" id="nurseExp" placeholder="E.g. 5" required class="ds-input">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-graduation-cap"></i>Qualification *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-graduation-cap"></i>
+                            <input type="text" id="nurseQual" placeholder="E.g. B.Sc Nursing" required class="ds-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-phone"></i>Contact Phone *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-phone-alt"></i>
+                            <input type="tel" id="nursePhone" placeholder="10-digit number" required class="ds-input">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-envelope"></i>Email Address *</label>
+                        <div class="input-wrapper">
+                            <i class="fas fa-envelope"></i>
+                            <input type="email" id="nurseEmail" placeholder="Enter email" required class="ds-input">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-ambulance"></i>Emergency Contact Details *</label>
+                    <div class="input-wrapper">
+                        <i class="fas fa-ambulance"></i>
+                        <input type="text" id="nurseEmergency" placeholder="Emergency contact name & phone" required class="ds-input">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('addNurseModal')">Cancel</button>
+                    <button type="submit" class="ds-btn ds-btn-primary">Register Staff</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Shift Swap Request -->
+    <div class="modal-overlay" id="swapShiftModal">
+        <div class="ds-modal">
+            <div class="modal-hdr">
+                <span class="modal-title">Request Shift Swap Workflow</span>
+                <button class="modal-close" onclick="closeModal('swapShiftModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="swapShiftForm" class="ds-form">
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-user-nurse"></i>Select Nurse *</label>
+                    <select id="swapNurseSelect" class="ds-select" required>
+                        <!-- Dynamic options -->
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-calendar-times"></i>Target Swap Date *</label>
+                        <input type="date" id="swapDate" required class="ds-input" style="padding-left: 12px;">
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-history"></i>Target Shift *</label>
+                        <select id="swapShiftType" class="ds-select" required>
+                            <option value="Morning">Morning Shift (M)</option>
+                            <option value="Evening">Evening Shift (E)</option>
+                            <option value="Night">Night Shift (N)</option>
+                            <option value="Off">Off</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-comments"></i>Reason / Swap Partner Details</label>
+                    <textarea id="swapReason" placeholder="Explain the reason or specify replacement nurse partner..." class="ds-textarea" style="min-height: 80px;"></textarea>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('swapShiftModal')">Cancel</button>
+                    <button type="submit" class="ds-btn ds-btn-primary">Submit Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Assign Patient to Nurse -->
+    <div class="modal-overlay" id="assignPatientModal">
+        <div class="ds-modal">
+            <div class="modal-hdr">
+                <span class="modal-title">Care & Ward Assignment Allocation</span>
+                <button class="modal-close" onclick="closeModal('assignPatientModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="assignPatientForm" class="ds-form">
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-user-injured"></i>Select Patient *</label>
+                    <select id="assignPatientSelect" class="ds-select" required>
+                        <!-- Dynamic patient options -->
+                    </select>
+                </div>
+
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-user-nurse"></i>Assign To Nurse *</label>
+                    <select id="assignNurseSelect" class="ds-select" required>
+                        <!-- Dynamic nurse options -->
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-bed"></i>Ward / Bed Assignment *</label>
+                        <input type="text" id="assignWard" placeholder="E.g. ICU Bed 3" required class="ds-input">
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-stethoscope"></i>Care Category *</label>
+                        <select id="assignCareType" class="ds-select" required>
+                            <option value="Critical Care">Critical Care</option>
+                            <option value="General Nursing">General Nursing</option>
+                            <option value="Post-Op Recovery">Post-Op Recovery</option>
+                            <option value="Palliative Care">Palliative Care</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('assignPatientModal')">Cancel</button>
+                    <button type="submit" class="ds-btn ds-btn-primary">Allocate Duty</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Log Vitals -->
+    <div class="modal-overlay" id="addVitalsModal">
+        <div class="ds-modal">
+            <div class="modal-hdr">
+                <span class="modal-title">Log Patient Vitals / Monitoring</span>
+                <button class="modal-close" onclick="closeModal('addVitalsModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addVitalsForm" class="ds-form">
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-user-injured"></i>Select Patient *</label>
+                    <select id="vitalsPatientSelect" class="ds-select" required>
+                        <!-- Dynamic patient options -->
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-thermometer-half"></i>Temperature (°F)</label>
+                        <input type="number" step="0.1" id="vitalTemp" placeholder="E.g. 98.6" required class="ds-input">
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-heartbeat"></i>Blood Pressure (Sys/Dia)</label>
+                        <input type="text" id="vitalBP" placeholder="E.g. 120/80" required class="ds-input">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-chart-line"></i>Pulse Rate (bpm)</label>
+                        <input type="number" id="vitalPulse" placeholder="E.g. 72" required class="ds-input">
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-tint"></i>Blood Sugar (mg/dL)</label>
+                        <input type="number" id="vitalSugar" placeholder="E.g. 110" required class="ds-input">
+                    </div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-wind"></i>Oxygen Level (SpO2 %)</label>
+                        <input type="number" id="vitalO2" placeholder="E.g. 98" required class="ds-input">
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-exclamation-triangle"></i>Condition Status *</label>
+                        <select id="vitalCondition" class="ds-select" required>
+                            <option value="Stable">Stable</option>
+                            <option value="Observation">Under Observation</option>
+                            <option value="Critical">Critical</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('addVitalsModal')">Cancel</button>
+                    <button type="submit" class="ds-btn ds-btn-primary">Save Log</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5: Add Daily Task -->
+    <div class="modal-overlay" id="addTaskModal">
+        <div class="ds-modal">
+            <div class="modal-hdr">
+                <span class="modal-title">Schedule Daily Care Task / Reminder</span>
+                <button class="modal-close" onclick="closeModal('addTaskModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <form id="addTaskForm" class="ds-form">
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-clipboard-list"></i>Task Title / Prescription Details *</label>
+                    <input type="text" id="taskTitle" placeholder="E.g. Administer 500mg Paracetamol" required class="ds-input">
+                </div>
+
+                <div class="input-group">
+                    <label class="ds-label"><i class="fas fa-user-injured"></i>Associated Patient *</label>
+                    <select id="taskPatientSelect" class="ds-select" required>
+                        <!-- Dynamic patient options -->
+                    </select>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-exclamation-circle"></i>Priority *</label>
+                        <select id="taskPriority" class="ds-select" required>
+                            <option value="High">High Priority</option>
+                            <option value="Medium">Medium Priority</option>
+                            <option value="Low">Low Priority</option>
+                        </select>
+                    </div>
+                    <div class="input-group">
+                        <label class="ds-label"><i class="fas fa-clock"></i>Target Time *</label>
+                        <input type="text" id="taskTime" placeholder="E.g. 12:00 PM" required class="ds-input">
+                    </div>
+                </div>
+
+                <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
+                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('addTaskModal')">Cancel</button>
+                    <button type="submit" class="ds-btn ds-btn-primary">Save Task</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 6: View Complete Profile Card -->
+    <div class="modal-overlay" id="profileCardModal">
+        <div class="ds-modal" style="max-width: 440px; padding: 20px;">
+            <div class="modal-hdr" style="margin-bottom: 12px;">
+                <span class="modal-title">Nurse Digital ID Badge</span>
+                <button class="modal-close" onclick="closeModal('profileCardModal')"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="profile-badge-card" id="profileBadgeCardContent">
+                <!-- Dynamic profile badge content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== LOGIC AND REACTIVE STATE ==================== -->
+    <script type="module">
+        // Import components to boot layout
+        import './js/firebase-config.js';
+
+        // Local state mockup fallbacks in case Firebase collection is blank
+        let mockNurses = [
+            { id: "NS001", name: "Sneha Nair", dept: "ICU", exp: 6, qual: "B.Sc Nursing", phone: "9876543210", email: "sneha.nair@clinic.com", emergency: "Rohan (Husband) - 9876543211", status: "Active" },
+            { id: "NS002", name: "Maria Joseph", dept: "Emergency", exp: 8, qual: "M.Sc Nursing", phone: "9876543212", email: "maria.j@clinic.com", emergency: "Sunny (Brother) - 9876543213", status: "Active" },
+            { id: "NS003", name: "Priyanka Sharma", dept: "General Ward", exp: 4, qual: "GNM Diploma", phone: "9876543214", email: "priyanka.s@clinic.com", emergency: "Alok (Father) - 9876543215", status: "Active" },
+            { id: "NS004", name: "Anju Kurian", dept: "Pediatrics", exp: 7, qual: "B.Sc Nursing", phone: "9876543216", email: "anju.k@clinic.com", emergency: "Kurian (Father) - 9876543217", status: "Active" }
+        ];
+
+        let mockPatients = [
+            { id: "PT001", name: "Ramesh Kumar", age: 52, gender: "Male", phone: "9898989801", bloodGroup: "O+", email: "ramesh@gmail.com" },
+            { id: "PT002", name: "Sunitha Verma", age: 43, gender: "Female", phone: "9898989802", bloodGroup: "A+", email: "sunitha@gmail.com" },
+            { id: "PT003", name: "Anoop Pillai", age: 29, gender: "Male", phone: "9898989803", bloodGroup: "B+", email: "anoop@gmail.com" }
+        ];
+
+        let mockShifts = [
+            { nurseId: "NS001", nurseName: "Sneha Nair", dept: "ICU", mon: "M", tue: "M", wed: "M", thu: "M", fri: "E", sat: "OFF", sun: "OFF" },
+            { nurseId: "NS002", nurseName: "Maria Joseph", dept: "Emergency", mon: "E", tue: "E", wed: "E", thu: "E", fri: "N", sat: "N", sun: "OFF" },
+            { nurseId: "NS003", nurseName: "Priyanka Sharma", dept: "General Ward", mon: "M", tue: "M", wed: "M", thu: "OFF", fri: "OFF", sat: "E", sun: "E" },
+            { nurseId: "NS004", nurseName: "Anju Kurian", dept: "Pediatrics", mon: "N", tue: "N", wed: "OFF", thu: "OFF", fri: "M", sat: "M", sun: "M" }
+        ];
+
+        let mockAssignments = [
+            { id: "AS001", patientName: "Ramesh Kumar", ward: "ICU Bed 3", nurseName: "Sneha Nair", date: "28/05/2026", careType: "Critical Care", condition: "Critical" },
+            { id: "AS002", patientName: "Sunitha Verma", ward: "General Ward 204", nurseName: "Priyanka Sharma", date: "27/05/2026", careType: "General Nursing", condition: "Stable" },
+            { id: "AS003", patientName: "Anoop Pillai", ward: "Post-Op Recovery Room 2", nurseName: "Anju Kurian", date: "28/05/2026", careType: "Post-Op Recovery", condition: "Observation" }
+        ];
+
+        let mockTasks = [
+            { id: "TK001", title: "Medication: Administer Insulin", patient: "Ramesh Kumar", priority: "High", time: "08:00 AM", status: "Pending" },
+            { id: "TK002", title: "BP Monitor check", patient: "Sunitha Verma", priority: "Medium", time: "11:00 AM", status: "Pending" },
+            { id: "TK003", title: "Post-op wound dressing change", patient: "Anoop Pillai", priority: "High", time: "10:30 AM", status: "Completed" },
+            { id: "TK004", title: "Administer multivitamin IV fluids", patient: "Sunitha Verma", priority: "Low", time: "02:00 PM", status: "Pending" }
+        ];
+
+        let mockVitals = [
+            { patientName: "Ramesh Kumar", temp: 101.2, bp: "150/95", pulse: 88, sugar: 165, o2: 90, condition: "Critical", time: "10:42 AM" },
+            { patientName: "Sunitha Verma", temp: 98.4, bp: "120/80", pulse: 72, sugar: 110, o2: 99, condition: "Stable", time: "10:30 AM" },
+            { patientName: "Anoop Pillai", temp: 99.1, bp: "128/82", pulse: 76, sugar: 130, o2: 97, condition: "Observation", time: "10:15 AM" }
+        ];
+
+        let mockMessages = [
+            { sender: "Sneha Nair", msg: "Just uploaded the morning ICU vitals sheet.", time: "10:45 AM" },
+            { sender: "Dr. Arvind", msg: "Please keep a closer eye on Ramesh's blood sugar trends today.", time: "10:48 AM" }
+        ];
+
+        let mockLogs = [
+            { time: "28/05/2026 10:42 AM", operator: "Sneha Nair", category: "Vitals", desc: "Updated Ramesh Kumar vitals (SpO2 dropped to 90%)", ref: "PT001" },
+            { time: "28/05/2026 10:30 AM", operator: "Priyanka Sharma", category: "Tasks", desc: "Completed BP Monitor check", ref: "TK002" },
+            { time: "28/05/2026 09:15 AM", operator: "Admin", category: "Shifts", desc: "Approved duty swap for Sneha Nair", ref: "NS001" }
+        ];
+
+        // Global functions for modal handlers
+        window.openModal = function(id) {
+            document.getElementById(id).classList.add('show');
+        };
+        window.closeModal = function(id) {
+            document.getElementById(id).classList.remove('show');
+        };
+
+        // DOM Initializer
+        document.addEventListener('DOMContentLoaded', async () => {
+            // Tab switching logic
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const tabId = btn.getAttribute('data-tab');
+                    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active-panel'));
+                    document.getElementById(`${tabId}Panel`).classList.add('active-panel');
+                    document.querySelectorAll('.tab-btn').forEach(t => t.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // Init state
+            await loadState();
+
+            // Bind Form Submissions
+            document.getElementById('addNurseForm').addEventListener('submit', handleAddNurse);
+            document.getElementById('swapShiftForm').addEventListener('submit', handleSwapShift);
+            document.getElementById('assignPatientForm').addEventListener('submit', handleAssignPatient);
+            document.getElementById('addVitalsForm').addEventListener('submit', handleAddVitals);
+            document.getElementById('addTaskForm').addEventListener('submit', handleAddTask);
+        });
+
+        async function loadState() {
+            // Check if firebase db is ready
+            const firestoreDb = window.db;
+            if (firestoreDb) {
+                try {
+                    // Try to load from collections, if they don't exist Firestore will create or return empty
+                    const nurseSnap = await firestoreDb.collection('nurses').get();
+                    if (!nurseSnap.empty) {
+                        mockNurses = [];
+                        nurseSnap.forEach(d => mockNurses.push({ id: d.id, ...d.data() }));
+                    } else {
+                        // Populate mock data into Firestore if completely empty so the DB stays healthy
+                        for (let n of mockNurses) {
+                            await firestoreDb.collection('nurses').doc(n.id).set(n);
+                        }
+                    }
+
+                    // Load patients
+                    const patientSnap = await firestoreDb.collection('patients').get();
+                    if (!patientSnap.empty) {
+                        mockPatients = [];
+                        patientSnap.forEach(d => mockPatients.push({ id: d.id, ...d.data() }));
+                    }
+                } catch (e) {
+                    console.warn("Firestore access error, falling back to rich reactive mock data:", e);
+                }
+            }
+
+            renderAll();
+        }
+
+        function renderAll() {
+            renderDashboard();
+            renderRoster();
+            renderCalendar();
+            renderAssignments();
+            renderTasks();
+            renderVitals();
+            renderChats();
+            renderReports();
+            populateDropdowns();
+        }
+
+        // 1. Render Dashboard
+        function renderDashboard() {
+            const tbody = document.getElementById('dashboardDutyBody');
+            tbody.innerHTML = '';
+            
+            // Generate some active shift rows
+            mockNurses.forEach(nurse => {
+                const shift = mockShifts.find(s => s.nurseId === nurse.id) || { mon: 'M' };
+                const assignment = mockAssignments.find(a => a.nurseName === nurse.name) || { patientName: 'None', ward: 'N/A' };
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${nurse.name}</strong><br><span style="font-size:11px; color:var(--ds-text-secondary)">${nurse.id}</span></td>
+                    <td>${nurse.dept}</td>
+                    <td><span class="shift-badge shift-m">Morning (M)</span></td>
+                    <td>${assignment.ward}</td>
+                    <td><strong>${assignment.patientName}</strong></td>
+                    <td><span class="status completed" style="font-size: 11px;">Active Duty</span></td>
+                `;
+                tbody.appendChild(tr);
+            });
+
+            // Update stats indicators dynamically
+            document.getElementById('statsTotalNurses').textContent = mockNurses.length;
+            document.getElementById('statsActiveShifts').textContent = mockShifts.length;
+            document.getElementById('statsAssignedPatients').textContent = mockAssignments.length;
+            
+            // Count critical alert vitals
+            const criticals = mockVitals.filter(v => v.condition === 'Critical').length;
+            document.getElementById('statsUrgentAlerts').textContent = criticals;
+            const alertBroadcast = document.getElementById('alertBroadcastCard');
+            if (criticals > 0) {
+                alertBroadcast.style.display = 'flex';
+                const crit = mockVitals.find(v => v.condition === 'Critical');
+                alertBroadcast.querySelector('.alert-title').textContent = `CRITICAL ALERT: ${crit.patientName} SpO2 Drop/High Vitals detected!`;
+                alertBroadcast.querySelector('.alert-desc').textContent = `Temp: ${crit.temp}°F | Blood Pressure: ${crit.bp} | Oxygen: ${crit.o2}% SpO2. Emergency team alerted.`;
+            } else {
+                alertBroadcast.style.display = 'none';
+            }
+        }
+
+        // 2. Render Nurse Roster
+        function renderRoster() {
+            const tbody = document.getElementById('rosterTableBody');
+            tbody.innerHTML = '';
+
+            if (mockNurses.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="no-data"><div style="text-align: center; padding: 48px; color: var(--ds-text-tertiary);"><i class="fas fa-user-slash" style="font-size: 32px; margin-bottom: 16px; display: block; opacity: 0.5;"></i><h3>No nurses found</h3></div></td></tr>`;
+                return;
+            }
+
+            mockNurses.forEach(nurse => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${nurse.id}</strong></td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="chat-user-av" style="width:28px; height:28px; font-size:0.75rem;">${nurse.name.charAt(0)}</div>
+                            <div>
+                                <a href="#" style="text-decoration:none; color:var(--primary); font-weight:700;" onclick="viewNurseProfile('${nurse.id}'); event.preventDefault();">${nurse.name}</a>
+                                <div style="font-size:11px; color:var(--ds-text-secondary)">${nurse.qual}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${nurse.dept}</td>
+                    <td><span class="status completed" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: 1px solid rgba(var(--primary-rgb), 0.2);">${nurse.dept} Care</span></td>
+                    <td>
+                        <div><i class="fas fa-phone fa-xs" style="margin-right: 4px; color: var(--ds-text-secondary);"></i>${nurse.phone}</div>
+                        <div style="font-size: 11px; color: var(--ds-text-secondary);"><i class="fas fa-envelope fa-xs" style="margin-right: 4px;"></i>${nurse.email}</div>
+                    </td>
+                    <td>${nurse.exp} Years</td>
+                    <td><span class="status active">${nurse.status || 'Active'}</span></td>
+                    <td>
+                        <button class="ds-btn ds-btn-secondary" style="padding: 4px 10px; font-size:0.75rem;" onclick="viewNurseProfile('${nurse.id}')">View ID</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        // Filter Roster
+        window.filterRoster = function() {
+            const searchVal = document.getElementById('rosterSearch').value.toLowerCase().trim();
+            const deptVal = document.getElementById('rosterDeptFilter').value;
+
+            const filtered = mockNurses.filter(n => {
+                const matchSearch = !searchVal || n.name.toLowerCase().includes(searchVal) || n.id.toLowerCase().includes(searchVal);
+                const matchDept = !deptVal || n.dept === deptVal;
+                return matchSearch && matchDept;
+            });
+
+            // Temporarily replace directory table render
+            const tbody = document.getElementById('rosterTableBody');
+            tbody.innerHTML = '';
+            filtered.forEach(nurse => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${nurse.id}</strong></td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <div class="chat-user-av" style="width:28px; height:28px; font-size:0.75rem;">${nurse.name.charAt(0)}</div>
+                            <div>
+                                <a href="#" style="text-decoration:none; color:var(--primary); font-weight:700;" onclick="viewNurseProfile('${nurse.id}'); event.preventDefault();">${nurse.name}</a>
+                                <div style="font-size:11px; color:var(--ds-text-secondary)">${nurse.qual}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>${nurse.dept}</td>
+                    <td><span class="status completed" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: 1px solid rgba(var(--primary-rgb), 0.2);">${nurse.dept} Care</span></td>
+                    <td>
+                        <div><i class="fas fa-phone fa-xs" style="margin-right: 4px; color: var(--ds-text-secondary);"></i>${nurse.phone}</div>
+                        <div style="font-size: 11px; color: var(--ds-text-secondary);"><i class="fas fa-envelope fa-xs" style="margin-right: 4px;"></i>${nurse.email}</div>
+                    </td>
+                    <td>${nurse.exp} Years</td>
+                    <td><span class="status active">${nurse.status || 'Active'}</span></td>
+                    <td>
+                        <button class="ds-btn ds-btn-secondary" style="padding: 4px 10px; font-size:0.75rem;" onclick="viewNurseProfile('${nurse.id}')">View ID</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        };
+
+        // 3. Render Shift Scheduler Grid
+        function renderCalendar() {
+            const grid = document.getElementById('rosterGridCalendar');
+            // Retain first row (headers)
+            const headers = Array.from(grid.querySelectorAll('.roster-hdr'));
+            grid.innerHTML = '';
+            headers.forEach(h => grid.appendChild(h));
+
+            mockShifts.forEach(shift => {
+                // Name column
+                const nameCell = document.createElement('div');
+                nameCell.className = 'roster-nurse-name';
+                nameCell.innerHTML = `<strong>${shift.nurseName}</strong><br><span style="font-size:10px; color:var(--ds-text-secondary); margin-left:6px;">(${shift.dept})</span>`;
+                grid.appendChild(nameCell);
+
+                const days = ['mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun'];
+                days.forEach(d => {
+                    const cell = document.createElement('div');
+                    cell.className = 'roster-cell';
+                    const sVal = shift[d];
+                    let badgeClass = 'shift-off';
+                    if (sVal === 'M') badgeClass = 'shift-m';
+                    if (sVal === 'E') badgeClass = 'shift-e';
+                    if (sVal === 'N') badgeClass = 'shift-n';
+
+                    cell.innerHTML = `<span class="shift-badge ${badgeClass}" onclick="toggleCellShift('${shift.nurseId}', '${d}')">${sVal}</span>`;
+                    grid.appendChild(cell);
+                });
+            });
+        }
+
+        // Inline toggle Shift cell for premium interaction
+        window.toggleCellShift = function(nurseId, day) {
+            const shift = mockShifts.find(s => s.nurseId === nurseId);
+            if (shift) {
+                const cur = shift[day];
+                let next = 'OFF';
+                if (cur === 'OFF') next = 'M';
+                else if (cur === 'M') next = 'E';
+                else if (cur === 'E') next = 'N';
+                else if (cur === 'N') next = 'OFF';
+                
+                shift[day] = next;
+                renderCalendar();
+                logActivity("Shifts", `Updated ${shift.nurseName} shift on ${day.toUpperCase()} to ${next}`, nurseId);
+                showNotification(`Shift changed for ${shift.nurseName}!`);
+            }
+        };
+
+        // 4. Render Patient Assignments
+        function renderAssignments() {
+            const tbody = document.getElementById('assignmentsTableBody');
+            tbody.innerHTML = '';
+
+            mockAssignments.forEach(asm => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td><strong>${asm.patientName}</strong></td>
+                    <td>${asm.ward}</td>
+                    <td>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <div class="chat-user-av" style="width:24px; height:24px; font-size:0.7rem;">${asm.nurseName.charAt(0)}</div>
+                            <span>${asm.nurseName}</span>
+                        </div>
+                    </td>
+                    <td>${asm.date}</td>
+                    <td><span class="status completed" style="background: rgba(var(--primary-rgb), 0.1); color: var(--primary); border: 1px solid rgba(var(--primary-rgb), 0.2);">${asm.careType}</span></td>
+                    <td><span class="alert-tag">${asm.condition}</span></td>
+                    <td>
+                        <button class="ds-btn ds-btn-secondary" style="padding: 4px 8px; font-size: 0.72rem; color: var(--danger) !important;" onclick="removeAssignment('${asm.id}')">Deallocate</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        window.removeAssignment = function(id) {
+            mockAssignments = mockAssignments.filter(a => a.id !== id);
+            renderAll();
+            showNotification("Patient assignment removed.");
+            logActivity("Care Allocation", `Deallocated patient assignment ID: ${id}`);
+        };
+
+        // 5. Render Daily Tasks
+        function renderTasks() {
+            const pendingContainer = document.getElementById('pendingTasksContainer');
+            const completedContainer = document.getElementById('completedTasksContainer');
+
+            pendingContainer.innerHTML = '';
+            completedContainer.innerHTML = '';
+
+            const pendings = mockTasks.filter(t => t.status === 'Pending');
+            const completeds = mockTasks.filter(t => t.status === 'Completed');
+
+            if (pendings.length === 0) {
+                pendingContainer.innerHTML = '<div style="text-align: center; padding: 24px; color: var(--ds-text-tertiary);">No pending tasks today</div>';
+            } else {
+                pendings.forEach(t => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+                    card.innerHTML = `
+                        <div class="task-left">
+                            <input type="checkbox" class="task-checkbox" onchange="toggleTaskState('${t.id}')">
+                            <div class="task-info">
+                                <h4>${t.title}</h4>
+                                <p><i class="fas fa-user-injured fa-xs"></i> Patient: ${t.patient} &nbsp;|&nbsp; <i class="fas fa-clock fa-xs"></i> Time: ${t.time}</p>
+                            </div>
+                        </div>
+                        <span class="task-prio prio-${t.priority.toLowerCase()}">${t.priority}</span>
+                    `;
+                    pendingContainer.appendChild(card);
+                });
+            }
+
+            if (completeds.length === 0) {
+                completedContainer.innerHTML = '<div style="text-align: center; padding: 24px; color: var(--ds-text-tertiary);">No completed tasks yet</div>';
+            } else {
+                completeds.forEach(t => {
+                    const card = document.createElement('div');
+                    card.className = 'task-card';
+                    card.style.opacity = '0.65';
+                    card.innerHTML = `
+                        <div class="task-left">
+                            <input type="checkbox" class="task-checkbox" checked onchange="toggleTaskState('${t.id}')">
+                            <div class="task-info">
+                                <h4 style="text-decoration: line-through;">${t.title}</h4>
+                                <p><i class="fas fa-check"></i> Completed task</p>
+                            </div>
+                        </div>
+                        <span class="task-prio" style="background: rgba(16, 185, 129, 0.1); color: var(--success);">Done</span>
+                    `;
+                    completedContainer.appendChild(card);
+                });
+            }
+        }
+
+        window.toggleTaskState = function(id) {
+            const task = mockTasks.find(t => t.id === id);
+            if (task) {
+                task.status = task.status === 'Pending' ? 'Completed' : 'Pending';
+                renderTasks();
+                showNotification(`Task marked as ${task.status.toLowerCase()}!`);
+                logActivity("Tasks", `Marked task '${task.title}' as ${task.status.toLowerCase()}`, id);
+            }
+        };
+
+        // 6. Render Vitals Tracker Cards
+        function renderVitals() {
+            const container = document.getElementById('vitalsGrid');
+            container.innerHTML = '';
+
+            mockVitals.forEach(vit => {
+                const card = document.createElement('div');
+                card.className = 'patient-mon-card';
+                
+                const isCritO2 = vit.o2 < 92;
+                const isCritTemp = vit.temp > 100.5 || vit.temp < 96.0;
+                const isCriticalCard = vit.condition === 'Critical' || isCritO2;
+                
+                card.innerHTML = `
+                    <div class="mon-hdr">
+                        <div>
+                            <strong style="font-size: 0.95rem;">${vit.patientName}</strong>
+                            <div style="font-size: 11px; color: var(--ds-text-secondary)">Logged at ${vit.time}</div>
+                        </div>
+                        <span class="alert-tag" style="background: ${isCriticalCard ? 'rgba(239,68,68,0.1)' : 'rgba(16,185,129,0.1)'}; color: ${isCriticalCard ? 'var(--danger)' : 'var(--success)'}; border:none;">
+                            ${vit.condition}
+                        </span>
+                    </div>
+                    <div class="mon-vitals">
+                        <div class="vital-box ${isCritTemp ? 'vital-critical' : ''}">
+                            <div class="vital-lbl">Temp</div>
+                            <div class="vital-val">${vit.temp} °F</div>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-lbl">Blood Pressure</div>
+                            <div class="vital-val">${vit.bp}</div>
+                        </div>
+                        <div class="vital-box">
+                            <div class="vital-lbl">Pulse Rate</div>
+                            <div class="vital-val">${vit.pulse} bpm</div>
+                        </div>
+                        <div class="vital-box ${isCritO2 ? 'vital-critical' : ''}">
+                            <div class="vital-lbl">Oxygen Level</div>
+                            <div class="vital-val">${vit.o2} % SpO2</div>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 7. Render Chat Handovers
+        function renderChats() {
+            const sidebar = document.getElementById('chatContacts');
+            sidebar.innerHTML = '';
+
+            const contacts = [
+                { name: "General Handover Chat", role: "Public Feed", id: "general" },
+                { name: "Sneha Nair", role: "ICU Staff Nurse", id: "sneha" },
+                { name: "Maria Joseph", role: "Emergency Staff Nurse", id: "maria" },
+                { name: "Dr. Arvind", role: "Clinical Director", id: "arvind" }
+            ];
+
+            contacts.forEach(c => {
+                const item = document.createElement('div');
+                item.className = `chat-user-item ${c.id === 'general' ? 'active' : ''}`;
+                item.innerHTML = `
+                    <div class="chat-user-av">${c.name.charAt(0)}</div>
+                    <div class="chat-user-info">
+                        <h5>${c.name}</h5>
+                        <p>${c.role}</p>
+                    </div>
+                `;
+                sidebar.appendChild(item);
+            });
+
+            // Render message feed
+            const messageFlow = document.getElementById('chatMessageFlow');
+            messageFlow.innerHTML = '';
+            mockMessages.forEach(m => {
+                const wrapper = document.createElement('div');
+                const isSent = m.sender === 'Admin';
+                wrapper.className = `msg-bubble ${isSent ? 'msg-sent' : 'msg-received'}`;
+                wrapper.innerHTML = `
+                    <div style="font-size: 11px; font-weight:700; opacity: 0.85; margin-bottom: 2px;">${m.sender}</div>
+                    <div>${m.msg}</div>
+                    <div style="font-size: 9px; text-align: right; opacity: 0.6; margin-top: 4px;">${m.time}</div>
+                `;
+                messageFlow.appendChild(wrapper);
+            });
+            messageFlow.scrollTop = messageFlow.scrollHeight;
+        }
+
+        window.sendChatMessage = function() {
+            const input = document.getElementById('chatInputMessage');
+            const msgText = input.value.trim();
+            if (!msgText) return;
+
+            const tStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            mockMessages.push({ sender: 'Admin', msg: msgText, time: tStr });
+            input.value = '';
+            renderChats();
+            showNotification("Message sent!");
+        };
+
+        // 8. Render Reports Activity Log
+        function renderReports() {
+            const tbody = document.getElementById('activityLogTableBody');
+            tbody.innerHTML = '';
+
+            mockLogs.forEach(log => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${log.time}</td>
+                    <td><strong>${log.operator}</strong></td>
+                    <td><span class="status completed" style="background: rgba(var(--primary-rgb), 0.08); color: var(--primary); border:none;">${log.category}</span></td>
+                    <td>${log.desc}</td>
+                    <td><code>${log.ref}</code></td>
+                `;
+                tbody.appendChild(tr);
+            });
+        }
+
+        function logActivity(category, desc, ref = "N/A") {
+            const timeStr = new Date().toLocaleString('en-GB');
+            mockLogs.unshift({ time: timeStr, operator: "Admin", category, desc, ref });
+            renderReports();
+        }
+
+        // Populate dynamic modal dropdown selections
+        function populateDropdowns() {
+            // Populate nurse list
+            const swapSelect = document.getElementById('swapNurseSelect');
+            const assignNurseSelect = document.getElementById('assignNurseSelect');
+            
+            swapSelect.innerHTML = '<option value="">Select Staff</option>';
+            assignNurseSelect.innerHTML = '<option value="">Select Staff</option>';
+            
+            mockNurses.forEach(n => {
+                const opt = `<option value="${n.name}">${n.name} (${n.dept})</option>`;
+                swapSelect.innerHTML += opt;
+                assignNurseSelect.innerHTML += opt;
+            });
+
+            // Populate patient list
+            const assignPatientSelect = document.getElementById('assignPatientSelect');
+            const vitalsPatientSelect = document.getElementById('vitalsPatientSelect');
+            const taskPatientSelect = document.getElementById('taskPatientSelect');
+
+            assignPatientSelect.innerHTML = '<option value="">Select Patient</option>';
+            vitalsPatientSelect.innerHTML = '<option value="">Select Patient</option>';
+            taskPatientSelect.innerHTML = '<option value="">Select Patient</option>';
+
+            mockPatients.forEach(p => {
+                const opt = `<option value="${p.name}">${p.name} (${p.id})</option>`;
+                assignPatientSelect.innerHTML += opt;
+                vitalsPatientSelect.innerHTML += opt;
+                taskPatientSelect.innerHTML += opt;
+            });
+        }
+
+        // View Nurse Digital ID Badge Modal Callback
+        window.viewNurseProfile = function(id) {
+            const nurse = mockNurses.find(n => n.id === id);
+            if (!nurse) return;
+
+            const content = document.getElementById('profileBadgeCardContent');
+            content.innerHTML = `
+                <div class="profile-badge-av">${nurse.name.charAt(0)}</div>
+                <h3 class="text-h3" style="margin: 0 0 4px 0;">${nurse.name}</h3>
+                <div style="font-size: 0.8rem; font-weight:700; color: var(--primary); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 12px;">
+                    Registered Staff Nurse
+                </div>
+                
+                <div style="background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px; padding: 12px; margin-bottom: 14px; text-align: left; font-size: 0.85rem; display: flex; flex-direction: column; gap: 6px;">
+                    <div><strong>Staff ID:</strong> ${nurse.id}</div>
+                    <div><strong>Department:</strong> ${nurse.dept} Hospital Ward</div>
+                    <div><strong>Qualification:</strong> ${nurse.qual}</div>
+                    <div><strong>Experience:</strong> ${nurse.exp} Years Care Duty</div>
+                    <div><strong>Contact:</strong> ${nurse.phone}</div>
+                    <div><strong>Emergency Details:</strong> ${nurse.emergency}</div>
+                </div>
+                
+                <div style="font-size: 10px; color: var(--ds-text-secondary); text-transform: uppercase; letter-spacing: 0.02em;">
+                    Akshaya Clinic Enterprise Suite · Staff ID Verification
+                </div>
+            `;
+            openModal('profileCardModal');
+        };
+
+        // Form handlers
+        async function handleAddNurse(e) {
+            e.preventDefault();
+            const name = document.getElementById('nurseName').value.trim();
+            const dept = document.getElementById('nurseDept').value;
+            const exp = document.getElementById('nurseExp').value;
+            const qual = document.getElementById('nurseQual').value.trim();
+            const phone = document.getElementById('nursePhone').value.trim();
+            const email = document.getElementById('nurseEmail').value.trim();
+            const emergency = document.getElementById('nurseEmergency').value.trim();
+
+            const newId = "NS0" + (mockNurses.length + 1);
+            const newNurse = { id: newId, name, dept, exp: parseInt(exp), qual, phone, email, emergency, status: "Active" };
+
+            // Save to Firestore if available
+            if (window.db) {
+                try {
+                    await window.db.collection('nurses').doc(newId).set(newNurse);
+                } catch (err) {
+                    console.error("Firestore save error:", err);
+                }
+            }
+
+            mockNurses.push(newNurse);
+            
+            // Add default shifts for new nurse
+            mockShifts.push({ nurseId: newId, nurseName: name, dept, mon: "M", tue: "M", wed: "M", thu: "M", fri: "OFF", sat: "OFF", sun: "OFF" });
+
+            closeModal('addNurseModal');
+            document.getElementById('addNurseForm').reset();
+            renderAll();
+            showNotification(`Staff Nurse ${name} registered successfully!`);
+            logActivity("Roster", `Registered new nurse staff member ${name}`, newId);
+        }
+
+        function handleSwapShift(e) {
+            e.preventDefault();
+            const nurseName = document.getElementById('swapNurseSelect').value;
+            const swapDate = document.getElementById('swapDate').value;
+            const shiftType = document.getElementById('swapShiftType').value;
+            const reason = document.getElementById('swapReason').value;
+
+            closeModal('swapShiftModal');
+            document.getElementById('swapShiftForm').reset();
+            showNotification("Duty Swap Request logged & routed for admin review.");
+            logActivity("Shifts", `Submitted Swap request for ${nurseName} on date ${swapDate} to ${shiftType}`);
+        }
+
+        function handleAssignPatient(e) {
+            e.preventDefault();
+            const patientName = document.getElementById('assignPatientSelect').value;
+            const nurseName = document.getElementById('assignNurseSelect').value;
+            const ward = document.getElementById('assignWard').value.trim();
+            const careType = document.getElementById('assignCareType').value;
+
+            const newAsm = {
+                id: "AS0" + (mockAssignments.length + 1),
+                patientName,
+                ward,
+                nurseName,
+                date: new Date().toLocaleDateString('en-GB'),
+                careType,
+                condition: "Stable"
+            };
+
+            mockAssignments.push(newAsm);
+            closeModal('assignPatientModal');
+            document.getElementById('assignPatientForm').reset();
+            renderAll();
+            showNotification("Care team allocation updated.");
+            logActivity("Care Allocation", `Allocated nurse ${nurseName} to patient ${patientName} at ${ward}`);
+        }
+
+        function handleAddVitals(e) {
+            e.preventDefault();
+            const patientName = document.getElementById('vitalsPatientSelect').value;
+            const temp = parseFloat(document.getElementById('vitalTemp').value);
+            const bp = document.getElementById('vitalBP').value.trim();
+            const pulse = parseInt(document.getElementById('vitalPulse').value);
+            const sugar = parseInt(document.getElementById('vitalSugar').value);
+            const o2 = parseInt(document.getElementById('vitalO2').value);
+            const condition = document.getElementById('vitalCondition').value;
+
+            const tStr = new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            const newVit = { patientName, temp, bp, pulse, sugar, o2, condition, time: tStr };
+
+            // Insert at beginning
+            mockVitals.unshift(newVit);
+            closeModal('addVitalsModal');
+            document.getElementById('addVitalsForm').reset();
+            renderAll();
+            showNotification("Patient vitals entry successfully logged!");
+            logActivity("Vitals", `Logged new vitals dataset for ${patientName}`);
+        }
+
+        function handleAddTask(e) {
+            e.preventDefault();
+            const title = document.getElementById('taskTitle').value.trim();
+            const patient = document.getElementById('taskPatientSelect').value;
+            const priority = document.getElementById('taskPriority').value;
+            const time = document.getElementById('taskTime').value.trim();
+
+            const newTask = {
+                id: "TK0" + (mockTasks.length + 1),
+                title,
+                patient,
+                priority,
+                time,
+                status: "Pending"
+            };
+
+            mockTasks.unshift(newTask);
+            closeModal('addTaskModal');
+            document.getElementById('addTaskForm').reset();
+            renderTasks();
+            showNotification("New daily nurse task scheduled!");
+            logActivity("Tasks", `Scheduled new daily care task: '${title}'`);
+        }
+    </script>
+</body>
+</html>

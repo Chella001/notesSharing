@@ -10,6 +10,7 @@ class AppHeader extends HTMLElement {
             'analytics.html':   ['Overview', 'Analytics'],
             'newPatient.html':  ['Clinical Management', 'Patients'],
             'newDoctor.html':   ['Clinical Management', 'Doctors'],
+            'nurses.html':      ['Clinical Management', 'Nurses'],
             'appointments.html':['Operations', 'Appointments'],
             'reports.html':     ['Operations', 'Reports'],
             'settings.html':    ['System', 'Settings'],
