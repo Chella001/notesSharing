@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
         if (!sessionStorage.getItem('currentUser')) {
@@ -22,7 +23,7 @@
     <script src="components/sidebar.js" defer></script>
     <script src="components/header.js" defer></script>
     <script src="js/app.js" type="module"></script>
-    
+
     <style>
         /* --- Local Custom styles for advanced Nurse Management --- */
         .tabs-container {
@@ -34,21 +35,30 @@
             overflow-x: auto;
             scrollbar-width: none;
         }
+
         .tabs-container::-webkit-scrollbar {
             display: none;
         }
-        
+
         .tab-panel {
             display: none;
             animation: panelFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
         }
+
         .tab-panel.active-panel {
             display: block;
         }
 
         @keyframes panelFadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* --- Shift Schedule Calendar Grid --- */
@@ -61,6 +71,7 @@
             overflow: hidden;
             border: 1px solid var(--ds-border);
         }
+
         .roster-hdr {
             background: var(--ds-bg-app);
             padding: 14px;
@@ -71,9 +82,11 @@
             text-transform: uppercase;
             letter-spacing: 0.05em;
         }
+
         .roster-hdr:first-child {
             text-align: left;
         }
+
         .roster-cell {
             background: var(--ds-bg-card);
             padding: 12px;
@@ -85,9 +98,11 @@
             justify-content: center;
             transition: background var(--transition-fast);
         }
+
         .roster-cell:hover {
             background: var(--ds-bg-hover);
         }
+
         .roster-nurse-name {
             font-weight: 600;
             color: var(--ds-text-primary);
@@ -97,6 +112,7 @@
             align-items: center;
             border-right: 1px solid var(--ds-border);
         }
+
         .shift-badge {
             font-size: 0.72rem;
             font-weight: 700;
@@ -108,13 +124,33 @@
             transition: all 0.2s;
             border: 1px solid transparent;
         }
+
         .shift-badge:hover {
             transform: scale(1.05);
         }
-        .shift-m { background: rgba(14, 165, 233, 0.12); color: #0ea5e9; border-color: rgba(14, 165, 233, 0.2); }
-        .shift-e { background: rgba(245, 158, 11, 0.12); color: #f59e0b; border-color: rgba(245, 158, 11, 0.2); }
-        .shift-n { background: rgba(99, 102, 241, 0.12); color: #818cf8; border-color: rgba(99, 102, 241, 0.2); }
-        .shift-off { background: rgba(113, 113, 122, 0.1); color: var(--ds-text-secondary); }
+
+        .shift-m {
+            background: rgba(14, 165, 233, 0.12);
+            color: #0ea5e9;
+            border-color: rgba(14, 165, 233, 0.2);
+        }
+
+        .shift-e {
+            background: rgba(245, 158, 11, 0.12);
+            color: #f59e0b;
+            border-color: rgba(245, 158, 11, 0.2);
+        }
+
+        .shift-n {
+            background: rgba(99, 102, 241, 0.12);
+            color: #818cf8;
+            border-color: rgba(99, 102, 241, 0.2);
+        }
+
+        .shift-off {
+            background: rgba(113, 113, 122, 0.1);
+            color: var(--ds-text-secondary);
+        }
 
         /* --- Alert Card --- */
         .alert-card {
@@ -128,21 +164,33 @@
             margin-bottom: 18px;
             animation: pulseAlert 2s infinite ease-in-out;
         }
+
         @keyframes pulseAlert {
-            0% { border-color: rgba(239, 68, 68, 0.15); }
-            50% { border-color: rgba(239, 68, 68, 0.45); }
-            100% { border-color: rgba(239, 68, 68, 0.15); }
+            0% {
+                border-color: rgba(239, 68, 68, 0.15);
+            }
+
+            50% {
+                border-color: rgba(239, 68, 68, 0.45);
+            }
+
+            100% {
+                border-color: rgba(239, 68, 68, 0.15);
+            }
         }
+
         .alert-card i {
             color: var(--danger);
             font-size: 1.2rem;
             margin-top: 2px;
         }
+
         .alert-title {
             font-weight: 700;
             color: var(--danger);
             margin-bottom: 4px;
         }
+
         .alert-desc {
             font-size: 0.82rem;
             color: var(--ds-text-secondary);
@@ -165,10 +213,12 @@
             pointer-events: none;
             transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1);
         }
+
         .modal-overlay.show {
             opacity: 1;
             pointer-events: auto;
         }
+
         .ds-modal {
             background: var(--ds-bg-card);
             border: 1px solid var(--ds-border);
@@ -182,20 +232,24 @@
             max-height: 90vh;
             overflow-y: auto;
         }
+
         .modal-overlay.show .ds-modal {
             transform: translateY(0);
         }
+
         .modal-hdr {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 20px;
         }
+
         .modal-title {
             font-size: 1.25rem;
             font-weight: 700;
             color: var(--ds-text-primary);
         }
+
         .modal-close {
             background: transparent;
             border: none;
@@ -204,6 +258,7 @@
             cursor: pointer;
             transition: color 0.2s;
         }
+
         .modal-close:hover {
             color: var(--ds-text-primary);
         }
@@ -220,15 +275,18 @@
             justify-content: space-between;
             transition: transform 0.2s, border-color 0.2s;
         }
+
         .task-card:hover {
             transform: translateY(-1px);
             border-color: var(--ds-border-hover);
         }
+
         .task-left {
             display: flex;
             align-items: center;
             gap: 12px;
         }
+
         .task-checkbox {
             cursor: pointer;
             width: 18px;
@@ -236,17 +294,20 @@
             border-radius: 4px;
             accent-color: var(--primary);
         }
+
         .task-info h4 {
             font-weight: 600;
             font-size: 0.9rem;
             color: var(--ds-text-primary);
             margin: 0 0 2px;
         }
+
         .task-info p {
             font-size: 0.76rem;
             color: var(--ds-text-secondary);
             margin: 0;
         }
+
         .task-prio {
             font-size: 0.65rem;
             font-weight: 700;
@@ -255,9 +316,21 @@
             border-radius: 999px;
             letter-spacing: 0.05em;
         }
-        .prio-high { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
-        .prio-med { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
-        .prio-low { background: rgba(14, 165, 233, 0.1); color: #0ea5e9; }
+
+        .prio-high {
+            background: rgba(239, 68, 68, 0.1);
+            color: var(--danger);
+        }
+
+        .prio-med {
+            background: rgba(245, 158, 11, 0.1);
+            color: var(--warning);
+        }
+
+        .prio-low {
+            background: rgba(14, 165, 233, 0.1);
+            color: #0ea5e9;
+        }
 
         /* --- Communication Chat Mockup --- */
         .chat-container {
@@ -269,11 +342,13 @@
             overflow: hidden;
             background: var(--ds-bg-card);
         }
+
         .chat-sidebar {
             border-right: 1px solid var(--ds-border);
             background: var(--ds-bg-app);
             overflow-y: auto;
         }
+
         .chat-user-item {
             padding: 14px 16px;
             border-bottom: 1px solid var(--ds-border);
@@ -283,13 +358,16 @@
             align-items: center;
             gap: 10px;
         }
+
         .chat-user-item:hover {
             background: var(--ds-bg-hover);
         }
+
         .chat-user-item.active {
             background: rgba(13, 148, 136, 0.08);
             border-left: 3px solid var(--primary);
         }
+
         .chat-user-av {
             width: 32px;
             height: 32px;
@@ -302,22 +380,26 @@
             justify-content: center;
             font-size: 0.8rem;
         }
+
         .chat-user-info h5 {
             font-weight: 600;
             font-size: 0.85rem;
             color: var(--ds-text-primary);
             margin: 0;
         }
+
         .chat-user-info p {
             font-size: 0.72rem;
             color: var(--ds-text-secondary);
             margin: 0;
         }
+
         .chat-main {
             display: flex;
             flex-direction: column;
             height: 100%;
         }
+
         .chat-hdr {
             padding: 14px 20px;
             border-bottom: 1px solid var(--ds-border);
@@ -325,6 +407,7 @@
             font-weight: 600;
             color: var(--ds-text-primary);
         }
+
         .chat-messages {
             flex: 1;
             padding: 20px;
@@ -334,6 +417,7 @@
             gap: 12px;
             background: var(--ds-bg-app);
         }
+
         .msg-bubble {
             max-width: 70%;
             padding: 10px 14px;
@@ -341,6 +425,7 @@
             font-size: 0.85rem;
             line-height: 1.4;
         }
+
         .msg-received {
             background: var(--ds-bg-card);
             color: var(--ds-text-primary);
@@ -348,12 +433,14 @@
             border-top-left-radius: 2px;
             border: 1px solid var(--ds-border);
         }
+
         .msg-sent {
             background: var(--primary);
             color: white;
             align-self: flex-end;
             border-top-right-radius: 2px;
         }
+
         .chat-input-wrap {
             padding: 12px 20px;
             border-top: 1px solid var(--ds-border);
@@ -361,6 +448,7 @@
             gap: 10px;
             background: var(--ds-bg-card);
         }
+
         .chat-input {
             flex: 1;
             background: var(--ds-bg-app);
@@ -382,12 +470,17 @@
             position: relative;
             overflow: hidden;
         }
+
         .profile-badge-card::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; height: 4px;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
             background: var(--primary);
         }
+
         .profile-badge-av {
             width: 90px;
             height: 90px;
@@ -402,7 +495,7 @@
             justify-content: center;
             margin: 0 auto 16px;
         }
-        
+
         /* Grid controls */
         .controls-row {
             display: flex;
@@ -412,7 +505,7 @@
             flex-wrap: wrap;
             gap: 12px;
         }
-        
+
         .flex-actions {
             display: flex;
             gap: 8px;
@@ -435,6 +528,7 @@
             grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 16px;
         }
+
         .patient-mon-card {
             background: var(--ds-bg-card);
             border: 1px solid var(--ds-border);
@@ -442,22 +536,26 @@
             padding: 18px;
             transition: all 0.25s;
         }
+
         .patient-mon-card:hover {
             transform: translateY(-2px);
             box-shadow: var(--shadow-md);
             border-color: var(--ds-border-hover);
         }
+
         .mon-hdr {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 12px;
         }
+
         .mon-vitals {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
         }
+
         .vital-box {
             background: var(--ds-bg-app);
             padding: 8px 10px;
@@ -465,24 +563,29 @@
             font-size: 0.78rem;
             border: 1px solid var(--ds-border);
         }
+
         .vital-lbl {
             color: var(--ds-text-secondary);
             font-size: 0.68rem;
             margin-bottom: 2px;
         }
+
         .vital-val {
             font-weight: 700;
             color: var(--ds-text-primary);
         }
+
         .vital-critical {
             background: rgba(239, 68, 68, 0.08);
             border-color: rgba(239, 68, 68, 0.2);
         }
+
         .vital-critical .vital-val {
             color: var(--danger);
         }
     </style>
 </head>
+
 <body>
     <div class="dashboard">
         <app-sidebar></app-sidebar>
@@ -497,7 +600,8 @@
                     <div class="stat-card">
                         <div class="stat-label">Total Nurses <span><i class="fas fa-user-nurse"></i></span></div>
                         <div class="stat-number" id="statsTotalNurses">14</div>
-                        <div class="stat-trend" style="color: var(--success);"><i class="fas fa-arrow-up"></i> 1 new registered</div>
+                        <div class="stat-trend" style="color: var(--success);"><i class="fas fa-arrow-up"></i> 1 new
+                            registered</div>
                     </div>
                     <div class="stat-card">
                         <div class="stat-label">Active Shifts <span><i class="fas fa-calendar-check"></i></span></div>
@@ -507,12 +611,15 @@
                     <div class="stat-card">
                         <div class="stat-label">Assigned Patients <span><i class="fas fa-user-injured"></i></span></div>
                         <div class="stat-number" id="statsAssignedPatients">22</div>
-                        <div class="stat-trend" style="color: var(--warning);"><i class="fas fa-bed"></i> 4 in ICU units</div>
+                        <div class="stat-trend" style="color: var(--warning);"><i class="fas fa-bed"></i> 4 in ICU units
+                        </div>
                     </div>
                     <div class="stat-card">
-                        <div class="stat-label">Urgent Alerts <span><i class="fas fa-exclamation-triangle"></i></span></div>
+                        <div class="stat-label">Urgent Alerts <span><i class="fas fa-exclamation-triangle"></i></span>
+                        </div>
                         <div class="stat-number" id="statsUrgentAlerts" style="color: var(--danger);">1</div>
-                        <div class="stat-trend" style="color: var(--danger);"><i class="fas fa-bell"></i> Critical Vitals Triggered</div>
+                        <div class="stat-trend" style="color: var(--danger);"><i class="fas fa-bell"></i> Critical
+                            Vitals Triggered</div>
                     </div>
                 </div>
 
@@ -521,20 +628,26 @@
                     <i class="fas fa-exclamation-circle"></i>
                     <div>
                         <div class="alert-title">CRITICAL ALERT: ICU Bed 3 (Ramesh Kumar) SpO2 Dropped to 90%</div>
-                        <div class="alert-desc">Assigned Nurse: Sneha Nair is on her way. Doctor alerted. Updated 2 mins ago.</div>
+                        <div class="alert-desc">Assigned Nurse: Sneha Nair is on her way. Doctor alerted. Updated 2 mins
+                            ago.</div>
                     </div>
                 </div>
 
                 <!-- Tabs Container -->
                 <div class="tabs-container">
-                    <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Nurse Dashboard</button>
+                    <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-pie"></i> Nurse
+                        Dashboard</button>
                     <button class="tab-btn" data-tab="roster"><i class="fas fa-address-book"></i> Nurse Roster</button>
-                    <button class="tab-btn" data-tab="shifts"><i class="fas fa-calendar-alt"></i> Shift Scheduler</button>
-                    <button class="tab-btn" data-tab="assignments"><i class="fas fa-link"></i> Patient Care Allocation</button>
+                    <button class="tab-btn" data-tab="shifts"><i class="fas fa-calendar-alt"></i> Shift
+                        Scheduler</button>
+                    <button class="tab-btn" data-tab="assignments"><i class="fas fa-link"></i> Patient Care
+                        Allocation</button>
                     <button class="tab-btn" data-tab="tasks"><i class="fas fa-tasks"></i> Daily Care Tasks</button>
-                    <button class="tab-btn" data-tab="monitoring"><i class="fas fa-heartbeat"></i> Vitals Monitoring</button>
+                    <button class="tab-btn" data-tab="monitoring"><i class="fas fa-heartbeat"></i> Vitals
+                        Monitoring</button>
                     <button class="tab-btn" data-tab="comm"><i class="fas fa-comments"></i> Handovers & Chat</button>
-                    <button class="tab-btn" data-tab="reports"><i class="fas fa-chart-bar"></i> Performance Logs</button>
+                    <button class="tab-btn" data-tab="reports"><i class="fas fa-chart-bar"></i> Performance
+                        Logs</button>
                 </div>
 
                 <!-- 1. DASHBOARD OVERVIEW PANEL -->
@@ -542,10 +655,14 @@
                     <div class="ds-card" style="margin-bottom: 24px;">
                         <h3 class="text-h3" style="margin-bottom: 12px;">Nurse Quick Controls</h3>
                         <div class="flex-actions" style="margin-bottom: 16px;">
-                            <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i class="fas fa-user-plus"></i> Register New Nurse</button>
-                            <button class="ds-btn ds-btn-secondary" onclick="openModal('swapShiftModal')"><i class="fas fa-exchange-alt"></i> Request Shift Swap</button>
-                            <button class="ds-btn ds-btn-secondary" onclick="openModal('addVitalsModal')"><i class="fas fa-plus"></i> Log Patient Vitals</button>
-                            <button class="ds-btn ds-btn-secondary" onclick="openModal('assignPatientModal')"><i class="fas fa-link"></i> Assign Nurse to Patient</button>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i
+                                    class="fas fa-user-plus"></i> Register New Nurse</button>
+                            <button class="ds-btn ds-btn-secondary" onclick="openModal('swapShiftModal')"><i
+                                    class="fas fa-exchange-alt"></i> Request Shift Swap</button>
+                            <button class="ds-btn ds-btn-secondary" onclick="openModal('addVitalsModal')"><i
+                                    class="fas fa-plus"></i> Log Patient Vitals</button>
+                            <button class="ds-btn ds-btn-secondary" onclick="openModal('assignPatientModal')"><i
+                                    class="fas fa-link"></i> Assign Nurse to Patient</button>
                         </div>
                     </div>
 
@@ -576,19 +693,24 @@
                         <div class="ds-card">
                             <h3 class="text-h3" style="margin-bottom: 16px;">Recent Nurse Board Notes</h3>
                             <div style="display: flex; flex-direction: column; gap: 12px;" id="dashboardAnnouncements">
-                                <div style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
+                                <div
+                                    style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
                                     <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
                                         <strong>Shift Handover Note</strong>
                                         <small style="color:var(--ds-text-secondary)">Today, 08:00 AM</small>
                                     </div>
-                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">ICU Bed 2 patient needs medication dosage checked by noon. Handed over from Night Shift Team.</p>
+                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">ICU Bed 2
+                                        patient needs medication dosage checked by noon. Handed over from Night Shift
+                                        Team.</p>
                                 </div>
-                                <div style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
+                                <div
+                                    style="padding: 12px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 8px;">
                                     <div style="display:flex; justify-content:space-between; margin-bottom:6px;">
                                         <strong>Duty Announcement</strong>
                                         <small style="color:var(--ds-text-secondary)">Yesterday</small>
                                     </div>
-                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">Emergency ward sanitation scheduled for Thursday evening. Morning shifts remain unaffected.</p>
+                                    <p style="font-size:0.8rem; margin:0; color:var(--ds-text-secondary)">Emergency ward
+                                        sanitation scheduled for Thursday evening. Morning shifts remain unaffected.</p>
                                 </div>
                             </div>
                         </div>
@@ -601,7 +723,9 @@
                         <div class="controls-row">
                             <div class="search-wrapper">
                                 <i class="fas fa-search"></i>
-                                <input type="text" id="rosterSearch" placeholder="Search by name, ID or specialization..." oninput="filterRoster()" class="search-input">
+                                <input type="text" id="rosterSearch"
+                                    placeholder="Search by name, ID or specialization..." oninput="filterRoster()"
+                                    class="search-input">
                             </div>
                             <div class="table-controls">
                                 <select id="rosterDeptFilter" class="table-filter" onchange="filterRoster()">
@@ -612,7 +736,8 @@
                                     <option value="Emergency">Emergency</option>
                                     <option value="Pediatrics">Pediatrics</option>
                                 </select>
-                                <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i class="fas fa-user-plus"></i> Add Nurse</button>
+                                <button class="ds-btn ds-btn-primary" onclick="openModal('addNurseModal')"><i
+                                        class="fas fa-user-plus"></i> Add Nurse</button>
                             </div>
                         </div>
 
@@ -644,10 +769,11 @@
                         <div class="controls-row">
                             <h3 class="text-h3">Weekly Shifts Allocation & Calendar</h3>
                             <div class="table-controls">
-                                <button class="ds-btn ds-btn-secondary" onclick="openModal('swapShiftModal')"><i class="fas fa-exchange-alt"></i> Swap Requests</button>
+                                <button class="ds-btn ds-btn-secondary" onclick="openModal('swapShiftModal')"><i
+                                        class="fas fa-exchange-alt"></i> Swap Requests</button>
                             </div>
                         </div>
-                        
+
                         <div style="margin-bottom: 16px; display: flex; gap: 20px; font-size: 0.82rem;">
                             <div><span class="shift-badge shift-m">M</span> Morning Shift (06:00 AM - 02:00 PM)</div>
                             <div><span class="shift-badge shift-e">E</span> Evening Shift (02:00 PM - 10:00 PM)</div>
@@ -676,7 +802,8 @@
                     <div class="ds-card">
                         <div class="controls-row">
                             <h3 class="text-h3">Active Patient Duty Allocations</h3>
-                            <button class="ds-btn ds-btn-primary" onclick="openModal('assignPatientModal')"><i class="fas fa-link"></i> New Allocation</button>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('assignPatientModal')"><i
+                                    class="fas fa-link"></i> New Allocation</button>
                         </div>
 
                         <div class="table-container">
@@ -705,13 +832,15 @@
                     <div class="ds-card">
                         <div class="controls-row">
                             <h3 class="text-h3">Nurse Task List & Medication Checklist</h3>
-                            <button class="ds-btn ds-btn-primary" onclick="openModal('addTaskModal')"><i class="fas fa-plus"></i> Add Daily Task</button>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('addTaskModal')"><i
+                                    class="fas fa-plus"></i> Add Daily Task</button>
                         </div>
 
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
                             <!-- Pending Tasks -->
                             <div>
-                                <h4 class="text-h4" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <h4 class="text-h4"
+                                    style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                                     <i class="fas fa-clock" style="color: var(--warning)"></i> Active/Pending Tasks
                                 </h4>
                                 <div id="pendingTasksContainer">
@@ -721,7 +850,8 @@
 
                             <!-- Completed Tasks -->
                             <div>
-                                <h4 class="text-h4" style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+                                <h4 class="text-h4"
+                                    style="margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
                                     <i class="fas fa-check-circle" style="color: var(--success)"></i> Completed Tasks
                                 </h4>
                                 <div id="completedTasksContainer">
@@ -737,7 +867,8 @@
                     <div class="ds-card">
                         <div class="controls-row">
                             <h3 class="text-h3">Live Patient Vitals Tracker</h3>
-                            <button class="ds-btn ds-btn-primary" onclick="openModal('addVitalsModal')"><i class="fas fa-plus"></i> Add Vitals Log</button>
+                            <button class="ds-btn ds-btn-primary" onclick="openModal('addVitalsModal')"><i
+                                    class="fas fa-plus"></i> Add Vitals Log</button>
                         </div>
 
                         <div class="patient-mon-grid" id="vitalsGrid">
@@ -761,8 +892,11 @@
                                 <!-- Messages will load dynamically -->
                             </div>
                             <div class="chat-input-wrap">
-                                <input type="text" id="chatInputMessage" placeholder="Type a message or shift handover note..." class="chat-input" onkeydown="if(event.key === 'Enter') sendChatMessage()">
-                                <button class="ds-btn ds-btn-primary" onclick="sendChatMessage()" style="padding: 8px 16px;"><i class="fas fa-paper-plane"></i></button>
+                                <input type="text" id="chatInputMessage"
+                                    placeholder="Type a message or shift handover note..." class="chat-input"
+                                    onkeydown="if(event.key === 'Enter') sendChatMessage()">
+                                <button class="ds-btn ds-btn-primary" onclick="sendChatMessage()"
+                                    style="padding: 8px 16px;"><i class="fas fa-paper-plane"></i></button>
                             </div>
                         </div>
                     </div>
@@ -773,20 +907,29 @@
                     <div class="ds-card" style="margin-bottom: 24px;">
                         <h3 class="text-h3" style="margin-bottom: 16px;">Nurse Performance Analytics & Workload</h3>
                         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
-                            <div style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
-                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">Average Workload Index</div>
+                            <div
+                                style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
+                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">
+                                    Average Workload Index</div>
                                 <div style="font-size: 1.8rem; font-weight: 800; color: var(--primary);">74%</div>
-                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i class="fas fa-check"></i> Balanced allocation</div>
+                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i
+                                        class="fas fa-check"></i> Balanced allocation</div>
                             </div>
-                            <div style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
-                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">On-Time Shift Attendance</div>
+                            <div
+                                style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
+                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">
+                                    On-Time Shift Attendance</div>
                                 <div style="font-size: 1.8rem; font-weight: 800; color: var(--success);">98.2%</div>
-                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i class="fas fa-chevron-up"></i> Over industry average</div>
+                                <div style="font-size: 0.72rem; color: var(--success); margin-top: 4px;"><i
+                                        class="fas fa-chevron-up"></i> Over industry average</div>
                             </div>
-                            <div style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
-                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">Total Shifts Conducted (This Month)</div>
+                            <div
+                                style="padding: 20px; background: var(--ds-bg-app); border: 1px solid var(--ds-border); border-radius: 12px; text-align: center;">
+                                <div style="color: var(--ds-text-secondary); font-size: 0.8rem; margin-bottom: 6px;">
+                                    Total Shifts Conducted (This Month)</div>
                                 <div style="font-size: 1.8rem; font-weight: 800; color: #0ea5e9;">240</div>
-                                <div style="font-size: 0.72rem; color: var(--ds-text-secondary); margin-top: 4px;">42 hours overtime logs</div>
+                                <div style="font-size: 0.72rem; color: var(--ds-text-secondary); margin-top: 4px;">42
+                                    hours overtime logs</div>
                             </div>
                         </div>
                     </div>
@@ -830,7 +973,8 @@
                         <label class="ds-label"><i class="fas fa-id-badge"></i>Full Name *</label>
                         <div class="input-wrapper">
                             <i class="fas fa-id-badge"></i>
-                            <input type="text" id="nurseName" placeholder="Enter nurse full name" required class="ds-input">
+                            <input type="text" id="nurseName" placeholder="Enter nurse full name" required
+                                class="ds-input">
                         </div>
                     </div>
                     <div class="input-group">
@@ -885,12 +1029,14 @@
                     <label class="ds-label"><i class="fas fa-ambulance"></i>Emergency Contact Details *</label>
                     <div class="input-wrapper">
                         <i class="fas fa-ambulance"></i>
-                        <input type="text" id="nurseEmergency" placeholder="Emergency contact name & phone" required class="ds-input">
+                        <input type="text" id="nurseEmergency" placeholder="Emergency contact name & phone" required
+                            class="ds-input">
                     </div>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('addNurseModal')">Cancel</button>
+                    <button type="button" class="ds-btn ds-btn-secondary"
+                        onclick="closeModal('addNurseModal')">Cancel</button>
                     <button type="submit" class="ds-btn ds-btn-primary">Register Staff</button>
                 </div>
             </form>
@@ -930,11 +1076,13 @@
 
                 <div class="input-group">
                     <label class="ds-label"><i class="fas fa-comments"></i>Reason / Swap Partner Details</label>
-                    <textarea id="swapReason" placeholder="Explain the reason or specify replacement nurse partner..." class="ds-textarea" style="min-height: 80px;"></textarea>
+                    <textarea id="swapReason" placeholder="Explain the reason or specify replacement nurse partner..."
+                        class="ds-textarea" style="min-height: 80px;"></textarea>
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('swapShiftModal')">Cancel</button>
+                    <button type="button" class="ds-btn ds-btn-secondary"
+                        onclick="closeModal('swapShiftModal')">Cancel</button>
                     <button type="submit" class="ds-btn ds-btn-primary">Submit Request</button>
                 </div>
             </form>
@@ -946,7 +1094,8 @@
         <div class="ds-modal">
             <div class="modal-hdr">
                 <span class="modal-title">Care & Ward Assignment Allocation</span>
-                <button class="modal-close" onclick="closeModal('assignPatientModal')"><i class="fas fa-times"></i></button>
+                <button class="modal-close" onclick="closeModal('assignPatientModal')"><i
+                        class="fas fa-times"></i></button>
             </div>
             <form id="assignPatientForm" class="ds-form">
                 <div class="input-group">
@@ -980,7 +1129,8 @@
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('assignPatientModal')">Cancel</button>
+                    <button type="button" class="ds-btn ds-btn-secondary"
+                        onclick="closeModal('assignPatientModal')">Cancel</button>
                     <button type="submit" class="ds-btn ds-btn-primary">Allocate Duty</button>
                 </div>
             </form>
@@ -1005,7 +1155,8 @@
                 <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
                     <div class="input-group">
                         <label class="ds-label"><i class="fas fa-thermometer-half"></i>Temperature (°F)</label>
-                        <input type="number" step="0.1" id="vitalTemp" placeholder="E.g. 98.6" required class="ds-input">
+                        <input type="number" step="0.1" id="vitalTemp" placeholder="E.g. 98.6" required
+                            class="ds-input">
                     </div>
                     <div class="input-group">
                         <label class="ds-label"><i class="fas fa-heartbeat"></i>Blood Pressure (Sys/Dia)</label>
@@ -1040,7 +1191,8 @@
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('addVitalsModal')">Cancel</button>
+                    <button type="button" class="ds-btn ds-btn-secondary"
+                        onclick="closeModal('addVitalsModal')">Cancel</button>
                     <button type="submit" class="ds-btn ds-btn-primary">Save Log</button>
                 </div>
             </form>
@@ -1056,8 +1208,10 @@
             </div>
             <form id="addTaskForm" class="ds-form">
                 <div class="input-group">
-                    <label class="ds-label"><i class="fas fa-clipboard-list"></i>Task Title / Prescription Details *</label>
-                    <input type="text" id="taskTitle" placeholder="E.g. Administer 500mg Paracetamol" required class="ds-input">
+                    <label class="ds-label"><i class="fas fa-clipboard-list"></i>Task Title / Prescription Details
+                        *</label>
+                    <input type="text" id="taskTitle" placeholder="E.g. Administer 500mg Paracetamol" required
+                        class="ds-input">
                 </div>
 
                 <div class="input-group">
@@ -1083,7 +1237,8 @@
                 </div>
 
                 <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 10px;">
-                    <button type="button" class="ds-btn ds-btn-secondary" onclick="closeModal('addTaskModal')">Cancel</button>
+                    <button type="button" class="ds-btn ds-btn-secondary"
+                        onclick="closeModal('addTaskModal')">Cancel</button>
                     <button type="submit" class="ds-btn ds-btn-primary">Save Task</button>
                 </div>
             </form>
@@ -1095,7 +1250,8 @@
         <div class="ds-modal" style="max-width: 440px; padding: 20px;">
             <div class="modal-hdr" style="margin-bottom: 12px;">
                 <span class="modal-title">Nurse Digital ID Badge</span>
-                <button class="modal-close" onclick="closeModal('profileCardModal')"><i class="fas fa-times"></i></button>
+                <button class="modal-close" onclick="closeModal('profileCardModal')"><i
+                        class="fas fa-times"></i></button>
             </div>
             <div class="profile-badge-card" id="profileBadgeCardContent">
                 <!-- Dynamic profile badge content -->
@@ -1109,61 +1265,27 @@
         import './js/firebase-config.js';
 
         // Local state mockup fallbacks in case Firebase collection is blank
-        let mockNurses = [
-            { id: "NS001", name: "Sneha Nair", dept: "ICU", exp: 6, qual: "B.Sc Nursing", phone: "9876543210", email: "sneha.nair@clinic.com", emergency: "Rohan (Husband) - 9876543211", status: "Active" },
-            { id: "NS002", name: "Maria Joseph", dept: "Emergency", exp: 8, qual: "M.Sc Nursing", phone: "9876543212", email: "maria.j@clinic.com", emergency: "Sunny (Brother) - 9876543213", status: "Active" },
-            { id: "NS003", name: "Priyanka Sharma", dept: "General Ward", exp: 4, qual: "GNM Diploma", phone: "9876543214", email: "priyanka.s@clinic.com", emergency: "Alok (Father) - 9876543215", status: "Active" },
-            { id: "NS004", name: "Anju Kurian", dept: "Pediatrics", exp: 7, qual: "B.Sc Nursing", phone: "9876543216", email: "anju.k@clinic.com", emergency: "Kurian (Father) - 9876543217", status: "Active" }
-        ];
+        let mockNurses = [];
 
-        let mockPatients = [
-            { id: "PT001", name: "Ramesh Kumar", age: 52, gender: "Male", phone: "9898989801", bloodGroup: "O+", email: "ramesh@gmail.com" },
-            { id: "PT002", name: "Sunitha Verma", age: 43, gender: "Female", phone: "9898989802", bloodGroup: "A+", email: "sunitha@gmail.com" },
-            { id: "PT003", name: "Anoop Pillai", age: 29, gender: "Male", phone: "9898989803", bloodGroup: "B+", email: "anoop@gmail.com" }
-        ];
+        let mockPatients = [];
 
-        let mockShifts = [
-            { nurseId: "NS001", nurseName: "Sneha Nair", dept: "ICU", mon: "M", tue: "M", wed: "M", thu: "M", fri: "E", sat: "OFF", sun: "OFF" },
-            { nurseId: "NS002", nurseName: "Maria Joseph", dept: "Emergency", mon: "E", tue: "E", wed: "E", thu: "E", fri: "N", sat: "N", sun: "OFF" },
-            { nurseId: "NS003", nurseName: "Priyanka Sharma", dept: "General Ward", mon: "M", tue: "M", wed: "M", thu: "OFF", fri: "OFF", sat: "E", sun: "E" },
-            { nurseId: "NS004", nurseName: "Anju Kurian", dept: "Pediatrics", mon: "N", tue: "N", wed: "OFF", thu: "OFF", fri: "M", sat: "M", sun: "M" }
-        ];
+        let mockShifts = [];
 
-        let mockAssignments = [
-            { id: "AS001", patientName: "Ramesh Kumar", ward: "ICU Bed 3", nurseName: "Sneha Nair", date: "28/05/2026", careType: "Critical Care", condition: "Critical" },
-            { id: "AS002", patientName: "Sunitha Verma", ward: "General Ward 204", nurseName: "Priyanka Sharma", date: "27/05/2026", careType: "General Nursing", condition: "Stable" },
-            { id: "AS003", patientName: "Anoop Pillai", ward: "Post-Op Recovery Room 2", nurseName: "Anju Kurian", date: "28/05/2026", careType: "Post-Op Recovery", condition: "Observation" }
-        ];
+        let mockAssignments = [];
 
-        let mockTasks = [
-            { id: "TK001", title: "Medication: Administer Insulin", patient: "Ramesh Kumar", priority: "High", time: "08:00 AM", status: "Pending" },
-            { id: "TK002", title: "BP Monitor check", patient: "Sunitha Verma", priority: "Medium", time: "11:00 AM", status: "Pending" },
-            { id: "TK003", title: "Post-op wound dressing change", patient: "Anoop Pillai", priority: "High", time: "10:30 AM", status: "Completed" },
-            { id: "TK004", title: "Administer multivitamin IV fluids", patient: "Sunitha Verma", priority: "Low", time: "02:00 PM", status: "Pending" }
-        ];
+        let mockTasks = [];
 
-        let mockVitals = [
-            { patientName: "Ramesh Kumar", temp: 101.2, bp: "150/95", pulse: 88, sugar: 165, o2: 90, condition: "Critical", time: "10:42 AM" },
-            { patientName: "Sunitha Verma", temp: 98.4, bp: "120/80", pulse: 72, sugar: 110, o2: 99, condition: "Stable", time: "10:30 AM" },
-            { patientName: "Anoop Pillai", temp: 99.1, bp: "128/82", pulse: 76, sugar: 130, o2: 97, condition: "Observation", time: "10:15 AM" }
-        ];
+        let mockVitals = [];
 
-        let mockMessages = [
-            { sender: "Sneha Nair", msg: "Just uploaded the morning ICU vitals sheet.", time: "10:45 AM" },
-            { sender: "Dr. Arvind", msg: "Please keep a closer eye on Ramesh's blood sugar trends today.", time: "10:48 AM" }
-        ];
+        let mockMessages = [];
 
-        let mockLogs = [
-            { time: "28/05/2026 10:42 AM", operator: "Sneha Nair", category: "Vitals", desc: "Updated Ramesh Kumar vitals (SpO2 dropped to 90%)", ref: "PT001" },
-            { time: "28/05/2026 10:30 AM", operator: "Priyanka Sharma", category: "Tasks", desc: "Completed BP Monitor check", ref: "TK002" },
-            { time: "28/05/2026 09:15 AM", operator: "Admin", category: "Shifts", desc: "Approved duty swap for Sneha Nair", ref: "NS001" }
-        ];
+        let mockLogs = [];
 
         // Global functions for modal handlers
-        window.openModal = function(id) {
+        window.openModal = function (id) {
             document.getElementById(id).classList.add('show');
         };
-        window.closeModal = function(id) {
+        window.closeModal = function (id) {
             document.getElementById(id).classList.remove('show');
         };
 
@@ -1198,14 +1320,20 @@
                 try {
                     // Try to load from collections, if they don't exist Firestore will create or return empty
                     const nurseSnap = await firestoreDb.collection('nurses').get();
+                    mockNurses = [];
+                    mockShifts = [];
                     if (!nurseSnap.empty) {
-                        mockNurses = [];
-                        nurseSnap.forEach(d => mockNurses.push({ id: d.id, ...d.data() }));
-                    } else {
-                        // Populate mock data into Firestore if completely empty so the DB stays healthy
-                        for (let n of mockNurses) {
-                            await firestoreDb.collection('nurses').doc(n.id).set(n);
-                        }
+                        nurseSnap.forEach(d => {
+                            const nurseObj = { id: d.id, ...d.data() };
+                            mockNurses.push(nurseObj);
+                            // Dynamically generate default shifts for the schedule grid
+                            mockShifts.push({
+                                nurseId: nurseObj.id,
+                                nurseName: nurseObj.name,
+                                dept: nurseObj.dept,
+                                mon: "M", tue: "M", wed: "M", thu: "M", fri: "OFF", sat: "OFF", sun: "OFF"
+                            });
+                        });
                     }
 
                     // Load patients
@@ -1238,7 +1366,7 @@
         function renderDashboard() {
             const tbody = document.getElementById('dashboardDutyBody');
             tbody.innerHTML = '';
-            
+
             // Generate some active shift rows
             mockNurses.forEach(nurse => {
                 const shift = mockShifts.find(s => s.nurseId === nurse.id) || { mon: 'M' };
@@ -1259,7 +1387,7 @@
             document.getElementById('statsTotalNurses').textContent = mockNurses.length;
             document.getElementById('statsActiveShifts').textContent = mockShifts.length;
             document.getElementById('statsAssignedPatients').textContent = mockAssignments.length;
-            
+
             // Count critical alert vitals
             const criticals = mockVitals.filter(v => v.condition === 'Critical').length;
             document.getElementById('statsUrgentAlerts').textContent = criticals;
@@ -1314,7 +1442,7 @@
         }
 
         // Filter Roster
-        window.filterRoster = function() {
+        window.filterRoster = function () {
             const searchVal = document.getElementById('rosterSearch').value.toLowerCase().trim();
             const deptVal = document.getElementById('rosterDeptFilter').value;
 
@@ -1388,7 +1516,7 @@
         }
 
         // Inline toggle Shift cell for premium interaction
-        window.toggleCellShift = function(nurseId, day) {
+        window.toggleCellShift = function (nurseId, day) {
             const shift = mockShifts.find(s => s.nurseId === nurseId);
             if (shift) {
                 const cur = shift[day];
@@ -1397,7 +1525,7 @@
                 else if (cur === 'M') next = 'E';
                 else if (cur === 'E') next = 'N';
                 else if (cur === 'N') next = 'OFF';
-                
+
                 shift[day] = next;
                 renderCalendar();
                 logActivity("Shifts", `Updated ${shift.nurseName} shift on ${day.toUpperCase()} to ${next}`, nurseId);
@@ -1432,7 +1560,7 @@
             });
         }
 
-        window.removeAssignment = function(id) {
+        window.removeAssignment = function (id) {
             mockAssignments = mockAssignments.filter(a => a.id !== id);
             renderAll();
             showNotification("Patient assignment removed.");
@@ -1492,7 +1620,7 @@
             }
         }
 
-        window.toggleTaskState = function(id) {
+        window.toggleTaskState = function (id) {
             const task = mockTasks.find(t => t.id === id);
             if (task) {
                 task.status = task.status === 'Pending' ? 'Completed' : 'Pending';
@@ -1510,11 +1638,11 @@
             mockVitals.forEach(vit => {
                 const card = document.createElement('div');
                 card.className = 'patient-mon-card';
-                
+
                 const isCritO2 = vit.o2 < 92;
                 const isCritTemp = vit.temp > 100.5 || vit.temp < 96.0;
                 const isCriticalCard = vit.condition === 'Critical' || isCritO2;
-                
+
                 card.innerHTML = `
                     <div class="mon-hdr">
                         <div>
@@ -1590,7 +1718,7 @@
             messageFlow.scrollTop = messageFlow.scrollHeight;
         }
 
-        window.sendChatMessage = function() {
+        window.sendChatMessage = function () {
             const input = document.getElementById('chatInputMessage');
             const msgText = input.value.trim();
             if (!msgText) return;
@@ -1631,10 +1759,10 @@
             // Populate nurse list
             const swapSelect = document.getElementById('swapNurseSelect');
             const assignNurseSelect = document.getElementById('assignNurseSelect');
-            
+
             swapSelect.innerHTML = '<option value="">Select Staff</option>';
             assignNurseSelect.innerHTML = '<option value="">Select Staff</option>';
-            
+
             mockNurses.forEach(n => {
                 const opt = `<option value="${n.name}">${n.name} (${n.dept})</option>`;
                 swapSelect.innerHTML += opt;
@@ -1659,7 +1787,7 @@
         }
 
         // View Nurse Digital ID Badge Modal Callback
-        window.viewNurseProfile = function(id) {
+        window.viewNurseProfile = function (id) {
             const nurse = mockNurses.find(n => n.id === id);
             if (!nurse) return;
 
@@ -1711,7 +1839,7 @@
             }
 
             mockNurses.push(newNurse);
-            
+
             // Add default shifts for new nurse
             mockShifts.push({ nurseId: newId, nurseName: name, dept, mon: "M", tue: "M", wed: "M", thu: "M", fri: "OFF", sat: "OFF", sun: "OFF" });
 
@@ -1807,4 +1935,5 @@
         }
     </script>
 </body>
+
 </html>
