@@ -90,10 +90,8 @@ body {
     background: var(--bg-page-gradient);
     color: var(--text-primary);
     min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 24px;
+    margin: 0;
+    padding: 0;
     transition: background var(--transition-normal);
 }
 
@@ -155,26 +153,18 @@ body {
 
 /* --- Layout Structure --- */
 .dashboard {
-    max-width: 1440px;
     width: 100%;
-    min-height: 840px;
-    height: calc(100vh - 48px);
+    min-height: 100vh;
     background: var(--bg-card);
     backdrop-filter: blur(var(--glass-blur));
-    border-radius: var(--radius-xl);
     box-shadow: var(--shadow-xl);
     display: grid;
-    grid-template-columns: 280px 1fr;
+    /* grid-template-columns controlled by enterprise.css sidebar system */
     overflow: hidden;
     border: var(--glass-border);
     animation: scaleIn var(--transition-normal);
     position: relative;
     transition: grid-template-columns var(--transition-normal);
-}
-
-/* Sidebar Collapsed State */
-.dashboard.sidebar-collapsed {
-    grid-template-columns: 80px 1fr;
 }
 
 /* --- Sidebar --- */
