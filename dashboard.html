@@ -216,9 +216,9 @@
                 <div class="table-header">
                     <h3 class="text-h3">📋 Recent Appointments</h3>
                     <div class="table-controls">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="appointmentSearch" class="search-input ds-input"
+                        <div class="search-wrapper" style="position: relative; display: flex; align-items: center; background: rgba(255,255,255,0.4); border: 1px solid rgba(var(--primary-rgb), 0.2); border-radius: 9999px; padding: 6px 16px; box-shadow: 0 0 0 4px rgba(var(--primary-rgb), 0.05); width: 260px; backdrop-filter: blur(8px);">
+                            <i class="fas fa-search" style="color: var(--ds-text-tertiary); margin-right: 8px;"></i>
+                            <input type="text" id="appointmentSearch" style="border: none; background: transparent; outline: none; width: 100%; box-shadow: none; font-size: 14px; color: var(--ds-text-primary);"
                                 placeholder="Search patients/doctors..." oninput="filterRecentAppointments()">
                         </div>
                         <select id="statusFilter" class="table-filter ds-select" onchange="filterRecentAppointments()">
