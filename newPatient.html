@@ -608,28 +608,32 @@
                     successDiv.querySelector('span').textContent = "Patient registered successfully!";
                     successDiv.classList.add('show');
                     showNotification("Patient added successfully!");
+                }
 
-                    // Send email to patient
-                    if (patientData.email) {
-                        if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
-                            const templateParams = {
-                                to_name: patientData.name,
-                                to_email: patientData.email,
-                                email: patientData.email,
-                                message: `Your registration at Akshaya Clinic is successful. Thank you for choosing us.`
-                            };
-                            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                                .then(function (response) {
-                                    console.log('Email sent successfully!', response.status, response.text);
-                                    showNotification("Email sent to patient successfully!");
-                                }, function (error) {
-                                    console.error('Failed to send email...', error);
-                                    showNotification("Failed to send email: " + (error.text || error.message || JSON.stringify(error)), "error");
-                                });
-                        } else {
-                            console.warn("EmailJS is not initialized or configured.");
-                            showNotification("EmailJS is not configured", "error");
-                        }
+                // Send email to patient for both registration and updates
+                if (patientData.email) {
+                    if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+                        const emailMessage = currentEditPatientId 
+                            ? `Your information at Akshaya Clinic has been successfully updated.` 
+                            : `Your registration at Akshaya Clinic is successful. Thank you for choosing us.`;
+                            
+                        const templateParams = {
+                            to_name: patientData.name,
+                            to_email: patientData.email,
+                            email: patientData.email,
+                            message: emailMessage
+                        };
+                        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                            .then(function (response) {
+                                console.log('Email sent successfully!', response.status, response.text);
+                                showNotification("Email sent to patient successfully!");
+                            }, function (error) {
+                                console.error('Failed to send email...', error);
+                                showNotification("Failed to send email: " + (error.text || error.message || JSON.stringify(error)), "error");
+                            });
+                    } else {
+                        console.warn("EmailJS is not initialized or configured.");
+                        showNotification("EmailJS is not configured", "error");
                     }
                 }
 
