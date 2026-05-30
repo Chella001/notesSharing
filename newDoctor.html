@@ -32,30 +32,80 @@
 
         <!-- Main Content -->
         <div class="main-content">
-            <app-header title="Add New Doctor"></app-header>
+            <app-header title="Doctors"></app-header>
 
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Patients <span><i class="fas fa-users"></i></span></div>
-                    <div class="stat-number" id="totalPatients">0</div>
+            <!-- Registered Doctors List Section -->
+            <div class="ds-table-container">
+                <div class="table-header">
+                    <h3 class="text-h3">📋 Registered Doctors</h3>
+                    <div class="table-controls">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search"></i>
+                            <input type="text" id="doctorSearch" class="search-input ds-input"
+                                placeholder="Search doctors by name/specialization..." oninput="filterDoctors()">
+                        </div>
+                        <select id="specializationFilter" class="table-filter ds-select" onchange="filterDoctors()">
+                            <option value="">All Specializations</option>
+                            <option value="General Medicine">General Medicine</option>
+                            <option value="Pediatrics">Pediatrics</option>
+                            <option value="Cardiology">Cardiology</option>
+                            <option value="Dermatology">Dermatology</option>
+                            <option value="Orthopedics">Orthopedics</option>
+                            <option value="Gynecology">Gynecology</option>
+                            <option value="Neurology">Neurology</option>
+                            <option value="Ophthalmology">Ophthalmology</option>
+                        </select>
+                        <select id="experienceFilter" class="table-filter ds-select" onchange="filterDoctors()">
+                            <option value="">All Experience levels</option>
+                            <option value="1-5">1 - 5 Years</option>
+                            <option value="6-10">6 - 10 Years</option>
+                            <option value="10+">10+ Years</option>
+                        </select>
+                        <button class="view-all" onclick="loadDoctorsList()" style="border: none;">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                        <button class="ds-btn ds-btn-primary" onclick="toggleDoctorForm()" id="addDoctorBtn">
+                            <i class="fas fa-user-md"></i> Add Doctor
+                        </button>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Doctors <span><i class="fas fa-stethoscope"></i></span></div>
-                    <div class="stat-number" id="totalDoctors">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Appointments <span><i class="fas fa-clock"></i></span></div>
-                    <div class="stat-number" id="totalAppointments">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Available Beds <span><i class="fas fa-procedures"></i></span></div>
-                    <div class="stat-number" id="totalBeds">0</div>
+
+                <div id="doctorsTableContainer">
+                    <table class="ds-table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Specialization</th>
+                                <th>Experience</th>
+                                <th>Contact info</th>
+                                <th>Availability</th>
+                                <th>Consultation Fee</th>
+                            </tr>
+                        </thead>
+                        <tbody id="doctorsBody">
+                            <tr class="skeleton-row">
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-badge"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                            </tr>
+                            <tr class="skeleton-row">
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td><div class="skeleton skeleton-badge"></div></td>
+                                <td><div class="skeleton skeleton-text"></div></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
-            <!-- Doctor Form -->
-            <div class="ds-card">
+            <!-- Doctor Form (hidden by default) -->
+            <div class="ds-card" id="doctorFormSection" style="display: none; margin-top: 24px;">
                 <div class="form-header">
                     <i class="fas fa-user-md"></i>
                     <div>
@@ -231,9 +281,9 @@
 
                     <!-- Action Buttons -->
                     <div class="action-buttons">
-                        <a href="dashboard.html" class="ds-btn ds-btn-secondary">
+                        <button type="button" class="ds-btn ds-btn-secondary" onclick="toggleDoctorForm()">
                             <i class="fas fa-times"></i> Cancel
-                        </a>
+                        </button>
                         <button type="submit" class="ds-btn ds-btn-primary" id="submitBtn">
                             <i class="fas fa-save"></i> Save Doctor
                         </button>
@@ -250,97 +300,6 @@
                         <span></span>
                     </div>
                 </form>
-            </div>
-
-            <!-- Doctors List Section -->
-            <div class="ds-table-container" style="margin-top: 32px;">
-                <div class="table-header">
-                    <h3 class="text-h3">📋 Registered Doctors</h3>
-                    <div class="table-controls">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="doctorSearch" class="search-input ds-input"
-                                placeholder="Search doctors by name/specialization..." oninput="filterDoctors()">
-                        </div>
-                        <select id="specializationFilter" class="table-filter ds-select" onchange="filterDoctors()">
-                            <option value="">All Specializations</option>
-                            <option value="General Medicine">General Medicine</option>
-                            <option value="Pediatrics">Pediatrics</option>
-                            <option value="Cardiology">Cardiology</option>
-                            <option value="Dermatology">Dermatology</option>
-                            <option value="Orthopedics">Orthopedics</option>
-                            <option value="Gynecology">Gynecology</option>
-                            <option value="Neurology">Neurology</option>
-                            <option value="Ophthalmology">Ophthalmology</option>
-                        </select>
-                        <select id="experienceFilter" class="table-filter ds-select" onchange="filterDoctors()">
-                            <option value="">All Experience levels</option>
-                            <option value="1-5">1 - 5 Years</option>
-                            <option value="6-10">6 - 10 Years</option>
-                            <option value="10+">10+ Years</option>
-                        </select>
-                        <button class="view-all" onclick="loadDoctorsList()" style="border: none;">
-                            <i class="fas fa-sync-alt"></i> Refresh
-                        </button>
-                    </div>
-                </div>
-
-                <div id="doctorsTableContainer">
-                    <table class="ds-table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Specialization</th>
-                                <th>Experience</th>
-                                <th>Contact info</th>
-                                <th>Availability</th>
-                                <th>Consultation Fee</th>
-                            </tr>
-                        </thead>
-                        <tbody id="doctorsBody">
-                            <tr class="skeleton-row">
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-badge"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                            </tr>
-                            <tr class="skeleton-row">
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-badge"></div>
-                                </td>
-                                <td>
-                                    <div class="skeleton skeleton-text"></div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
             </div>
         </div>
     </div>
@@ -378,25 +337,24 @@
             }
         }
 
-
-
-        // Load Stats
-        async function loadStats() {
-            if (!db) return;
-
-            try {
-                const patientsSnapshot = await db.collection('patients').get();
-                document.getElementById('totalPatients').textContent = patientsSnapshot.size;
-
-                const doctorsSnapshot = await db.collection('doctors').get();
-                document.getElementById('totalDoctors').textContent = doctorsSnapshot.size;
-
-                const appointmentsSnapshot = await db.collection('appointments').get();
-                document.getElementById('totalAppointments').textContent = appointmentsSnapshot.size;
-            } catch (error) {
-                console.error("Error loading stats:", error);
+        // Toggle form visibility
+        function toggleDoctorForm() {
+            const formSection = document.getElementById('doctorFormSection');
+            const addBtn = document.getElementById('addDoctorBtn');
+            if (formSection.style.display === 'none') {
+                formSection.style.display = 'block';
+                addBtn.innerHTML = '<i class="fas fa-times"></i> Close Form';
+                formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } else {
+                formSection.style.display = 'none';
+                addBtn.innerHTML = '<i class="fas fa-user-md"></i> Add Doctor';
+                // Reset submit button state
+                const submitBtn = document.getElementById('submitBtn');
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Doctor';
             }
         }
+        window.toggleDoctorForm = toggleDoctorForm;
 
         // Validation Functions
         function validateName(name) {
@@ -765,13 +723,11 @@
                 document.getElementById("address").value = "";
                 document.getElementById("additionalNotes").value = "";
 
-                // Update stats
-                await loadStats();
-
-                // Redirect to dashboard after 1.5 seconds
+                // Hide form and refresh listing
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html?newDoctor=success&timestamp=' + Date.now();
-                }, 1500);
+                    toggleDoctorForm();
+                    loadDoctorsList();
+                }, 1200);
 
             } catch (error) {
                 clearTimeout(timeoutId);
@@ -878,7 +834,6 @@
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
-            loadStats();
             loadDoctorsList();
         });
     </script>
