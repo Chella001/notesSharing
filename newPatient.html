@@ -36,25 +36,7 @@
         <div class="main-content">
             <app-header title="Add New Patient"></app-header>
 
-            <!-- Stats Cards -->
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-label">Total Patients <span><i class="fas fa-users"></i></span></div>
-                    <div class="stat-number" id="totalPatients">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Total Doctors <span><i class="fas fa-stethoscope"></i></span></div>
-                    <div class="stat-number" id="totalDoctors">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Appointments <span><i class="fas fa-clock"></i></span></div>
-                    <div class="stat-number" id="totalAppointments">0</div>
-                </div>
-                <div class="stat-card">
-                    <div class="stat-label">Available Beds <span><i class="fas fa-procedures"></i></span></div>
-                    <div class="stat-number" id="totalBeds">156</div>
-                </div>
-            </div>
+
 
             <!-- Patient Form -->
             <div class="ds-card">
@@ -337,23 +319,7 @@
         }
 
 
-        // Load Stats
-        async function loadStats() {
-            if (!db) return;
 
-            try {
-                const patientsSnapshot = await db.collection('patients').get();
-                document.getElementById('totalPatients').textContent = patientsSnapshot.size;
-
-                const doctorsSnapshot = await db.collection('doctors').get();
-                document.getElementById('totalDoctors').textContent = doctorsSnapshot.size;
-
-                const appointmentsSnapshot = await db.collection('appointments').get();
-                document.getElementById('totalAppointments').textContent = appointmentsSnapshot.size;
-            } catch (error) {
-                console.error("Error loading stats:", error);
-            }
-        }
 
         // Validation Functions
         function validateName(name) {
@@ -682,8 +648,7 @@
                 document.getElementById("address").value = "";
                 document.getElementById("medicalNotes").value = "";
 
-                // Update stats
-                await loadStats();
+
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(() => {
@@ -781,7 +746,7 @@
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
             db = window.db;
-            loadStats();
+
             loadPatientsList();
             if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
                 emailjs.init(EMAILJS_PUBLIC_KEY);
