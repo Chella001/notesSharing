@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <script>
         if (!sessionStorage.getItem('currentUser')) {
@@ -24,6 +25,7 @@
     <script src="components/header.js" defer></script>
     <script src="js/app.js" type="module"></script>
 </head>
+
 <body>
     <div class="dashboard">
         <app-sidebar></app-sidebar>
@@ -32,7 +34,25 @@
         <div class="main-content">
             <app-header title="Add New Doctor"></app-header>
 
-
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Patients <span><i class="fas fa-users"></i></span></div>
+                    <div class="stat-number" id="totalPatients">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Total Doctors <span><i class="fas fa-stethoscope"></i></span></div>
+                    <div class="stat-number" id="totalDoctors">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Appointments <span><i class="fas fa-clock"></i></span></div>
+                    <div class="stat-number" id="totalAppointments">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Available Beds <span><i class="fas fa-procedures"></i></span></div>
+                    <div class="stat-number" id="totalBeds">0</div>
+                </div>
+            </div>
 
             <!-- Doctor Form -->
             <div class="ds-card">
@@ -51,10 +71,9 @@
                             <label class="ds-label"><i class="fas fa-id-badge"></i>Full Name *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-id-badge"></i>
-                                <input type="text" id="doctorName" placeholder="Enter doctor's full name (letters only)" 
-                                       onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode == 32" 
-                                       class="ds-input"
-                                       required>
+                                <input type="text" id="doctorName" placeholder="Enter doctor's full name (letters only)"
+                                    onkeypress="return (event.charCode >= 65 && event.charCode <= 90) || (event.charCode >= 97 && event.charCode <= 122) || event.charCode == 32"
+                                    class="ds-input" required>
                             </div>
                             <div id="nameError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -90,7 +109,8 @@
                             <label class="ds-label"><i class="fas fa-briefcase"></i>Experience (Years) *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-hashtag"></i>
-                                <input type="number" id="experience" placeholder="e.g. 5" min="0" max="60" required class="ds-input">
+                                <input type="number" id="experience" placeholder="e.g. 5" min="0" max="60" required
+                                    class="ds-input">
                             </div>
                             <div id="experienceError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -103,7 +123,8 @@
                             <label class="ds-label"><i class="fas fa-graduation-cap"></i>Qualification *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-award"></i>
-                                <input type="text" id="qualification" placeholder="e.g. MBBS, MD" required class="ds-input">
+                                <input type="text" id="qualification" placeholder="e.g. MBBS, MD" required
+                                    class="ds-input">
                             </div>
                             <div id="qualificationError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -116,7 +137,8 @@
                             <label class="ds-label"><i class="fas fa-indian-rupee-sign"></i>Consultation Fee *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-coins"></i>
-                                <input type="number" id="fee" placeholder="Consultation fee amount" min="0" required class="ds-input">
+                                <input type="number" id="fee" placeholder="Consultation fee amount" min="0" required
+                                    class="ds-input">
                             </div>
                             <div id="feeError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -129,7 +151,8 @@
                             <label class="ds-label"><i class="fas fa-phone"></i>Phone Number *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-phone-alt"></i>
-                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" required class="ds-input">
+                                <input type="text" id="phone" placeholder="9876543210" maxlength="10" required
+                                    class="ds-input">
                             </div>
                             <div id="phoneError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -142,7 +165,8 @@
                             <label class="ds-label"><i class="far fa-envelope"></i>Email Address *</label>
                             <div class="input-wrapper">
                                 <i class="far fa-envelope"></i>
-                                <input type="email" id="email" placeholder="doctor@clinic.com" required class="ds-input">
+                                <input type="email" id="email" placeholder="doctor@clinic.com" required
+                                    class="ds-input">
                             </div>
                             <div id="emailError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -154,7 +178,8 @@
                         <div class="input-group">
                             <label class="ds-label"><i class="far fa-calendar-alt"></i>Available Days *</label>
                             <div class="input-wrapper">
-                                <select id="availableDays" multiple required style="height: 100px; padding: 8px;" class="ds-select">
+                                <select id="availableDays" multiple required style="height: 100px; padding: 8px;"
+                                    class="ds-select">
                                     <option value="Monday">Monday</option>
                                     <option value="Tuesday">Tuesday</option>
                                     <option value="Wednesday">Wednesday</option>
@@ -164,7 +189,8 @@
                                     <option value="Sunday">Sunday</option>
                                 </select>
                             </div>
-                            <small style="color: var(--text-muted); margin-top: 4px; display: block;">Hold Ctrl / Cmd to select multiple days</small>
+                            <small style="color: var(--text-muted); margin-top: 4px; display: block;">Hold Ctrl / Cmd to
+                                select multiple days</small>
                             <div id="daysError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
                                 <span></span>
@@ -176,7 +202,8 @@
                             <label class="ds-label"><i class="fas fa-map-marker-alt"></i>Address *</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-map-pin"></i>
-                                <textarea id="address" placeholder="Enter residential or clinic address" rows="2" required class="ds-textarea"></textarea>
+                                <textarea id="address" placeholder="Enter residential or clinic address" rows="2"
+                                    required class="ds-textarea"></textarea>
                             </div>
                             <div id="addressError" class="field-error">
                                 <i class="fas fa-exclamation-circle"></i>
@@ -189,7 +216,9 @@
                             <label class="ds-label"><i class="fas fa-notes-medical"></i>Additional Notes</label>
                             <div class="input-wrapper">
                                 <i class="fas fa-sticky-note"></i>
-                                <textarea id="additionalNotes" placeholder="Special achievements, biography, or specific timing rules" rows="2" class="ds-textarea"></textarea>
+                                <textarea id="additionalNotes"
+                                    placeholder="Special achievements, biography, or specific timing rules" rows="2"
+                                    class="ds-textarea"></textarea>
                             </div>
                         </div>
                     </div>
@@ -230,9 +259,10 @@
                     <div class="table-controls">
                         <div class="search-wrapper">
                             <i class="fas fa-search"></i>
-                            <input type="text" id="doctorSearch" class="search-input ds-input"  placeholder="Search doctors by name/specialization..." oninput="filterDoctors()" >
+                            <input type="text" id="doctorSearch" class="search-input ds-input"
+                                placeholder="Search doctors by name/specialization..." oninput="filterDoctors()">
                         </div>
-                        <select id="specializationFilter" class="table-filter ds-select"  onchange="filterDoctors()" >
+                        <select id="specializationFilter" class="table-filter ds-select" onchange="filterDoctors()">
                             <option value="">All Specializations</option>
                             <option value="General Medicine">General Medicine</option>
                             <option value="Pediatrics">Pediatrics</option>
@@ -243,7 +273,7 @@
                             <option value="Neurology">Neurology</option>
                             <option value="Ophthalmology">Ophthalmology</option>
                         </select>
-                        <select id="experienceFilter" class="table-filter ds-select"  onchange="filterDoctors()" >
+                        <select id="experienceFilter" class="table-filter ds-select" onchange="filterDoctors()">
                             <option value="">All Experience levels</option>
                             <option value="1-5">1 - 5 Years</option>
                             <option value="6-10">6 - 10 Years</option>
@@ -269,20 +299,44 @@
                         </thead>
                         <tbody id="doctorsBody">
                             <tr class="skeleton-row">
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-badge"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-badge"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
                             </tr>
                             <tr class="skeleton-row">
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-badge"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-badge"></div>
+                                </td>
+                                <td>
+                                    <div class="skeleton skeleton-text"></div>
+                                </td>
                             </tr>
                         </tbody>
                     </table>
@@ -324,44 +378,60 @@
             }
         }
 
-        
 
 
+        // Load Stats
+        async function loadStats() {
+            if (!db) return;
+
+            try {
+                const patientsSnapshot = await db.collection('patients').get();
+                document.getElementById('totalPatients').textContent = patientsSnapshot.size;
+
+                const doctorsSnapshot = await db.collection('doctors').get();
+                document.getElementById('totalDoctors').textContent = doctorsSnapshot.size;
+
+                const appointmentsSnapshot = await db.collection('appointments').get();
+                document.getElementById('totalAppointments').textContent = appointmentsSnapshot.size;
+            } catch (error) {
+                console.error("Error loading stats:", error);
+            }
+        }
 
         // Validation Functions
         function validateName(name) {
             const nameError = document.getElementById('nameError');
             const nameInput = document.getElementById('doctorName');
             const errorSpan = nameError.querySelector('span');
-            
+
             if (!name || name.trim() === '') {
                 errorSpan.textContent = "Name is required";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
             }
-            
+
             if (name.length < 2) {
                 errorSpan.textContent = "Name must be at least 2 characters";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
             }
-            
+
             if (name.length > 50) {
                 errorSpan.textContent = "Name must be less than 50 characters";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
             }
-            
+
             if (!/^[a-zA-Z\s.]+$/.test(name)) {
                 errorSpan.textContent = "Name can only contain letters, spaces and dots";
                 nameError.classList.add('show');
                 nameInput.classList.add('error');
                 return false;
             }
-            
+
             nameError.classList.remove('show');
             nameInput.classList.remove('error');
             return true;
@@ -371,14 +441,14 @@
             const specError = document.getElementById('specializationError');
             const specInput = document.getElementById('specialization');
             const errorSpan = specError.querySelector('span');
-            
+
             if (!spec || spec === '') {
                 errorSpan.textContent = "Please select a specialization";
                 specError.classList.add('show');
                 specInput.classList.add('error');
                 return false;
             }
-            
+
             specError.classList.remove('show');
             specInput.classList.remove('error');
             return true;
@@ -388,14 +458,14 @@
             const expError = document.getElementById('experienceError');
             const expInput = document.getElementById('experience');
             const errorSpan = expError.querySelector('span');
-            
+
             if (!exp && exp !== 0) {
                 errorSpan.textContent = "Experience is required";
                 expError.classList.add('show');
                 expInput.classList.add('error');
                 return false;
             }
-            
+
             const expNum = parseInt(exp);
             if (isNaN(expNum) || expNum < 0 || expNum > 60) {
                 errorSpan.textContent = "Please enter valid experience (0-60 years)";
@@ -403,7 +473,7 @@
                 expInput.classList.add('error');
                 return false;
             }
-            
+
             expError.classList.remove('show');
             expInput.classList.remove('error');
             return true;
@@ -413,21 +483,21 @@
             const qualError = document.getElementById('qualificationError');
             const qualInput = document.getElementById('qualification');
             const errorSpan = qualError.querySelector('span');
-            
+
             if (!qual || qual.trim() === '') {
                 errorSpan.textContent = "Qualification is required";
                 qualError.classList.add('show');
                 qualInput.classList.add('error');
                 return false;
             }
-            
+
             if (qual.length < 2) {
                 errorSpan.textContent = "Please enter valid qualification";
                 qualError.classList.add('show');
                 qualInput.classList.add('error');
                 return false;
             }
-            
+
             qualError.classList.remove('show');
             qualInput.classList.remove('error');
             return true;
@@ -437,14 +507,14 @@
             const feeError = document.getElementById('feeError');
             const feeInput = document.getElementById('fee');
             const errorSpan = feeError.querySelector('span');
-            
+
             if (!fee && fee !== 0) {
                 errorSpan.textContent = "Consultation fee is required";
                 feeError.classList.add('show');
                 feeInput.classList.add('error');
                 return false;
             }
-            
+
             const feeNum = parseInt(fee);
             if (isNaN(feeNum) || feeNum < 0) {
                 errorSpan.textContent = "Please enter a valid fee amount";
@@ -452,7 +522,7 @@
                 feeInput.classList.add('error');
                 return false;
             }
-            
+
             feeError.classList.remove('show');
             feeInput.classList.remove('error');
             return true;
@@ -462,21 +532,21 @@
             const phoneError = document.getElementById('phoneError');
             const phoneInput = document.getElementById('phone');
             const errorSpan = phoneError.querySelector('span');
-            
+
             if (!phone || phone.trim() === '') {
                 errorSpan.textContent = "Phone number is required";
                 phoneError.classList.add('show');
                 phoneInput.classList.add('error');
                 return false;
             }
-            
+
             if (!/^\d{10}$/.test(phone)) {
                 errorSpan.textContent = "Please enter exactly 10 digits";
                 phoneError.classList.add('show');
                 phoneInput.classList.add('error');
                 return false;
             }
-            
+
             phoneError.classList.remove('show');
             phoneInput.classList.remove('error');
             return true;
@@ -486,14 +556,14 @@
             const emailError = document.getElementById('emailError');
             const emailInput = document.getElementById('email');
             const errorSpan = emailError.querySelector('span');
-            
+
             if (!email || email.trim() === '') {
                 errorSpan.textContent = "Email is required";
                 emailError.classList.add('show');
                 emailInput.classList.add('error');
                 return false;
             }
-            
+
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(email)) {
                 errorSpan.textContent = "Please enter a valid email address";
@@ -501,7 +571,7 @@
                 emailInput.classList.add('error');
                 return false;
             }
-            
+
             emailError.classList.remove('show');
             emailInput.classList.remove('error');
             return true;
@@ -511,16 +581,16 @@
             const daysError = document.getElementById('daysError');
             const daysInput = document.getElementById('availableDays');
             const errorSpan = daysError.querySelector('span');
-            
+
             const selectedDays = Array.from(days.selectedOptions).map(opt => opt.value);
-            
+
             if (selectedDays.length === 0) {
                 errorSpan.textContent = "Please select at least one available day";
                 daysError.classList.add('show');
                 daysInput.classList.add('error');
                 return false;
             }
-            
+
             daysError.classList.remove('show');
             daysInput.classList.remove('error');
             return true;
@@ -530,65 +600,65 @@
             const addressError = document.getElementById('addressError');
             const addressInput = document.getElementById('address');
             const errorSpan = addressError.querySelector('span');
-            
+
             if (!address || address.trim() === '') {
                 errorSpan.textContent = "Address is required";
                 addressError.classList.add('show');
                 addressInput.classList.add('error');
                 return false;
             }
-            
+
             if (address.length < 5) {
                 errorSpan.textContent = "Please enter a complete address";
                 addressError.classList.add('show');
                 addressInput.classList.add('error');
                 return false;
             }
-            
+
             addressError.classList.remove('show');
             addressInput.classList.remove('error');
             return true;
         }
 
         // Real-time validation
-        document.getElementById('doctorName').addEventListener('input', function() {
+        document.getElementById('doctorName').addEventListener('input', function () {
             validateName(this.value);
         });
 
-        document.getElementById('specialization').addEventListener('change', function() {
+        document.getElementById('specialization').addEventListener('change', function () {
             validateSpecialization(this.value);
         });
 
-        document.getElementById('experience').addEventListener('input', function() {
+        document.getElementById('experience').addEventListener('input', function () {
             validateExperience(this.value);
         });
 
-        document.getElementById('qualification').addEventListener('input', function() {
+        document.getElementById('qualification').addEventListener('input', function () {
             validateQualification(this.value);
         });
 
-        document.getElementById('fee').addEventListener('input', function() {
+        document.getElementById('fee').addEventListener('input', function () {
             validateFee(this.value);
         });
 
-        document.getElementById('phone').addEventListener('input', function() {
+        document.getElementById('phone').addEventListener('input', function () {
             validatePhone(this.value);
         });
 
-        document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('email').addEventListener('input', function () {
             validateEmail(this.value);
         });
 
-        document.getElementById('availableDays').addEventListener('change', function() {
+        document.getElementById('availableDays').addEventListener('change', function () {
             validateAvailableDays(this);
         });
 
-        document.getElementById('address').addEventListener('input', function() {
+        document.getElementById('address').addEventListener('input', function () {
             validateAddress(this.value);
         });
 
         // Handle Form Submit
-        document.getElementById('doctorForm').addEventListener('submit', async function(event) {
+        document.getElementById('doctorForm').addEventListener('submit', async function (event) {
             event.preventDefault();
 
             if (!db) {
@@ -606,7 +676,7 @@
             const email = document.getElementById("email").value;
             const address = document.getElementById("address").value;
             const additionalNotes = document.getElementById("additionalNotes").value;
-            
+
             // Get selected days
             const daysSelect = document.getElementById("availableDays");
             const availableDays = Array.from(daysSelect.selectedOptions).map(opt => opt.value);
@@ -633,7 +703,7 @@
             const isDaysValid = validateAvailableDays(daysSelect);
             const isAddressValid = validateAddress(address);
 
-            if (!isNameValid || !isSpecValid || !isExpValid || !isQualValid || 
+            if (!isNameValid || !isSpecValid || !isExpValid || !isQualValid ||
                 !isFeeValid || !isPhoneValid || !isEmailValid || !isDaysValid || !isAddressValid) {
                 errorSpan.textContent = "Please fix the errors in the form";
                 errorDiv.classList.add('show');
@@ -671,7 +741,7 @@
 
                 // Save to Firestore
                 const docRef = await db.collection('doctors').add(doctorData);
-                
+
                 console.log("Doctor saved with ID:", docRef.id);
 
                 // Clear timeout warning
@@ -695,7 +765,8 @@
                 document.getElementById("address").value = "";
                 document.getElementById("additionalNotes").value = "";
 
-
+                // Update stats
+                await loadStats();
 
                 // Redirect to dashboard after 1.5 seconds
                 setTimeout(() => {
@@ -705,9 +776,9 @@
             } catch (error) {
                 clearTimeout(timeoutId);
                 timeoutWarning.classList.remove('show');
-                
+
                 console.error("❌ Error adding doctor:", error);
-                
+
                 let errorMsg = "Failed to register doctor. ";
                 if (error.code === 'permission-denied') {
                     errorMsg = "Permission denied! Please check Firestore Security Rules.";
@@ -716,11 +787,11 @@
                 } else {
                     errorMsg += error.message;
                 }
-                
+
                 errorSpan.textContent = errorMsg;
                 errorDiv.classList.add('show');
                 showNotification("Error adding doctor", "error");
-                
+
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Doctor';
             }
@@ -778,18 +849,18 @@
             });
         }
 
-        window.filterDoctors = function() {
+        window.filterDoctors = function () {
             const searchVal = document.getElementById('doctorSearch').value.toLowerCase().trim();
             const specVal = document.getElementById('specializationFilter').value;
             const expVal = document.getElementById('experienceFilter').value;
 
             const filtered = loadedDoctors.filter(doc => {
-                const matchesSearch = !searchVal || 
+                const matchesSearch = !searchVal ||
                     (doc.name && doc.name.toLowerCase().includes(searchVal)) ||
                     (doc.specialization && doc.specialization.toLowerCase().includes(searchVal));
 
                 const matchesSpec = !specVal || doc.specialization === specVal;
-                
+
                 let matchesExp = true;
                 if (expVal === '1-5') {
                     matchesExp = doc.experience >= 1 && doc.experience <= 5;
@@ -807,9 +878,10 @@
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
-
+            loadStats();
             loadDoctorsList();
         });
     </script>
 </body>
+
 </html>
