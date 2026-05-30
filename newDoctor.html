@@ -303,6 +303,7 @@
 
         // Initialize Firebase
         let db;
+        let currentEditDoctorId = null;
         try {
             if (!firebase.apps.length) {
                 firebase.initializeApp(firebaseConfig);
@@ -338,6 +339,8 @@
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Doctor';
+                document.getElementById('doctorForm').reset();
+                currentEditDoctorId = null;
             }
         }
         window.toggleDoctorForm = toggleDoctorForm;
@@ -683,19 +686,31 @@
 
                 console.log("Saving doctor data:", doctorData);
 
-                // Save to Firestore
-                const docRef = await db.collection('doctors').add(doctorData);
+                if (currentEditDoctorId) {
+                    await db.collection('doctors').doc(currentEditDoctorId).update(doctorData);
+                    console.log("Doctor updated with ID:", currentEditDoctorId);
 
-                console.log("Doctor saved with ID:", docRef.id);
+                    clearTimeout(timeoutId);
+                    timeoutWarning.classList.remove('show');
 
-                // Clear timeout warning
-                clearTimeout(timeoutId);
-                timeoutWarning.classList.remove('show');
+                    successDiv.querySelector('span').textContent = "Doctor updated successfully!";
+                    successDiv.classList.add('show');
+                    showNotification("Doctor updated successfully!");
+                } else {
+                    // Save to Firestore
+                    const docRef = await db.collection('doctors').add(doctorData);
 
-                // Show success message
-                successDiv.querySelector('span').textContent = "Doctor registered successfully!";
-                successDiv.classList.add('show');
-                showNotification("Doctor added successfully!");
+                    console.log("Doctor saved with ID:", docRef.id);
+
+                    // Clear timeout warning
+                    clearTimeout(timeoutId);
+                    timeoutWarning.classList.remove('show');
+
+                    // Show success message
+                    successDiv.querySelector('span').textContent = "Doctor registered successfully!";
+                    successDiv.classList.add('show');
+                    showNotification("Doctor added successfully!");
+                }
 
                 // Clear form
                 document.getElementById("doctorName").value = "";
@@ -814,6 +829,49 @@
 
             renderDoctors(filtered);
         }
+
+        window.editDoctor = function (id) {
+            const doctor = loadedDoctors.find(d => d.id === id);
+            if (!doctor) return;
+
+            const formSection = document.getElementById('doctorFormSection');
+            if (formSection.style.display === 'none') {
+                toggleDoctorForm();
+            }
+
+            document.getElementById("doctorName").value = doctor.name || '';
+            document.getElementById("specialization").value = doctor.specialization || '';
+            document.getElementById("experience").value = doctor.experience || '';
+            document.getElementById("qualification").value = doctor.qualification || '';
+            document.getElementById("fee").value = doctor.fee || '';
+            document.getElementById("phone").value = doctor.phone || '';
+            document.getElementById("email").value = doctor.email || '';
+            document.getElementById("address").value = doctor.address || '';
+            document.getElementById("additionalNotes").value = doctor.additionalNotes || '';
+
+            const daysSelect = document.getElementById("availableDays");
+            const docDays = doctor.availableDays || [];
+            Array.from(daysSelect.options).forEach(opt => {
+                opt.selected = docDays.includes(opt.value);
+            });
+
+            currentEditDoctorId = id;
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update Doctor';
+            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        window.deleteDoctor = async function (id) {
+            if (confirm("Are you sure you want to delete this doctor?")) {
+                try {
+                    await db.collection('doctors').doc(id).delete();
+                    showNotification("Doctor deleted successfully!");
+                    loadDoctorsList();
+                } catch (error) {
+                    console.error("Error deleting doctor:", error);
+                    showNotification("Error deleting doctor", "error");
+                }
+            }
+        };
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {

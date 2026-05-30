@@ -272,6 +272,7 @@
         const EMAILJS_TEMPLATE_ID = "template_xc4kvgi"; // Replace with your EmailJS Template ID
 
         let db;
+        let currentEditPatientId = null;
 
         function showNotification(message, type = "success") {
             if (typeof window.showNotification === 'function' && window.showNotification !== showNotification) {
@@ -296,6 +297,8 @@
                 const submitBtn = document.getElementById('submitBtn');
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = '<i class="fas fa-save"></i> Save Patient';
+                document.getElementById('patientForm').reset();
+                currentEditPatientId = null;
             }
         }
         window.togglePatientForm = togglePatientForm;
@@ -581,40 +584,52 @@
 
                 console.log("Saving patient:", patientData);
 
-                // Save to Firestore
-                const docRef = await db.collection('patients').add(patientData);
+                if (currentEditPatientId) {
+                    await db.collection('patients').doc(currentEditPatientId).update(patientData);
+                    console.log("Patient updated with ID:", currentEditPatientId);
+                    
+                    clearTimeout(timeoutId);
+                    timeoutWarning.classList.remove('show');
+                    
+                    successDiv.querySelector('span').textContent = "Patient updated successfully!";
+                    successDiv.classList.add('show');
+                    showNotification("Patient updated successfully!");
+                } else {
+                    // Save to Firestore
+                    const docRef = await db.collection('patients').add(patientData);
 
-                console.log("Patient saved with ID:", docRef.id);
+                    console.log("Patient saved with ID:", docRef.id);
 
-                // Clear timeout warning
-                clearTimeout(timeoutId);
-                timeoutWarning.classList.remove('show');
+                    // Clear timeout warning
+                    clearTimeout(timeoutId);
+                    timeoutWarning.classList.remove('show');
 
-                // Show success message
-                successDiv.querySelector('span').textContent = "Patient registered successfully!";
-                successDiv.classList.add('show');
-                showNotification("Patient added successfully!");
+                    // Show success message
+                    successDiv.querySelector('span').textContent = "Patient registered successfully!";
+                    successDiv.classList.add('show');
+                    showNotification("Patient added successfully!");
 
-                // Send email to patient
-                if (patientData.email) {
-                    if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
-                        const templateParams = {
-                            to_name: patientData.name,
-                            to_email: patientData.email,
-                            email: patientData.email,
-                            message: `Your registration at Akshaya Clinic is successful. Thank you for choosing us.`
-                        };
-                        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-                            .then(function (response) {
-                                console.log('Email sent successfully!', response.status, response.text);
-                                showNotification("Email sent to patient successfully!");
-                            }, function (error) {
-                                console.error('Failed to send email...', error);
-                                showNotification("Failed to send email: " + (error.text || error.message || JSON.stringify(error)), "error");
-                            });
-                    } else {
-                        console.warn("EmailJS is not initialized or configured.");
-                        showNotification("EmailJS is not configured", "error");
+                    // Send email to patient
+                    if (patientData.email) {
+                        if (typeof emailjs !== 'undefined' && EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+                            const templateParams = {
+                                to_name: patientData.name,
+                                to_email: patientData.email,
+                                email: patientData.email,
+                                message: `Your registration at Akshaya Clinic is successful. Thank you for choosing us.`
+                            };
+                            emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+                                .then(function (response) {
+                                    console.log('Email sent successfully!', response.status, response.text);
+                                    showNotification("Email sent to patient successfully!");
+                                }, function (error) {
+                                    console.error('Failed to send email...', error);
+                                    showNotification("Failed to send email: " + (error.text || error.message || JSON.stringify(error)), "error");
+                                });
+                        } else {
+                            console.warn("EmailJS is not initialized or configured.");
+                            showNotification("EmailJS is not configured", "error");
+                        }
                     }
                 }
 
@@ -727,6 +742,43 @@
 
             renderPatients(filtered);
         }
+
+        window.editPatient = function (id) {
+            const patient = loadedPatients.find(p => p.id === id);
+            if (!patient) return;
+
+            const formSection = document.getElementById('patientFormSection');
+            if (formSection.style.display === 'none') {
+                togglePatientForm();
+            }
+
+            document.getElementById("patientName").value = patient.name || '';
+            document.getElementById("age").value = patient.age || '';
+            document.getElementById("gender").value = patient.gender || '';
+            document.getElementById("phone").value = patient.phone || '';
+            document.getElementById("email").value = patient.email || '';
+            document.getElementById("bloodGroup").value = patient.bloodGroup || '';
+            document.getElementById("emergencyContact").value = patient.emergencyContact || '';
+            document.getElementById("address").value = patient.address || '';
+            document.getElementById("medicalNotes").value = patient.medicalNotes || '';
+
+            currentEditPatientId = id;
+            document.getElementById('submitBtn').innerHTML = '<i class="fas fa-save"></i> Update Patient';
+            formSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        };
+
+        window.deletePatient = async function (id) {
+            if (confirm("Are you sure you want to delete this patient?")) {
+                try {
+                    await db.collection('patients').doc(id).delete();
+                    showNotification("Patient deleted successfully!");
+                    loadPatientsList();
+                } catch (error) {
+                    console.error("Error deleting patient:", error);
+                    showNotification("Error deleting patient", "error");
+                }
+            }
+        };
 
         // Initial Load
         document.addEventListener('DOMContentLoaded', () => {
