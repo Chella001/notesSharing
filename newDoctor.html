@@ -37,37 +37,30 @@
 
             <!-- Registered Doctors List Section -->
             <div class="ds-table-container">
-                <div class="table-header">
-                    <h3 class="text-h3">📋 Registered Doctors</h3>
-                    <div class="table-controls">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search"></i>
-                            <input type="text" id="doctorSearch" class="search-input ds-input"
-                                placeholder="Search doctors by name/specialization..." oninput="filterDoctors()">
-                        </div>
-                        <select id="specializationFilter" class="table-filter ds-select" onchange="filterDoctors()">
-                            <option value="">All Specializations</option>
-                            <option value="General Medicine">General Medicine</option>
-                            <option value="Pediatrics">Pediatrics</option>
-                            <option value="Cardiology">Cardiology</option>
-                            <option value="Dermatology">Dermatology</option>
-                            <option value="Orthopedics">Orthopedics</option>
-                            <option value="Gynecology">Gynecology</option>
-                            <option value="Neurology">Neurology</option>
-                            <option value="Ophthalmology">Ophthalmology</option>
+                <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--ds-border); padding: 16px 24px;">
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <h3 class="text-h3" style="margin: 0; font-size: 1.25rem; color: var(--ds-text-primary);">Doctor List</h3>
+                        <span id="doctorCountBadge" style="background: #10b981; color: white; border-radius: 20px; padding: 2px 10px; font-size: 12px; font-weight: bold;">0</span>
+                    </div>
+                    <button class="ds-btn ds-btn-primary" onclick="toggleDoctorForm()" id="addDoctorBtn" style="background-color: #10b981; border-color: #10b981; padding: 8px 16px; border-radius: 4px;">
+                        <i class="fas fa-user-md"></i> Add
+                    </button>
+                </div>
+
+                <div class="table-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: transparent;">
+                    <div class="entries-control" style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ds-text-secondary);">
+                        Show 
+                        <select id="entriesSelect" class="ds-select" style="width: auto; padding: 6px 32px 6px 12px; border-radius: 4px; min-width: unset; height: auto;">
+                            <option value="10">10</option>
+                            <option value="25">25</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
                         </select>
-                        <select id="experienceFilter" class="table-filter ds-select" onchange="filterDoctors()">
-                            <option value="">All Experience levels</option>
-                            <option value="1-5">1 - 5 Years</option>
-                            <option value="6-10">6 - 10 Years</option>
-                            <option value="10+">10+ Years</option>
-                        </select>
-                        <button class="view-all" onclick="loadDoctorsList()" style="border: none;">
-                            <i class="fas fa-sync-alt"></i> Refresh
-                        </button>
-                        <button class="ds-btn ds-btn-primary" onclick="toggleDoctorForm()" id="addDoctorBtn">
-                            <i class="fas fa-user-md"></i> Add Doctor
-                        </button>
+                        entries
+                    </div>
+                    <div class="search-control" style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--ds-text-secondary);">
+                        Search:
+                        <input type="text" id="doctorSearch" class="ds-input search-input" style="padding: 6px 16px; border-radius: 9999px; width: 180px; min-width: unset; height: auto;" oninput="filterDoctors()">
                     </div>
                 </div>
 
@@ -75,23 +68,15 @@
                     <table class="ds-table">
                         <thead>
                             <tr>
-                                <th>Name</th>
+                                <th>Name <i class="fas fa-sort" style="color: var(--ds-text-tertiary); margin-left: 4px; cursor: pointer;"></i></th>
                                 <th>Specialization</th>
                                 <th>Experience</th>
                                 <th>Contact info</th>
                                 <th>Availability</th>
-                                <th>Consultation Fee</th>
+                                <th style="text-align: center;">Action</th>
                             </tr>
                         </thead>
                         <tbody id="doctorsBody">
-                            <tr class="skeleton-row">
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                                <td><div class="skeleton skeleton-badge"></div></td>
-                                <td><div class="skeleton skeleton-text"></div></td>
-                            </tr>
                             <tr class="skeleton-row">
                                 <td><div class="skeleton skeleton-text"></div></td>
                                 <td><div class="skeleton skeleton-text"></div></td>
@@ -764,7 +749,7 @@
                 const snapshot = await db.collection('doctors').get();
                 loadedDoctors = [];
                 snapshot.forEach(doc => {
-                    loadedDoctors.push(doc.data());
+                    loadedDoctors.push({ id: doc.id, ...doc.data() });
                 });
                 renderDoctors(loadedDoctors);
             } catch (error) {
@@ -775,9 +760,12 @@
 
         function renderDoctors(list) {
             const tbody = document.getElementById('doctorsBody');
+            const countBadge = document.getElementById('doctorCountBadge');
+            if (countBadge) countBadge.textContent = list.length;
+            
             tbody.innerHTML = '';
             if (list.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="6" class="no-data">📭 No doctors found.</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="no-data"><div style="text-align: center; padding: 48px; color: var(--ds-text-tertiary);"><i class="fas fa-user-md" style="font-size: 32px; margin-bottom: 16px; display: block; opacity: 0.5;"></i><h3 class="text-h4">No doctors found</h3><p class="text-body-sm">Try adjusting your search or register a new doctor.</p></div></td></tr>`;
                 return;
             }
 
@@ -800,7 +788,14 @@
                         <div style="font-size: 11px; color: var(--text-muted);"><i class="fas fa-envelope fa-xs" style="margin-right: 4px;"></i>${doc.email || 'N/A'}</div>
                     </td>
                     <td><span class="status active" style="font-size: 11px;">${days}</span></td>
-                    <td><strong>${window.currencySymbol || '₹'}${doc.fee?.toLocaleString() || '0'}</strong></td>
+                    <td style="text-align: center;">
+                        <button class="ds-btn" style="background-color: #337ab7; color: white; border-radius: 4px; padding: 6px 12px; font-size: 13px; font-weight: 500; border: none; margin-right: 4px;" onclick="editDoctor('${doc.id}')">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                        <button class="ds-btn" style="background-color: #d9534f; color: white; border-radius: 4px; padding: 6px 12px; font-size: 13px; font-weight: 500; border: none;" onclick="deleteDoctor('${doc.id}')">
+                            <i class="fas fa-trash"></i> Delete
+                        </button>
+                    </td>
                 `;
                 tbody.appendChild(tr);
             });
@@ -808,26 +803,13 @@
 
         window.filterDoctors = function () {
             const searchVal = document.getElementById('doctorSearch').value.toLowerCase().trim();
-            const specVal = document.getElementById('specializationFilter').value;
-            const expVal = document.getElementById('experienceFilter').value;
 
             const filtered = loadedDoctors.filter(doc => {
                 const matchesSearch = !searchVal ||
                     (doc.name && doc.name.toLowerCase().includes(searchVal)) ||
                     (doc.specialization && doc.specialization.toLowerCase().includes(searchVal));
 
-                const matchesSpec = !specVal || doc.specialization === specVal;
-
-                let matchesExp = true;
-                if (expVal === '1-5') {
-                    matchesExp = doc.experience >= 1 && doc.experience <= 5;
-                } else if (expVal === '6-10') {
-                    matchesExp = doc.experience >= 6 && doc.experience <= 10;
-                } else if (expVal === '10+') {
-                    matchesExp = doc.experience > 10;
-                }
-
-                return matchesSearch && matchesSpec && matchesExp;
+                return matchesSearch;
             });
 
             renderDoctors(filtered);
