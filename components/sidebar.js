@@ -283,6 +283,23 @@ class AppSidebar extends HTMLElement {
         const sidebar = this.querySelector('#appSidebar');
         const dashboard = document.querySelector('.dashboard');
 
+        // Make brand area clickable to toggle sidebar
+        const brandArea = this.querySelector('.sb-brand');
+        if (brandArea) {
+            brandArea.style.cursor = 'pointer';
+            brandArea.addEventListener('click', () => {
+                if (window.innerWidth < 768) {
+                    const open = sidebar?.classList.toggle('sb-mobile-open');
+                    backdrop.classList.toggle('show', open);
+                } else {
+                    this._collapsed = !this._collapsed;
+                    sidebar?.classList.toggle('sb-open', !this._collapsed);
+                    dashboard?.classList.toggle('sb-exp', !this._collapsed);
+                    localStorage.setItem('sidebarCollapsed', this._collapsed);
+                }
+            });
+        }
+
         backdrop.addEventListener('click', () => this._closeMobile());
 
         // Apply expanded state if not collapsed
