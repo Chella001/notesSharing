@@ -272,15 +272,7 @@ class AppSidebar extends HTMLElement {
 
     _injectGlobalToggle() {
         // Avoid duplicate
-        if (document.getElementById('sbFloatToggle')) return;
-
-        // Floating toggle button
-        const btn = document.createElement('button');
-        btn.id = 'sbFloatToggle';
-        btn.className = 'sb-float-toggle';
-        btn.setAttribute('title', 'Toggle sidebar');
-        btn.innerHTML = '<i class="fas fa-chevron-right"></i>';
-        document.body.appendChild(btn);
+        if (document.getElementById('sbBackdrop')) return;
 
         // Backdrop for mobile
         const backdrop = document.createElement('div');
@@ -290,19 +282,6 @@ class AppSidebar extends HTMLElement {
 
         const sidebar = this.querySelector('#appSidebar');
         const dashboard = document.querySelector('.dashboard');
-
-        btn.addEventListener('click', () => {
-            if (window.innerWidth < 768) {
-                const open = sidebar?.classList.toggle('sb-mobile-open');
-                backdrop.classList.toggle('show', open);
-                btn.classList.toggle('toggle-open', open);
-            } else {
-                this._collapsed = !this._collapsed;
-                sidebar?.classList.toggle('sb-open', !this._collapsed);
-                dashboard?.classList.toggle('sb-exp', !this._collapsed);
-                localStorage.setItem('sidebarCollapsed', this._collapsed);
-            }
-        });
 
         backdrop.addEventListener('click', () => this._closeMobile());
 
@@ -317,7 +296,6 @@ class AppSidebar extends HTMLElement {
             if (window.innerWidth >= 768) {
                 sidebar?.classList.remove('sb-mobile-open');
                 backdrop.classList.remove('show');
-                btn.classList.remove('toggle-open');
             }
         });
     }
